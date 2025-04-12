@@ -81,26 +81,20 @@
     </div>
 
     <script>
-      // Simulasi login menggunakan JavaScript
       document
         .getElementById("login-form")
         .addEventListener("submit", function (e) {
-          e.preventDefault(); // Mencegah form submit default
+          e.preventDefault();
 
-          // Ambil nilai username dan password
           const username = document.getElementById("username").value;
           const password = document.getElementById("password").value;
           const errorMessage = document.getElementById("error-message");
 
-          // Simulasi kredensial admin (karena tidak ada server-side)
-          const validUsername = "admin"; // Ganti dengan username yang diizinkan
-          const validPassword = "password123"; // Ganti dengan password yang diizinkan
+          const validUsername = "admin";
+          const validPassword = "password123";
 
-          // Cek apakah username dan password benar
           if (username === validUsername && password === validPassword) {
-            // Simpan status login di localStorage (simulasi sesi)
-            localStorage.setItem("admin_id", "1"); // Simulasi ID admin
-            // Arahkan ke dashboard.html
+            localStorage.setItem("admin_id", "1");
             window.location.href = "dashboard.php";
           } else {
             // Tampilkan pesan error
