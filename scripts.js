@@ -73,6 +73,88 @@ if (addKondisiForm) {
   });
 }
 
+// Handle form submission untuk tambah resep
+const addResepForm = document.getElementById("add-resep-form");
+if (addResepForm) {
+  addResepForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_resep.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("Resep berhasil ditambahkan!");
+          closePopup("add-resep-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan resep: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
+// Handle form submission untuk tambah bahan
+const addBahanForm = document.getElementById("add-bahan-form");
+if (addBahanForm) {
+  addBahanForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_bahan.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("Bahan berhasil ditambahkan!");
+          closePopup("add-bahan-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan bahan: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
 // Indikator menu aktif
 const sidebarLinks = document.querySelectorAll(".sidebar ul li a");
 sidebarLinks.forEach((link) => {
@@ -80,3 +162,17 @@ sidebarLinks.forEach((link) => {
     link.classList.add("active");
   }
 });
+
+// Animasi card saat load
+const cards = document.querySelectorAll(".card");
+if (cards) {
+  cards.forEach((card, index) => {
+    card.style.opacity = "0";
+    card.style.transform = "translateY(30px) scale(0.95)";
+    setTimeout(() => {
+      card.style.transition = "all 0.5s ease";
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0) scale(1)";
+    }, index * 150);
+  });
+}

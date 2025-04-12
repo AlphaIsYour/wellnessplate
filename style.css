@@ -261,6 +261,146 @@ body::before {
   margin-bottom: 30px;
 }
 
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.card {
+  background: rgba(26, 42, 68, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  background: rgba(26, 42, 68, 0.9);
+}
+
+.card-icon {
+  font-size: 32px;
+  color: #8b5cf6;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.2);
+}
+
+.card h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 10px;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #8b5cf6;
+  transition: color 0.3s ease;
+}
+
+.card:hover .card-value {
+  color: #a78bfa;
+}
+
+.card::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 24, 39, 0.95);
+  color: #e0e0e0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.card:hover::after {
+  opacity: 1;
+  visibility: visible;
+  bottom: 110%;
+}
+
+.card:active::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+.chart-container {
+  background: rgba(26, 42, 68, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.chart-container h3 {
+  font-size: 22px;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.chart-btn {
+  background: rgba(139, 92, 246, 0.2);
+  color: #d1d5db;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.chart-btn.active,
+.chart-btn:hover {
+  background: #8b5cf6;
+  color: #fff;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -471,6 +611,19 @@ table tbody td {
   padding: 0 4px;
 }
 
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1024px) {
   .sidebar {
     width: 80px;
@@ -512,14 +665,26 @@ table tbody td {
     width: calc(100% - 80px);
   }
 
+  .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
   .popup-content {
     max-width: 90%;
   }
 }
 
 @media (max-width: 480px) {
+  .card-container {
+    grid-template-columns: 1fr;
+  }
+
   .content h2 {
     font-size: 24px;
+  }
+
+  .chart-container {
+    padding: 20px;
   }
 
   table th,

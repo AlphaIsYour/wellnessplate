@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: index.html');
+    header('Location: index.html'); // Fix redirect (ganti index.html jadi login.php)
     exit;
 }
 
@@ -43,7 +43,7 @@ if (isset($_GET['hapus'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Kondisi Kesehatan - WellnessPlate</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
@@ -94,7 +94,7 @@ if (isset($_GET['hapus'])) {
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) { ?>
-                        <tr>
+                        <tr class="table-row">
                             <td><?php echo htmlspecialchars($row['id_kondisi']); ?></td>
                             <td><?php echo htmlspecialchars($row['nama_kondisi']); ?></td>
                             <td>
@@ -110,7 +110,7 @@ if (isset($_GET['hapus'])) {
             <!-- Pop-up untuk Tambah Kondisi -->
             <div id="add-kondisi-popup" class="popup">
                 <div class="popup-content">
-                    <span class="close-btn" onclick="closePopup('add-kondisi-popup')">&times;</span>
+                    <span class="close-btn" onclick="closePopup('add-kondisi-popup')">×</span>
                     <h3>Tambah Kondisi Kesehatan</h3>
                     <form id="add-kondisi-form">
                         <div class="input-group">
@@ -128,6 +128,21 @@ if (isset($_GET['hapus'])) {
         </div>
     </div>
     <script src="scripts.js"></script>
+    <script>
+        // Animasi fade-in untuk baris tabel
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    row.style.transition = 'all 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>
 

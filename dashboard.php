@@ -47,7 +47,7 @@ $counts = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - WellnessPlate</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -65,6 +65,7 @@ $counts = [
             <li><a href="manage_resep_bahan.php" aria-label="Kelola Resep Bahan"><i data-feather="link"></i><span>Resep Bahan</span></a></li>
             <li><a href="manage_users.php" aria-label="Kelola Users"><i data-feather="users"></i><span>Users</span></a></li>
             <li><a href="manage_admins.php" aria-label="Kelola Admins"><i data-feather="user-check"></i><span>Admins</span></a></li>
+            <li><a href="dashboard.php" aria-label="Dashboard" class="active"><i data-feather="home"></i><span>Dashboard</span></a></li>
         </ul>
     </div>
     <div class="main">
@@ -74,7 +75,7 @@ $counts = [
             </div>
             <div class="admin-info">
                 <span class="admin-name"><?php echo htmlspecialchars($admin_name); ?></span>
-                <div class="avatar" id="avatar-menu">
+                <div class="avatar">
                     <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($admin_name); ?>&background=8b5cf6&color=fff" alt="Avatar">
                     <div class="dropdown-content">
                         <a href="edit_profile.php">Edit Profil</a>
@@ -135,7 +136,7 @@ $counts = [
     </div>
     <script src="scripts.js"></script>
     <script>
-        feather.replace(); // Reinitialize icons in inline script
+        feather.replace(); // Reinitialize icons
         const dataChartCanvas = document.getElementById('dataChart');
         let chartInstance = null;
 

@@ -8,34 +8,34 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_bahan = $_POST['id_bahan'] ?? '';
-    $nama_bahan = $_POST['nama_bahan'] ?? '';
-    $satuan = $_POST['satuan'] ?? '';
+    $id_gizi = $_POST['id_gizi'] ?? '';
+    $nama_gizi = $_POST['nama_gizi'] ?? '';
+    $jumlah_kalori = $_POST['jumlah_kalori'] ?? '';
 
-    if (empty($id_bahan) || empty($nama_bahan) || empty($satuan)) {
+    if (empty($id_gizi) || empty($nama_gizi) || empty($jumlah_kalori)) {
         echo json_encode(['success' => false, 'message' => 'Semua field wajib diisi']);
         exit;
     }
 
-    // Cek apakah id_bahan sudah ada
-    $sql = "SELECT id_bahan FROM bahan WHERE id_bahan = ?";
+    // Cek apakah id_gizi sudah ada
+    $sql = "SELECT id_gizi FROM gizi WHERE id_gizi = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id_bahan);
+    $stmt->bind_param("i", $id_gizi);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
-        echo json_encode(['success' => false, 'message' => 'ID Bahan sudah digunakan']);
+        echo json_encode(['success' => false, 'message' => 'ID Gizi sudah digunakan']);
         exit;
     }
 
-    // Insert bahan baru
-    $sql = "INSERT INTO bahan (id_bahan, nama_bahan, satuan) VALUES (?, ?, ?)";
+    // Insert gizi baru
+    $sql = "INSERT INTO gizi (id_gizi, nama_gizi, jumlah_kalori) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $id_bahan, $nama_bahan, $satuan);
+    $stmt->bind_param("isd", $id_gizi, $nama_gizi, $jumlah_kalori);
     if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Gagal menambahkan bahan']);
+        echo json_encode(['success' => false, 'message' => 'Gagal menambahkan gizi']);
     }
 
     $stmt->close();
