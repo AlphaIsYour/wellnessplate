@@ -155,6 +155,170 @@ if (addBahanForm) {
   });
 }
 
+// Handle form submission untuk tambah gizi
+const addGiziForm = document.getElementById("add-gizi-form");
+if (addGiziForm) {
+  addGiziForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_gizi.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("Gizi berhasil ditambahkan!");
+          closePopup("add-gizi-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan gizi: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
+// Handle form submission untuk tambah resep bahan
+const addResepBahanForm = document.getElementById("add-resep-bahan-form");
+if (addResepBahanForm) {
+  addResepBahanForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_resep_bahan.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("Resep bahan berhasil ditambahkan!");
+          closePopup("add-resep-bahan-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan resep bahan: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
+// Handle form submission untuk tambah user
+const addUserForm = document.getElementById("add-user-form");
+if (addUserForm) {
+  addUserForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_user.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("User berhasil ditambahkan!");
+          closePopup("add-user-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan user: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
+// Handle form submission untuk tambah admin
+const addAdminForm = document.getElementById("add-admin-form");
+if (addAdminForm) {
+  addAdminForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML =
+      '<i data-feather="loader" class="spin"></i> Memproses...';
+    feather.replace();
+
+    const formData = new FormData(this);
+
+    fetch("process_add_admin.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+
+        if (data.success) {
+          alert("Admin berhasil ditambahkan!");
+          closePopup("add-admin-popup");
+          location.reload();
+        } else {
+          alert("Gagal menambahkan admin: " + data.message);
+        }
+      })
+      .catch((error) => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-feather="save"></i> Simpan';
+        feather.replace();
+        alert("Terjadi kesalahan: " + error);
+      });
+  });
+}
+
 // Indikator menu aktif
 const sidebarLinks = document.querySelectorAll(".sidebar ul li a");
 sidebarLinks.forEach((link) => {

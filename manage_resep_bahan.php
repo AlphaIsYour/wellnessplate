@@ -10,6 +10,16 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// Ambil informasi admin yang login
+$admin_id = $_SESSION['admin_id'];
+$sql = "SELECT nama FROM admin WHERE id_admin = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+$admin_name = $admin['nama'];
+
 // Ambil semua data resep_bahan dengan join ke tabel resep dan bahan
 $sql = "SELECT resep_bahan.id_resep_bahan, resep_bahan.id_resep, resep_bahan.id_bahan, resep_bahan.jumlah, 
         resep.nama_resep, bahan.nama_bahan 
@@ -20,9 +30,11 @@ $result = $conn->query($sql);
 
 // Hapus resep_bahan
 if (isset($_GET['hapus'])) {
-    $id = $_GET['hapus'];
-    $sql = "DELETE FROM resep_bahan WHERE id_resep_bahan = '$id'";
-    $conn->query($sql);
+    $id = $conn->real_escape_string($_GET['hapus']);
+    $sql = "DELETE FROM resep_bahan WHERE id_resep_bahan = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
     header('Location: manage_resep_bahan.php');
     exit;
 }
@@ -34,97 +46,147 @@ if (isset($_GET['hapus'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Resep Bahan - WellnessPlate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .header {
-            background-color: #2C3E50;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .content {
-            padding: 20px;
-        }
-        h2 {
-            color: #2C3E50;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #E0E0E0;
-        }
-        th {
-            background-color: #2C3E50;
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #F4F4F4;
-        }
-        .btn {
-            padding: 5px 10px;
-            text-decoration: none;
-            color: #fff;
-            border-radius: 3px;
-        }
-        .btn-tambah {
-            background-color: #27AE60;
-            margin-bottom: 10px;
-            display: inline-block;
-        }
-        .btn-edit {
-            background-color: #27AE60;
-        }
-        .btn-hapus {
-            background-color: #E74C3C;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">WellnessPlate Admin</div>
-        <a href="dashboard.php" style="color: #fff;">Kembali ke Dashboard</a>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>WellnessPlate</h3>
+            <button class="toggle-sidebar" id="toggle-sidebar"><i data-feather="menu"></i></button>
+        </div>
+        <ul>
+            <li><a href="manage_kondisi.php" aria-label="Kelola Kondisi Kesehatan"><i data-feather="heart"></i><span>Kondisi Kesehatan</span></a></li>
+            <li><a href="manage_resep.php" aria-label="Kelola Resep"><i data-feather="book"></i><span>Resep</span></a></li>
+            <li><a href="manage_bahan.php" aria-label="Kelola Bahan"><i data-feather="shopping-bag"></i><span>Bahan</span></a></li>
+            <li><a href="manage_gizi.php" aria-label="Kelola Gizi"><i data-feather="bar-chart-2"></i><span>Gizi</span></a></li>
+            <li><a href="manage_resep_bahan.php" aria-label="Kelola Resep Bahan" class="active"><i data-feather="link"></i><span>Resep Bahan</span></a></li>
+            <li><a href="manage_users.php" aria-label="Kelola Users"><i data-feather="users"></i><span>Users</span></a></li>
+            <li><a href="manage_admins.php" aria-label="Kelola Admins"><i data-feather="user-check"></i><span>Admins</span></a></li>
+            <li><a href="dashboard.php" aria-label="Kembali ke Dashboard"><i data-feather="home"></i><span>Dashboard</span></a></li>
+        </ul>
     </div>
-    <div class="content">
-        <h2>Kelola Resep Bahan</h2>
-        <a href="add_resep_bahan.php" class="btn btn-tambah">Tambah Resep Bahan</a>
-        <table>
-            <tr>
-                <th>ID Resep Bahan</th>
-                <th>Nama Resep</th>
-                <th>Nama Bahan</th>
-                <th>Jumlah</th>
-                <th>Aksi</th>
-            </tr>
-            <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo $row['id_resep_bahan']; ?></td>
-                <td><?php echo $row['nama_resep'] ?: 'Tidak ada resep'; ?></td>
-                <td><?php echo $row['nama_bahan'] ?: 'Tidak ada bahan'; ?></td>
-                <td><?php echo $row['jumlah']; ?></td>
-                <td>
-                    <a href="edit_resep_bahan.php?id=<?php echo $row['id_resep_bahan']; ?>" class="btn btn-edit">Edit</a>
-                    <a href="?hapus=<?php echo $row['id_resep_bahan']; ?>" class="btn btn-hapus" onclick="return confirm('Yakin hapus?')">Hapus</a>
-                </td>
-            </tr>
-            <?php } ?>
-        </table>
+    <div class="main">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-text">WellnessPlate Admin</span>
+            </div>
+            <div class="admin-info">
+                <span class="admin-name"><?php echo htmlspecialchars($admin_name); ?></span>
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($admin_name); ?>&background=8b5cf6&color=fff" alt="Avatar">
+                    <div class="dropdown-content">
+                        <a href="edit_profile.php">Edit Profil</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Kelola Resep Bahan</h2>
+            <p>Atur hubungan antara resep dan bahan untuk sistem WellnessPlate.</p>
+            <button class="btn btn-tambah" onclick="openPopup('add-resep-bahan-popup')"><i data-feather="plus"></i> Tambah Resep Bahan</button>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Resep Bahan</th>
+                            <th>Nama Resep</th>
+                            <th>Nama Bahan</th>
+                            <th>Jumlah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($result->num_rows > 0) { ?>
+                            <?php while ($row = $result->fetch_assoc()) { ?>
+                            <tr class="table-row">
+                                <td><?php echo htmlspecialchars($row['id_resep_bahan']); ?></td>
+                                <td><?php echo htmlspecialchars($row['nama_resep'] ?: 'Tidak ada resep'); ?></td>
+                                <td><?php echo htmlspecialchars($row['nama_bahan'] ?: 'Tidak ada bahan'); ?></td>
+                                <td><?php echo htmlspecialchars($row['jumlah']); ?></td>
+                                <td>
+                                    <a href="edit_resep_bahan.php?id=<?php echo $row['id_resep_bahan']; ?>" class="btn btn-edit" data-tooltip="Edit resep bahan"><i data-feather="edit"></i></a>
+                                    <a href="?hapus=<?php echo $row['id_resep_bahan']; ?>" class="btn btn-hapus" onclick="return confirm('Yakin ingin menghapus?')" data-tooltip="Hapus resep bahan"><i data-feather="trash-2"></i></a>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="5">Belum ada data resep bahan.</td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pop-up untuk Tambah Resep Bahan -->
+            <div id="add-resep-bahan-popup" class="popup">
+                <div class="popup-content">
+                    <span class="close-btn" onclick="closePopup('add-resep-bahan-popup')">×</span>
+                    <h3>Tambah Resep Bahan</h3>
+                    <form id="add-resep-bahan-form">
+                        <div class="input-group">
+                            <input type="text" id="id_resep_bahan" name="id_resep_bahan" placeholder=" " required>
+                            <label for="id_resep_bahan">ID Resep Bahan</label>
+                        </div>
+                        <div class="input-group">
+                            <select id="id_resep" name="id_resep" required>
+                                <option value="" disabled selected>Pilih Resep</option>
+                                <?php
+                                $resep_sql = "SELECT id_resep, nama_resep FROM resep";
+                                $resep_result = $conn->query($resep_sql);
+                                while ($resep = $resep_result->fetch_assoc()) {
+                                    echo "<option value='{$resep['id_resep']}'>" . htmlspecialchars($resep['nama_resep']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                            <label for="id_resep">Nama Resep</label>
+                        </div>
+                        <div class="input-group">
+                            <select id="id_bahan" name="id_bahan" required>
+                                <option value="" disabled selected>Pilih Bahan</option>
+                                <?php
+                                $bahan_sql = "SELECT id_bahan, nama_bahan FROM bahan";
+                                $bahan_result = $conn->query($bahan_sql);
+                                while ($bahan = $bahan_result->fetch_assoc()) {
+                                    echo "<option value='{$bahan['id_bahan']}'>" . htmlspecialchars($bahan['nama_bahan']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                            <label for="id_bahan">Nama Bahan</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="jumlah" name="jumlah" placeholder=" " required step="0.01">
+                            <label for="jumlah">Jumlah</label>
+                        </div>
+                        <button type="submit" class="btn btn-tambah"><i data-feather="save"></i> Simpan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+    <script src="scripts.js"></script>
+    <script>
+        // Animasi fade-in untuk baris tabel
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    row.style.transition = 'all 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>
-<?php $conn->close(); ?>
+
+<?php
+$stmt->close();
+$conn->close();
+?>
