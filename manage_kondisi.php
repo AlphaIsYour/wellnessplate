@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: login.php');
+    header('Location: index.html');
     exit;
 }
 
@@ -10,15 +10,27 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// Ambil informasi admin yang login
+$admin_id = $_SESSION['admin_id'];
+$sql = "SELECT nama FROM admin WHERE id_admin = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+$admin_name = $admin['nama'];
+
 // Ambil semua data kondisi kesehatan
 $sql = "SELECT * FROM kondisi_kesehatan";
 $result = $conn->query($sql);
 
 // Hapus kondisi
 if (isset($_GET['hapus'])) {
-    $id = $_GET['hapus'];
-    $sql = "DELETE FROM kondisi_kesehatan WHERE id_kondisi = '$id'";
-    $conn->query($sql);
+    $id = $conn->real_escape_string($_GET['hapus']);
+    $sql = "DELETE FROM kondisi_kesehatan WHERE id_kondisi = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
     header('Location: manage_kondisi.php');
     exit;
 }
@@ -30,48 +42,88 @@ if (isset($_GET['hapus'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Kondisi Kesehatan - WellnessPlate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">WellnessPlate Admin</div>
-        <a href="dashboard.php" style="color: #fff;">Kembali ke Dashboard</a>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>WellnessPlate</h3>
+            <button class="toggle-sidebar" id="toggle-sidebar"><i data-feather="menu"></i></button>
+        </div>
+        <ul>
+            <li><a href="manage_kondisi.php" aria-label="Kelola Kondisi Kesehatan" class="active"><i data-feather="heart"></i><span>Kondisi Kesehatan</span></a></li>
+            <li><a href="manage_resep.php" aria-label="Kelola Resep"><i data-feather="book"></i><span>Resep</span></a></li>
+            <li><a href="manage_bahan.php" aria-label="Kelola Bahan"><i data-feather="shopping-bag"></i><span>Bahan</span></a></li>
+            <li><a href="manage_gizi.php" aria-label="Kelola Gizi"><i data-feather="bar-chart-2"></i><span>Gizi</span></a></li>
+            <li><a href="manage_resep_bahan.php" aria-label="Kelola Resep Bahan"><i data-feather="link"></i><span>Resep Bahan</span></a></li>
+            <li><a href="manage_users.php" aria-label="Kelola Users"><i data-feather="users"></i><span>Users</span></a></li>
+            <li><a href="manage_admins.php" aria-label="Kelola Admins"><i data-feather="user-check"></i><span>Admins</span></a></li>
+            <li><a href="dashboard.php" aria-label="Kembali ke Dashboard"><i data-feather="home"></i><span>Dashboard</span></a></li>
+        </ul>
     </div>
-    <div class="content">
-        <h2>Kelola Kondisi Kesehatan</h2>
-        <button class="btn btn-tambah" onclick="openPopup('add-kondisi-popup')">Tambah Kondisi</button>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nama Kondisi</th>
-                <th>Aksi</th>
-            </tr>
-            <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo $row['id_kondisi']; ?></td>
-                <td><?php echo $row['nama_kondisi']; ?></td>
-                <td>
-                    <a href="edit_kondisi.php?id=<?php echo $row['id_kondisi']; ?>" class="btn btn-edit">Edit</a>
-                    <a href="?hapus=<?php echo $row['id_kondisi']; ?>" class="btn btn-hapus" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
-                </td>
-            </tr>
-            <?php } ?>
-        </table>
+    <div class="main">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-text">WellnessPlate Admin</span>
+            </div>
+            <div class="admin-info">
+                <span class="admin-name"><?php echo htmlspecialchars($admin_name); ?></span>
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($admin_name); ?>&background=8b5cf6&color=fff" alt="Avatar">
+                    <div class="dropdown-content">
+                        <a href="edit_profile.php">Edit Profil</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Kelola Kondisi Kesehatan</h2>
+            <p>Atur data kondisi kesehatan untuk sistem WellnessPlate.</p>
+            <button class="btn btn-tambah" onclick="openPopup('add-kondisi-popup')"><i data-feather="plus"></i> Tambah Kondisi</button>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Kondisi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['id_kondisi']); ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_kondisi']); ?></td>
+                            <td>
+                                <a href="edit_kondisi.php?id=<?php echo $row['id_kondisi']; ?>" class="btn btn-edit" data-tooltip="Edit kondisi"><i data-feather="edit"></i></a>
+                                <a href="?hapus=<?php echo $row['id_kondisi']; ?>" class="btn btn-hapus" onclick="return confirm('Yakin ingin menghapus?')" data-tooltip="Hapus kondisi"><i data-feather="trash-2"></i></a>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Pop-up untuk Tambah Kondisi -->
-        <div id="add-kondisi-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup('add-kondisi-popup')">&times;</span>
-                <h3>Tambah Kondisi Kesehatan</h3>
-                <form id="add-kondisi-form">
-                    <label for="id_kondisi">ID Kondisi:</label>
-                    <input type="text" id="id_kondisi" name="id_kondisi" required>
-                    <label for="nama_kondisi">Nama Kondisi:</label>
-                    <input type="text" id="nama_kondisi" name="nama_kondisi" required>
-                    <button type="submit" class="btn btn-tambah">Simpan</button>
-                </form>
+            <!-- Pop-up untuk Tambah Kondisi -->
+            <div id="add-kondisi-popup" class="popup">
+                <div class="popup-content">
+                    <span class="close-btn" onclick="closePopup('add-kondisi-popup')">&times;</span>
+                    <h3>Tambah Kondisi Kesehatan</h3>
+                    <form id="add-kondisi-form">
+                        <div class="input-group">
+                            <input type="text" id="id_kondisi" name="id_kondisi" placeholder=" " required>
+                            <label for="id_kondisi">ID Kondisi</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="nama_kondisi" name="nama_kondisi" placeholder=" " required>
+                            <label for="nama_kondisi">Nama Kondisi</label>
+                        </div>
+                        <button type="submit" class="btn btn-tambah"><i data-feather="save"></i> Simpan</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -79,4 +131,7 @@ if (isset($_GET['hapus'])) {
 </body>
 </html>
 
-<?php $conn->close(); ?>
+<?php
+$stmt->close();
+$conn->close();
+?>

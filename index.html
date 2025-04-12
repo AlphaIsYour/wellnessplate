@@ -5,55 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Admin - WellnessPlate</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         font-family: "Roboto", sans-serif;
-        background-color: #2c3e50;
+        background-color: #f1f3f4;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
       }
+
       .login-container {
         background-color: #fff;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 300px;
+        padding: 32px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
         text-align: center;
       }
+
       .login-container h2 {
-        margin-bottom: 20px;
-        color: #2c3e50;
+        font-size: 24px;
+        font-weight: 500;
+        color: #202124;
+        margin-bottom: 24px;
       }
-      .login-container input {
+
+      .input-group {
+        position: relative;
+        margin-bottom: 24px;
+      }
+
+      .input-group input {
         width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        padding: 12px 12px 12px 40px;
+        border: 1px solid #dadce0;
+        border-radius: 4px;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
       }
+
+      .input-group input:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+      }
+
+      .input-group .material-icons {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #5f6368;
+        font-size: 20px;
+      }
+
+      .input-group label {
+        position: absolute;
+        top: 50%;
+        left: 40px;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #5f6368;
+        pointer-events: none;
+        transition: all 0.2s ease;
+      }
+
+      .input-group input:focus + label,
+      .input-group input:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 12px;
+        font-size: 12px;
+        color: #1a73e8;
+        background: #fff;
+        padding: 0 4px;
+      }
+
       .login-container button {
         width: 100%;
-        padding: 10px;
-        background-color: #27ae60;
+        padding: 12px;
+        background-color: #1a73e8;
         color: #fff;
         border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        border-radius: 4px;
         font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
       }
+
       .login-container button:hover {
-        background-color: #219653;
+        background-color: #1557b0;
       }
+
+      .login-container button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3);
+      }
+
+      .forgot-password {
+        display: block;
+        margin-top: 16px;
+        font-size: 14px;
+        color: #1a73e8;
+        text-decoration: none;
+      }
+
+      .forgot-password:hover {
+        text-decoration: underline;
+      }
+
       .error {
-        color: red;
-        margin-top: 10px;
+        color: #d93025;
+        font-size: 14px;
+        margin-top: 16px;
         display: none;
+      }
+
+      .loading {
+        display: none;
+        margin-top: 16px;
+        color: #202124;
+        font-size: 14px;
+      }
+
+      @media (max-width: 480px) {
+        .login-container {
+          padding: 24px;
+          margin: 16px;
+        }
+
+        .login-container h2 {
+          font-size: 20px;
+        }
+
+        .input-group input {
+          font-size: 14px;
+        }
+
+        .login-container button {
+          font-size: 14px;
+        }
       }
     </style>
   </head>
@@ -61,43 +166,82 @@
     <div class="login-container">
       <h2>Login Admin</h2>
       <form id="login-form">
-        <input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Username"
-          required
-        />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          required
-        />
+        <div class="input-group">
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder=" "
+            required
+            aria-label="Username"
+          />
+          <span class="material-icons">person</span>
+          <label for="username">Username</label>
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder=" "
+            required
+            aria-label="Password"
+          />
+          <span class="material-icons">lock</span>
+          <label for="password">Password</label>
+        </div>
         <button type="submit">Login</button>
       </form>
+      <a href="#" class="forgot-password">Lupa Password?</a>
       <p id="error-message" class="error">Username atau password salah!</p>
+      <p id="loading-message" class="loading">Memproses login...</p>
     </div>
 
     <script>
       document
         .getElementById("login-form")
-        .addEventListener("submit", function (e) {
+        .addEventListener("submit", async function (e) {
           e.preventDefault();
 
           const username = document.getElementById("username").value;
           const password = document.getElementById("password").value;
           const errorMessage = document.getElementById("error-message");
+          const loadingMessage = document.getElementById("loading-message");
 
-          const validUsername = "admin";
-          const validPassword = "password123";
+          errorMessage.style.display = "none";
+          loadingMessage.style.display = "block";
 
-          if (username === validUsername && password === validPassword) {
-            localStorage.setItem("admin_id", "1");
-            window.location.href = "dashboard.php";
-          } else {
+          try {
+            const response = await fetch("login_process.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: `username=${encodeURIComponent(
+                username
+              )}&password=${encodeURIComponent(password)}`,
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              localStorage.setItem("id_admin", result.id_admin);
+              window.location.href = "dashboard.php";
+            } else {
+              errorMessage.style.display = "block";
+              errorMessage.textContent =
+                result.message || "Username atau password salah!";
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            errorMessage.textContent = "Terjadi kesalahan saat memproses login";
             errorMessage.style.display = "block";
+          } finally {
+            loadingMessage.style.display = "none";
           }
         });
     </script>

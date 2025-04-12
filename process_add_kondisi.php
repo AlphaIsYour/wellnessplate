@@ -1,5 +1,12 @@
 <?php
+session_start();
 header('Content-Type: application/json');
+
+// Cek session admin
+if (!isset($_SESSION['admin_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit;
+}
 
 $conn = new mysqli('localhost:3307', 'root', '', 'wellnessplate');
 if ($conn->connect_error) {
@@ -8,8 +15,14 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_kondisi = $_POST['id_kondisi'];
-    $nama_kondisi = $_POST['nama_kondisi'];
+    $id_kondisi = $conn->real_escape_string($_POST['id_kondisi']);
+    $nama_kondisi = $conn->real_escape_string($_POST['nama_kondisi']);
+
+    // Validasi input
+    if (empty($id_kondisi) || empty($nama_kondisi)) {
+        echo json_encode(['success' => false, 'message' => 'Semua field harus diisi']);
+        exit;
+    }
 
     // Cek apakah ID sudah ada
     $sql_check = "SELECT id_kondisi FROM kondisi_kesehatan WHERE id_kondisi = '$id_kondisi'";
@@ -21,11 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Insert data
     $sql = "INSERT INTO kondisi_kesehatan (id_kondisi, nama_kondisi) VALUES ('$id_kondisi', '$nama_kondisi')";
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(['success' => true]);
+    if ($conn->query($sql) ){
+        echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Gagal menyimpan data: ' . $conn->error]);
     }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Metode request tidak valid']);
 }
 
 $conn->close();
