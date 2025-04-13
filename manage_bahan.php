@@ -10,7 +10,7 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil informasi admin yang login
+
 $admin_id = $_SESSION['admin_id'];
 $sql = "SELECT nama FROM admin WHERE id_admin = ?";
 $stmt = $conn->prepare($sql);
@@ -20,11 +20,9 @@ $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $admin_name = $admin['nama'];
 
-// Ambil semua data bahan
 $sql = "SELECT * FROM bahan";
 $result = $conn->query($sql);
 
-// Hapus bahan dengan prepared statement
 if (isset($_GET['hapus'])) {
     $id = $conn->real_escape_string($_GET['hapus']);
     $sql = "DELETE FROM bahan WHERE id_bahan = ?";
@@ -109,7 +107,6 @@ if (isset($_GET['hapus'])) {
                 </table>
             </div>
 
-            <!-- Pop-up untuk Tambah Bahan -->
             <div id="add-bahan-popup" class="popup">
                 <div class="popup-content">
                     <span class="close-btn" onclick="closePopup('add-bahan-popup')">×</span>
