@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil informasi admin yang login
 $admin_id = $_SESSION['admin_id'];
 $sql = "SELECT nama FROM admin WHERE id_admin = ?";
 $stmt = $conn->prepare($sql);
@@ -20,11 +19,9 @@ $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $admin_name = $admin['nama'];
 
-// Ambil semua data gizi
 $sql = "SELECT * FROM gizi";
 $result = $conn->query($sql);
 
-// Hapus gizi
 if (isset($_GET['hapus'])) {
     $id = $conn->real_escape_string($_GET['hapus']);
     $sql = "DELETE FROM gizi WHERE id_gizi = ?";
@@ -121,7 +118,6 @@ if (isset($_GET['hapus'])) {
                 </table>
             </div>
 
-            <!-- Pop-up untuk Tambah Gizi -->
             <div id="add-gizi-popup" class="popup">
                 <div class="popup-content">
                     <span class="close-btn" onclick="closePopup('add-gizi-popup')">×</span>
@@ -147,7 +143,6 @@ if (isset($_GET['hapus'])) {
     </div>
     <script src="scripts.js"></script>
     <script>
-        // Animasi fade-in untuk baris tabel
         document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table-row');
             rows.forEach((row, index) => {
