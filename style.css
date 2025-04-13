@@ -528,7 +528,9 @@ table tbody td {
   align-items: center;
   justify-content: center;
 }
-
+.sidebar ul span {
+  margin-left: 10px;
+}
 .popup-content {
   background: rgba(26, 42, 68, 0.9);
   backdrop-filter: blur(12px);

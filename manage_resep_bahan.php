@@ -165,7 +165,6 @@ if (isset($_GET['hapus'])) {
     </div>
     <script src="scripts.js"></script>
     <script>
-        // Animasi fade-in untuk baris tabel
         document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table-row');
             rows.forEach((row, index) => {
