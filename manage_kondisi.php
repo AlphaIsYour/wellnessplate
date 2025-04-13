@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header('Location: index.html'); // Fix redirect (ganti index.html jadi login.php)
+    header('Location: index.html');
     exit;
 }
 
@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil informasi admin yang login
 $admin_id = $_SESSION['admin_id'];
 $sql = "SELECT nama FROM admin WHERE id_admin = ?";
 $stmt = $conn->prepare($sql);
@@ -20,11 +19,9 @@ $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $admin_name = $admin['nama'];
 
-// Ambil semua data kondisi kesehatan
 $sql = "SELECT * FROM kondisi_kesehatan";
 $result = $conn->query($sql);
 
-// Hapus kondisi
 if (isset($_GET['hapus'])) {
     $id = $conn->real_escape_string($_GET['hapus']);
     $sql = "DELETE FROM kondisi_kesehatan WHERE id_kondisi = ?";
@@ -53,6 +50,7 @@ if (isset($_GET['hapus'])) {
             <button class="toggle-sidebar" id="toggle-sidebar"><i data-feather="menu"></i></button>
         </div>
         <ul>
+            <li><a href="dashboard.php" aria-label="Kembali ke Dashboard"><i data-feather="home"></i><span>Dashboard</span></a></li>
             <li><a href="manage_kondisi.php" aria-label="Kelola Kondisi Kesehatan" class="active"><i data-feather="heart"></i><span>Kondisi Kesehatan</span></a></li>
             <li><a href="manage_resep.php" aria-label="Kelola Resep"><i data-feather="book"></i><span>Resep</span></a></li>
             <li><a href="manage_bahan.php" aria-label="Kelola Bahan"><i data-feather="shopping-bag"></i><span>Bahan</span></a></li>
@@ -60,7 +58,6 @@ if (isset($_GET['hapus'])) {
             <li><a href="manage_resep_bahan.php" aria-label="Kelola Resep Bahan"><i data-feather="link"></i><span>Resep Bahan</span></a></li>
             <li><a href="manage_users.php" aria-label="Kelola Users"><i data-feather="users"></i><span>Users</span></a></li>
             <li><a href="manage_admins.php" aria-label="Kelola Admins"><i data-feather="user-check"></i><span>Admins</span></a></li>
-            <li><a href="dashboard.php" aria-label="Kembali ke Dashboard"><i data-feather="home"></i><span>Dashboard</span></a></li>
         </ul>
     </div>
     <div class="main">
@@ -107,7 +104,6 @@ if (isset($_GET['hapus'])) {
                 </table>
             </div>
 
-            <!-- Pop-up untuk Tambah Kondisi -->
             <div id="add-kondisi-popup" class="popup">
                 <div class="popup-content">
                     <span class="close-btn" onclick="closePopup('add-kondisi-popup')">×</span>
@@ -129,7 +125,6 @@ if (isset($_GET['hapus'])) {
     </div>
     <script src="scripts.js"></script>
     <script>
-        // Animasi fade-in untuk baris tabel
         document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table-row');
             rows.forEach((row, index) => {
