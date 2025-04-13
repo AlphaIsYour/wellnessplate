@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Cek apakah id_admin atau email sudah ada
     $sql = "SELECT id_admin, email FROM admin WHERE id_admin = ? OR email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $id_admin, $email);
@@ -34,10 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert admin baru
     $sql = "INSERT INTO admin (id_admin, nama, email, password) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("isss", $id_admin, $nama, $email, $hashed_password);

@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Cek apakah id_gizi sudah ada
     $sql = "SELECT id_gizi FROM gizi WHERE id_gizi = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_gizi);
@@ -28,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insert gizi baru
     $sql = "INSERT INTO gizi (id_gizi, nama_gizi, jumlah_kalori) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("isd", $id_gizi, $nama_gizi, $jumlah_kalori);

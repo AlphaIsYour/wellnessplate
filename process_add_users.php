@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Cek apakah id_user, username, atau email sudah ada
     $sql = "SELECT id_user, username, email FROM users WHERE id_user = ? OR username = ? OR email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iss", $id_user, $username, $email);
@@ -39,10 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert user baru
     $sql = "INSERT INTO users (id_user, username, email, password, nama_lengkap, tanggal_lahir, jenis_kelamin) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);

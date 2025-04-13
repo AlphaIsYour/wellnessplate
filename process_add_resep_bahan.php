@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Cek apakah id_resep_bahan sudah ada
     $sql = "SELECT id_resep_bahan FROM resep_bahan WHERE id_resep_bahan = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_resep_bahan);
@@ -29,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insert resep_bahan baru
     $sql = "INSERT INTO resep_bahan (id_resep_bahan, id_resep, id_bahan, jumlah) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iiid", $id_resep_bahan, $id_resep, $id_bahan, $jumlah);

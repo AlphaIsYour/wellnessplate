@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Cek apakah id_bahan sudah ada
     $sql = "SELECT id_bahan FROM bahan WHERE id_bahan = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_bahan);
@@ -28,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insert bahan baru
     $sql = "INSERT INTO bahan (id_bahan, nama_bahan, satuan) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iss", $id_bahan, $nama_bahan, $satuan);
