@@ -1,7 +1,5 @@
-// Inisialisasi Feather Icons
 feather.replace();
 
-// Fungsi untuk membuka pop-up
 function openPopup(popupId) {
   const popup = document.getElementById(popupId);
   if (popup) {
@@ -10,7 +8,6 @@ function openPopup(popupId) {
   }
 }
 
-// Fungsi untuk menutup pop-up
 function closePopup(popupId) {
   const popup = document.getElementById(popupId);
   if (popup) {
@@ -19,7 +16,6 @@ function closePopup(popupId) {
   }
 }
 
-// Toggle Sidebar
 const toggleSidebarBtn = document.getElementById("toggle-sidebar");
 if (toggleSidebarBtn) {
   toggleSidebarBtn.addEventListener("click", () => {
@@ -32,7 +28,6 @@ if (toggleSidebarBtn) {
   });
 }
 
-// Handle form submission untuk tambah kondisi
 const addKondisiForm = document.getElementById("add-kondisi-form");
 if (addKondisiForm) {
   addKondisiForm.addEventListener("submit", function (e) {
@@ -73,7 +68,6 @@ if (addKondisiForm) {
   });
 }
 
-// Handle form submission untuk tambah resep
 const addResepForm = document.getElementById("add-resep-form");
 if (addResepForm) {
   addResepForm.addEventListener("submit", function (e) {
@@ -114,7 +108,6 @@ if (addResepForm) {
   });
 }
 
-// Handle form submission untuk tambah bahan
 const addBahanForm = document.getElementById("add-bahan-form");
 if (addBahanForm) {
   addBahanForm.addEventListener("submit", function (e) {
@@ -155,7 +148,6 @@ if (addBahanForm) {
   });
 }
 
-// Handle form submission untuk tambah gizi
 const addGiziForm = document.getElementById("add-gizi-form");
 if (addGiziForm) {
   addGiziForm.addEventListener("submit", function (e) {
@@ -196,7 +188,6 @@ if (addGiziForm) {
   });
 }
 
-// Handle form submission untuk tambah resep bahan
 const addResepBahanForm = document.getElementById("add-resep-bahan-form");
 if (addResepBahanForm) {
   addResepBahanForm.addEventListener("submit", function (e) {
@@ -237,7 +228,6 @@ if (addResepBahanForm) {
   });
 }
 
-// Handle form submission untuk tambah user
 const addUserForm = document.getElementById("add-user-form");
 if (addUserForm) {
   addUserForm.addEventListener("submit", function (e) {
@@ -278,7 +268,6 @@ if (addUserForm) {
   });
 }
 
-// Handle form submission untuk tambah admin
 const addAdminForm = document.getElementById("add-admin-form");
 if (addAdminForm) {
   addAdminForm.addEventListener("submit", function (e) {
@@ -319,7 +308,6 @@ if (addAdminForm) {
   });
 }
 
-// Indikator menu aktif
 const sidebarLinks = document.querySelectorAll(".sidebar ul li a");
 sidebarLinks.forEach((link) => {
   if (link.href === window.location.href) {
@@ -327,7 +315,6 @@ sidebarLinks.forEach((link) => {
   }
 });
 
-// Animasi card saat load
 const cards = document.querySelectorAll(".card");
 if (cards) {
   cards.forEach((card, index) => {

@@ -1,6 +1,6 @@
 <?php
 session_start();
-header('Content-Type: application/json'); // Tambahkan header JSON
+header('Content-Type: application/json'); 
 
 $conn = new mysqli('localhost:3307', 'root', '', 'wellnessplate');
 
@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $conn->real_escape_string($_POST['username']);
-    $password = $_POST['password']; // Password tidak di-escape karena akan di-hash
+    $password = $_POST['password']; 
 
     $sql = "SELECT * FROM admin WHERE username = ?";
     $stmt = $conn->prepare($sql);

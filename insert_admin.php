@@ -1,11 +1,9 @@
 <?php
-// Koneksi
 $conn = new mysqli('localhost:3307', 'root', '', 'wellnessplate');
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Input dari CLI
 echo "ID Admin: ";
 $id_admin = trim(fgets(STDIN));
 
@@ -22,7 +20,6 @@ $nama = trim(fgets(STDIN));
 echo "Email: ";
 $email = trim(fgets(STDIN));
 
-// SQL Insert
 $sql = "INSERT INTO admin (id_admin, username, password, nama, email)
         VALUES (?, ?, ?, ?, ?)";
 

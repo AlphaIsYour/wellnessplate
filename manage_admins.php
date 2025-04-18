@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil informasi admin yang login
 $admin_id = $_SESSION['admin_id'];
 $sql = "SELECT nama FROM admin WHERE id_admin = ?";
 $stmt = $conn->prepare($sql);
@@ -20,14 +19,11 @@ $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $admin_name = $admin['nama'];
 
-// Ambil semua data admin
 $sql = "SELECT * FROM admin";
 $result = $conn->query($sql);
 
-// Hapus admin
 if (isset($_GET['hapus'])) {
     $id = $conn->real_escape_string($_GET['hapus']);
-    // Cek kalau bukan admin yang login
     if ($id == $admin_id) {
         echo "<script>alert('Tidak bisa menghapus akun sendiri!'); window.location='manage_admins.php';</script>";
         exit;
@@ -120,7 +116,6 @@ if (isset($_GET['hapus'])) {
                 </table>
             </div>
 
-            <!-- Pop-up untuk Tambah Admin -->
             <div id="add-admin-popup" class="popup">
                 <div class="popup-content">
                     <span class="close-btn" onclick="closePopup('add-admin-popup')">×</span>
@@ -150,7 +145,6 @@ if (isset($_GET['hapus'])) {
     </div>
     <script src="scripts.js"></script>
     <script>
-        // Animasi fade-in untuk baris tabel
         document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table-row');
             rows.forEach((row, index) => {

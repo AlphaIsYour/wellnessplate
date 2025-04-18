@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-
 $admin_id = $_SESSION['admin_id'];
 $sql = "SELECT nama FROM admin WHERE id_admin = ?";
 $stmt = $conn->prepare($sql);
