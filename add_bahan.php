@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Proses tambah bahan
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_bahan = $_POST['id_bahan'];
     $nama_bahan = $_POST['nama_bahan'];

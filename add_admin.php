@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Proses tambah admin
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_admin = $_POST['id_admin'];
     $username = $_POST['username'];
