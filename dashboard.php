@@ -19,7 +19,6 @@ $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $admin_name = $admin['nama'];
 
-// Fungsi untuk menghitung jumlah record di tabel
 function get_record_count($conn, $table) {
     $sql = "SELECT COUNT(*) as count FROM $table";
     $result = $conn->query($sql);
