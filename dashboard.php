@@ -202,7 +202,7 @@ $counts = [
 
         renderChart('bar');
 
-        // Chart type switch
+
         document.getElementById('barChartBtn').addEventListener('click', () => {
             renderChart('bar');
             document.getElementById('barChartBtn').classList.add('active');
