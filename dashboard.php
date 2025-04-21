@@ -200,7 +200,6 @@ $counts = [
             });
         }
 
-        // Initial render
         renderChart('bar');
 
         // Chart type switch
