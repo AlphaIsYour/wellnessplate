@@ -10,11 +10,9 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil daftar kondisi kesehatan untuk dropdown
 $sql_kondisi = "SELECT id_kondisi, nama_kondisi FROM kondisi_kesehatan";
 $result_kondisi = $conn->query($sql_kondisi);
 
-// Proses tambah resep
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_resep = $_POST['id_resep'];
     $id_admin = $_SESSION['admin_id'];
