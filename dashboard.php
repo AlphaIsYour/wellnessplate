@@ -26,7 +26,6 @@ function get_record_count($conn, $table) {
     return $row['count'];
 }
 
-// Data untuk grafik
 $counts = [
     'Kondisi Kesehatan' => get_record_count($conn, 'kondisi_kesehatan'),
     'Resep' => get_record_count($conn, 'resep'),
