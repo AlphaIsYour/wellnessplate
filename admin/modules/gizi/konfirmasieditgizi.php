@@ -1,5 +1,5 @@
 <?php
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 
 $base_url = "/modules/gizi/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

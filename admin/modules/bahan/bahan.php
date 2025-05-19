@@ -1,5 +1,5 @@
 <?php
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Kelola Bahan Makanan";
