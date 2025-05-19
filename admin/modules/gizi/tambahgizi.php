@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Tambah Data Gizi Resep";
-$base_url = "/modules/gizi/";
+$base_url = "/admin/modules/gizi/";
 $reseps_tanpa_gizi = [];
 $query_resep_opt = "SELECT r.id_resep, r.nama_resep 
                     FROM resep r
