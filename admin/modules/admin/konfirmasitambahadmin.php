@@ -6,16 +6,15 @@ require_once '../../koneksi.php';
 
 // Pastikan base_url ini sudah benar dan konsisten
 // Bisa juga didefinisikan di koneksi.php atau file config terpisah
-$base_url = "/"; 
+$base_url = "/admin/modules/admin/"; 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
-    header('Location: ' . 'wellnessplate2/modules/admin/tambahadmin.php');
+    header('Location: ' . 'tambahadmin.php');
     exit;
 }
 
 // Ambil data dari form
-$base_url = "/modules/admin/";
 $username = isset($_POST['username']) ? trim($_POST['username']) : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 $konfirmasi_password = isset($_POST['konfirmasi_password']) ? $_POST['konfirmasi_password'] : '';

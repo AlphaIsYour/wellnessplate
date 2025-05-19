@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once '../../koneksi.php'; // Pastikan $base_url ada di sini
 
-$base_url = "/modules/admin/";
+$base_url = "/admin/modules/admin/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
     header('Location: ' . $base_url . 'admin.php');
