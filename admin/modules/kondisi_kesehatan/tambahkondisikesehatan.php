@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Tambah Kondisi Kesehatan Baru";
-$base_url = "/modules/kondisi_kesehatan/";
+$base_url = "/admin/modules/kondisi_kesehatan/";
 $form_input = isset($_SESSION['form_input_kondisi']) ? $_SESSION['form_input_kondisi'] : [];
 unset($_SESSION['form_input_kondisi']);
 ?>

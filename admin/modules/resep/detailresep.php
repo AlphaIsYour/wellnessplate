@@ -4,7 +4,7 @@ require_once '../../templates/header.php';
 
 $page_title = "Detail Resep";
 $id_resep_to_view = $_GET['id'] ?? null;
-$base_url = "/modules/resep/";
+$base_url = "/admin/modules/resep/";
 if (empty($id_resep_to_view)) {
     $_SESSION['error_message'] = "ID Resep tidak valid untuk dilihat.";
     header('Location: ' . $base_url . 'resep.php');

@@ -1,7 +1,7 @@
 <?php
 require_once '../../koneksi.php';
 
-$base_url = "/modules/kondisi_kesehatan/";
+$base_url = "/admin/modules/kondisi_kesehatan/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
     header('Location: ' . $base_url . 'tambahkondisikesehatan.php');
