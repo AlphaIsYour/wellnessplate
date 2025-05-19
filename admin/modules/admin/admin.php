@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 // admin.php
 // ... baris kode lainnya ...
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {

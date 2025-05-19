@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Tambah Admin Baru";

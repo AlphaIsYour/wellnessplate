@@ -3,7 +3,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../../koneksi.php'; // Pastikan $base_url ada di sini
+require_once __DIR__ . '/../../../config/koneksi.php';
 
 $base_url = "/admin/modules/admin/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
