@@ -1,7 +1,7 @@
 <?php
 require_once '../../koneksi.php';
 
-$base_url = "/modules/gizi/";
+$base_url = "/admin/modules/gizi/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
     header('Location: ' . $base_url . 'tambahgizi.php');

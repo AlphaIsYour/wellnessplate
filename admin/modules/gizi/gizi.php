@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Kelola Data Gizi Resep";
-$base_url = "/modules/gizi/";
+$base_url = "/admin/modules/gizi/";
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id_gizi_resep_to_delete = $_GET['id'];
 

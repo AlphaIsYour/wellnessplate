@@ -4,7 +4,7 @@ require_once '../../templates/header.php';
 
 $page_title = "Edit Data Gizi Resep";
 $id_gizi_resep_to_edit = $_GET['id'] ?? null;
-$base_url = "/modules/gizi/";
+$base_url = "/admin/modules/gizi/";
 if (empty($id_gizi_resep_to_edit) || strlen($id_gizi_resep_to_edit) > 10) {
     $_SESSION['error_message'] = "ID Gizi tidak valid.";
     header('Location: ' . $base_url . 'gizi.php');
