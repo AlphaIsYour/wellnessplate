@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Kelola Resep Makanan";
-$base_url = "/modules/resep/";
+$base_url = "/admin/modules/resep/";
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id_resep_to_delete = $_GET['id'];
 

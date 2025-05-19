@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Tambah Resep Baru";
-$base_url = "/modules/resep/";
+$base_url = "/admin/modules/resep/";
 $users_admin = [];
 $query_users_admin = "SELECT id_user, nama_lengkap FROM users ORDER BY nama_lengkap ASC";
 $result_users_admin = mysqli_query($koneksi, $query_users_admin);
