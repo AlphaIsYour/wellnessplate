@@ -4,7 +4,7 @@ require_once '../../templates/header.php';
 
 $page_title = "Edit Resep";
 $id_resep_to_edit = $_GET['id'] ?? null;
-$base_url = "/modules/resep/";
+$base_url = "/admin/modules/resep/";
 if (empty($id_resep_to_edit)) {
     $_SESSION['error_message'] = "ID Resep tidak valid.";
     header('Location: ' . $base_url . 'resep.php');
