@@ -4,8 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/../../../config/koneksi.php';
 
-// Pastikan base_url ini sudah benar dan konsisten
-// Bisa juga didefinisikan di koneksi.php atau file config terpisah
 $base_url = "/admin/modules/admin/"; 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -21,7 +19,6 @@ $konfirmasi_password = isset($_POST['konfirmasi_password']) ? $_POST['konfirmasi
 $nama = isset($_POST['nama']) ? trim($_POST['nama']) : '';
 $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 
-// Simpan input form ke session untuk diisi kembali jika ada error
 $_SESSION['form_input'] = $_POST;
 
 // Validasi dasar

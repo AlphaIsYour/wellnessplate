@@ -116,17 +116,15 @@ if ($update_password) {
     $params_type = "sssss";
     $params_values = [$username, $nama, $email, $hashed_password_baru, $id_admin];
 } else {
-    // Update tanpa mengubah password
     $query = "UPDATE admin SET username = ?, nama = ?, email = ? WHERE id_admin = ?";
-    $params_type = "ssss"; // username, nama, email, id_admin
+    $params_type = "ssss";
     $params_values = [$username, $nama, $email, $id_admin];
 }
 
 $stmt = mysqli_prepare($koneksi, $query);
 
 if ($stmt) {
-    // mysqli_stmt_bind_param($stmt, $params_type, ...$params_values); // PHP 5.6+ spread operator
-    // Untuk kompatibilitas lebih luas, kita gunakan call_user_func_array
+
     $bind_names[] = $params_type;
     for ($i=0; $i<count($params_values);$i++) {
         $bind_name = 'bind' . $i;
@@ -136,29 +134,28 @@ if ($stmt) {
     call_user_func_array('mysqli_stmt_bind_param', array_merge([$stmt], $bind_names));
     
     if (mysqli_stmt_execute($stmt)) {
-        // Cek apakah admin yang diedit adalah admin yang sedang login
         if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] == $id_admin) {
-            $_SESSION['admin_username'] = $username; // Asumsi key session adalah 'admin_username'
-            $_SESSION['admin_nama'] = $nama;     // Asumsi key session adalah 'admin_nama'
-            $_SESSION['admin_email'] = $email;    // Asumsi key session adalah 'admin_email'
+            $_SESSION['admin_username'] = $username; 
+            $_SESSION['admin_nama'] = $nama;    
+            $_SESSION['admin_email'] = $email;
         }
 
+        mysqli_stmt_close($stmt);
         $_SESSION['success_message'] = "Data admin berhasil diperbarui.";
         unset($_SESSION['form_input_admin_edit']); 
         header('Location: ' . $base_url . 'admin.php');
         exit;
     } else {
+        mysqli_stmt_close($stmt);
         $_SESSION['error_message'] = "Gagal memperbarui data admin: " . mysqli_stmt_error($stmt);
+        mysqli_close($koneksi);
         header('Location: ' . $redirect_url_on_error);
         exit;
     }
-    mysqli_stmt_close($stmt);
 } else {
     $_SESSION['error_message'] = "Gagal mempersiapkan statement database untuk update: " . mysqli_error($koneksi);
+    mysqli_close($koneksi);
     header('Location: ' . $redirect_url_on_error);
     exit;
 }
-
-mysqli_close($koneksi); // Sebenarnya tidak akan tercapai jika ada exit di atasnya
-exit;
 ?>
