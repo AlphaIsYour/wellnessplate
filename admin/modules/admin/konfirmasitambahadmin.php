@@ -157,11 +157,13 @@ if ($stmt) {
     mysqli_stmt_bind_param($stmt, "sssss", $new_id_admin, $username, $hashed_password, $nama, $email);
     
     if (mysqli_stmt_execute($stmt)) { 
+        mysqli_stmt_close($stmt);
         $_SESSION['success_message'] = "Admin baru (ID: " . htmlspecialchars($new_id_admin) . ") berhasil ditambahkan.";
         unset($_SESSION['form_input']); 
         header('Location: ' . $base_url .'admin.php');
         exit; // Penting: Selalu exit setelah redirect header
     } else {
+        mysqli_stmt_close($stmt);
         // Hapus pesan tentang AUTO_INCREMENT karena tidak relevan
         $_SESSION['error_message'] = "Gagal menambahkan admin ke database: " . mysqli_stmt_error($stmt);
         // Untuk debugging, bisa tambahkan juga ID yang coba diinsert:
@@ -169,13 +171,9 @@ if ($stmt) {
         header('Location: ' . $base_url .'tambahadmin.php');
         exit; // Penting
     }
-    mysqli_stmt_close($stmt);
 } else {
     $_SESSION['error_message'] = "Gagal mempersiapkan statement database: " . mysqli_error($koneksi);
     header('Location: ' . $base_url .'tambahadmin.php');
     exit; // Penting
 }
-
-mysqli_close($koneksi); // Sebenarnya tidak akan tercapai jika ada exit di atasnya
-exit; // Pastikan script berhenti
 ?>

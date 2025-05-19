@@ -1,4 +1,5 @@
 <?php
+// admin/modules/bahan/bahan.php
 require_once __DIR__ . '/../../../config/koneksi.php';
 require_once '../../templates/header.php';
 
