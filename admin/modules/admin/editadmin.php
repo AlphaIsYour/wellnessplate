@@ -8,7 +8,7 @@ require_once '../../koneksi.php'; // Pastikan $base_url sudah ada di sini atau d
 require_once '../../templates/header.php';
 
 $page_title = "Edit Admin";
-$base_url = "/modules/admin";
+$base_url = "/admin/modules/admin";
 
 // Ambil id_admin dari URL. id_admin adalah VARCHAR.
 $id_admin_to_edit = isset($_GET['id']) ? trim(mysqli_real_escape_string($koneksi, $_GET['id'])) : '';

@@ -31,7 +31,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
         }
     }
 
-    if (!isset($base_url)) { $base_url = "/modules/admin/"; }
+    if (!isset($base_url)) { $base_url = "/admin/modules/admin/"; }
     header('Location: '. $base_url .'admin.php');
     exit; // Tambahkan exit di sini juga
 }
