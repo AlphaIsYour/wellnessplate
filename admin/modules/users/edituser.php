@@ -1,12 +1,12 @@
 <?php
 // modules/users/edituser.php
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Edit Pengguna";
 
 $id_user_to_edit = $_GET['id'] ?? null;
-$base_url = "/modules/users/";
+$base_url = "/admin/modules/users/";
 if (empty($id_user_to_edit)) {
     $_SESSION['error_message'] = "ID Pengguna tidak valid.";
     header('Location: ' . $base_url . 'user.php');

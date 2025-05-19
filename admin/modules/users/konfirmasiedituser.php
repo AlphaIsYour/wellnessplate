@@ -1,6 +1,6 @@
 <?php
 // modules/users/konfirmasiedituser.php
-require_once '../../koneksi.php';
+require_once __DIR__ . '/../../../config/koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
