@@ -31,7 +31,7 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($current_page_title); ?></title>
     <link rel="stylesheet" href="/assets/css/style.css">
-    <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url( PHP_URL_PATH) . '/assets/css/style_login.css')): ?>
+    <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url( BASE_URL,PHP_URL_PATH) . '/assets/css/style_login.css')): ?>
         <link rel="stylesheet" href="/assets/css/style_login.css">
     <?php endif; ?>
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
