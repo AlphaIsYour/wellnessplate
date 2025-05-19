@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Tambah Bahan Baru";
-$base_url = "/modules/bahan/";
+$base_url = "/admin/modules/bahan/";
 $form_input = isset($_SESSION['form_input_bahan']) ? $_SESSION['form_input_bahan'] : [];
 unset($_SESSION['form_input_bahan']);
 ?>

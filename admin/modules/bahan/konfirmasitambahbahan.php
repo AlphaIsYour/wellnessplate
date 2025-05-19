@@ -1,7 +1,7 @@
 <?php
 require_once '../../koneksi.php';
 
-$base_url = "/modules/bahan/";
+$base_url = "/admin/modules/bahan/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
     header('Location: ' . $base_url . 'tambahbahan.php');
