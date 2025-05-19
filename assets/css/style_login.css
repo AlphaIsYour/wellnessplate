@@ -1,0 +1,275 @@
+/* assets/css/style_login.css */
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
+* {
+  box-sizing: border-box;
+}
+
+body.auth-page {
+  /* Tambahkan class ini ke <body> di header.php jika halaman auth */
+  background: #f6f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  min-height: 100vh; /* Pastikan halaman auth mengambil tinggi penuh */
+  margin: 0; /* Reset margin body */
+  padding: 0; /* Reset padding body */
+}
+
+.auth-container h1 {
+  font-weight: bold;
+  margin: 0;
+  font-size: 2em;
+}
+
+.auth-container h2 {
+  text-align: center;
+}
+
+.auth-container p {
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
+}
+
+.auth-container span {
+  font-size: 12px;
+  margin-bottom: 10px; /* Tambahan margin */
+}
+
+.auth-container a {
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
+}
+
+.auth-container button {
+  border-radius: 20px;
+  border: 1px solid #ff4b2b; /* Warna primer contoh */
+  background-color: #ff4b2b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+  cursor: pointer;
+}
+
+.auth-container button:active {
+  transform: scale(0.95);
+}
+
+.auth-container button:focus {
+  outline: none;
+}
+
+.auth-container button.ghost {
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
+.auth-container form {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+.auth-container input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.auth-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden; /* Penting untuk animasi geser */
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+  margin-top: 20px; /* Beri jarak dari header jika ada */
+  margin-bottom: 20px; /* Beri jarak dari footer jika ada */
+}
+
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+.sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.auth-container.right-panel-active .sign-in-container {
+  transform: translateX(100%);
+  opacity: 0; /* Sembunyikan form yang tidak aktif saat animasi */
+}
+
+.sign-up-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.auth-container.right-panel-active .sign-up-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: show 0.6s;
+}
+
+@keyframes show {
+  0%,
+  49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+.auth-container.right-panel-active .overlay-container {
+  transform: translateX(-100%);
+}
+
+.overlay {
+  background: #ff416c; /* Warna gradasi contoh */
+  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.auth-container.right-panel-active .overlay {
+  transform: translateX(50%);
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay-left {
+  transform: translateX(-20%);
+}
+
+.auth-container.right-panel-active .overlay-left {
+  transform: translateX(0);
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.auth-container.right-panel-active .overlay-right {
+  transform: translateX(20%);
+}
+
+/* Pesan Error/Sukses di Form Auth */
+.auth-error-message,
+.auth-success-message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  text-align: center;
+}
+.auth-error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.auth-success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .auth-container {
+    width: 95%;
+    min-height: auto;
+  }
+  .form-container {
+    width: 100%; /* Form akan stack di mobile */
+    position: relative; /* Reset position absolute */
+    /* Opacity dan transform diatur ulang jika perlu untuk tampilan mobile yg berbeda */
+  }
+  .sign-in-container {
+    /* Bisa disembunyikan/ditampilkan dengan JS atau biarkan stack */
+  }
+  .sign-up-container {
+    /* Sama seperti sign-in */
+  }
+  .overlay-container {
+    display: none; /* Sembunyikan overlay di mobile, atau buat versi mobile yang berbeda */
+  }
+  /* Jika ingin tombol switch tetap ada di mobile, perlu style berbeda */
+  .auth-container.right-panel-active .sign-in-container {
+    transform: none; /* Reset transform di mobile jika stacking */
+  }
+  .auth-container.right-panel-active .sign-up-container {
+    transform: none; /* Reset transform di mobile jika stacking */
+  }
+  .auth-container form {
+    padding: 0 20px; /* Kurangi padding di mobile */
+  }
+}

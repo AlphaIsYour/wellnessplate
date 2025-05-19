@@ -1,0 +1,345 @@
+/* assets/css/style.css */
+
+/* ... (CSS kamu yang sudah ada sebelumnya: :root, body, form, button, card, table, dll.) ... */
+
+/* ============================================= */
+/* ==          FRONTEND HEADER STYLES         == */
+/* ============================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.site-header-frontend {
+  background-color: #fff; /* Putih atau warna terang */
+  padding: 0 20px; /* Padding horizontal */
+  border-bottom: 1px solid var(--border-color, #e0e0e0); /* Garis bawah tipis */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky; /* Membuat header tetap di atas saat scroll */
+  top: 0;
+  z-index: 1000; /* Pastikan di atas konten lain */
+}
+
+.container-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px; /* Lebar maksimum container navbar */
+  margin: 0 auto; /* Agar container di tengah */
+  height: 70px; /* Tinggi header, sesuaikan */
+}
+
+.logo-frontend a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--primary-green, #4caf50); /* Warna logo atau teks */
+}
+
+.logo-frontend img {
+  height: 40px; /* Sesuaikan ukuran logo */
+  margin-right: 10px;
+}
+
+.logo-frontend span {
+  font-size: 1.5em; /* Ukuran teks logo */
+  font-weight: 600;
+}
+
+.main-navigation-frontend ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.main-navigation-frontend ul li {
+  margin-left: 25px; /* Jarak antar item menu */
+}
+
+.main-navigation-frontend ul li a {
+  text-decoration: none;
+  color: var(--text-color, #333);
+  font-weight: 500;
+  padding: 10px 5px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.main-navigation-frontend ul li a:hover,
+.main-navigation-frontend ul li a.active-nav-link {
+  /* Class untuk link aktif */
+  color: var(--primary-green, #4caf50);
+}
+
+.main-navigation-frontend ul li a::after {
+  /* Efek garis bawah saat hover/aktif */
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-green, #4caf50);
+  transition: width 0.3s ease;
+}
+
+.main-navigation-frontend ul li a:hover::after,
+.main-navigation-frontend ul li a.active-nav-link::after {
+  width: 100%;
+}
+
+.user-actions-frontend {
+  display: flex;
+  align-items: center;
+}
+
+.user-actions-frontend .welcome-user {
+  margin-right: 15px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.user-actions-frontend .btn-nav-action {
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 20px; /* Tombol lebih rounded */
+  margin-left: 10px;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.user-actions-frontend .btn-nav-action:first-child {
+  margin-left: 0; /* Tidak ada margin kiri untuk tombol pertama */
+}
+
+.user-actions-frontend a[href*="login"] {
+  /* Tombol Login */
+  background-color: transparent;
+  color: var(--primary-green, #4caf50);
+  border: 1px solid var(--primary-green, #4caf50);
+}
+.user-actions-frontend a[href*="login"]:hover {
+  background-color: var(--primary-green, #4caf50);
+  color: #fff;
+}
+
+.user-actions-frontend a.btn-register {
+  /* Tombol Daftar */
+  background-color: var(--primary-green, #4caf50);
+  color: #fff;
+  border: 1px solid var(--primary-green, #4caf50);
+}
+.user-actions-frontend a.btn-register:hover {
+  background-color: var(--dark-green, #388e3c);
+  border-color: var(--dark-green, #388e3c);
+}
+
+.user-actions-frontend a[href*="logout"] {
+  /* Tombol Logout */
+  background-color: var(--accent-red, #f44336);
+  color: #fff;
+  border: 1px solid var(--accent-red, #f44336);
+}
+.user-actions-frontend a[href*="logout"]:hover {
+  background-color: #d32f2f; /* Merah lebih gelap */
+  border-color: #d32f2f;
+}
+
+.mobile-menu-toggle {
+  display: none; /* Sembunyikan di desktop */
+  background: none;
+  border: none;
+  font-size: 1.8em;
+  color: var(--text-color, #333);
+  cursor: pointer;
+}
+
+/* Wrapper untuk konten di bawah header */
+.main-content-area-frontend {
+  padding-top: 20px; /* Beri jarak dari header (jika header tidak sticky) */
+  /* Jika header sticky, padding-top di body atau wrapper utama halaman */
+  min-height: calc(
+    100vh - 70px - 150px
+  ); /* vh - header_height - footer_height_approx */
+  max-width: 1200px; /* Samakan dengan container navbar jika perlu */
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px; /* Jarak ke footer */
+}
+
+/* ============================================= */
+/* ==          FRONTEND FOOTER STYLES         == */
+/* ============================================= */
+.site-footer-frontend {
+  background-color: var(--sidebar-bg, #343a40); /* Warna gelap untuk footer */
+  color: var(--sidebar-text, #f8f9fa);
+  padding: 40px 20px 20px; /* Padding atas lebih besar */
+  font-size: 0.9em;
+}
+
+.container-footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Agar section bisa wrap di layar kecil */
+  gap: 30px; /* Jarak antar section footer */
+}
+
+.footer-section {
+  flex: 1; /* Section akan mencoba mengambil ruang yang sama */
+  min-width: 200px; /* Lebar minimum sebelum wrap */
+}
+
+.footer-section h4 {
+  color: var(--primary-green, #4caf50);
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.footer-section p {
+  line-height: 1.7;
+  margin-bottom: 10px;
+  color: #ccc; /* Warna teks deskripsi lebih soft */
+}
+
+.quick-links ul,
+.footer-section .social-media-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quick-links ul li {
+  margin-bottom: 8px;
+}
+
+.quick-links ul li a {
+  text-decoration: none;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.quick-links ul li a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.social-media-links {
+  display: flex;
+  gap: 15px; /* Jarak antar ikon sosial media */
+  margin-top: 15px;
+}
+
+.social-media-links a img {
+  width: 24px; /* Ukuran ikon sosial media */
+  height: 24px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.social-media-links a:hover img {
+  opacity: 1;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #4a4a4a; /* Garis pemisah halus */
+  font-size: 0.85em;
+  color: #aaa;
+}
+
+/* ============================================= */
+/* ==      RESPONSIVE (Contoh Sederhana)      == */
+/* ============================================= */
+@media (max-width: 992px) {
+  /* Ukuran tablet */
+  .main-navigation-frontend {
+    /* Nantinya akan di-handle oleh JS untuk menu mobile */
+    /* Untuk sekarang bisa disembunyikan atau di-styling berbeda */
+  }
+  .container-navbar {
+    /* Penyesuaian jika perlu */
+  }
+}
+
+@media (max-width: 768px) {
+  /* Ukuran mobile */
+  .container-navbar {
+    height: 60px; /* Tinggi header lebih kecil di mobile */
+  }
+  .logo-frontend img {
+    height: 30px;
+  }
+  .logo-frontend span {
+    font-size: 1.2em;
+  }
+
+  .main-navigation-frontend {
+    display: none; /* Sembunyikan menu utama, akan diganti menu mobile */
+    position: absolute;
+    top: 60px; /* Di bawah header */
+    left: 0;
+    width: 100%;
+    background-color: #fff; /* Atau var(--sidebar-bg) */
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+  }
+  .main-navigation-frontend.mobile-menu-active {
+    /* Class ini ditambahkan oleh JS */
+    display: flex;
+  }
+
+  .main-navigation-frontend ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  .main-navigation-frontend ul li {
+    margin: 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color, #eee);
+  }
+  .main-navigation-frontend ul li:last-child {
+    border-bottom: none;
+  }
+  .main-navigation-frontend ul li a {
+    padding: 15px 20px;
+    display: block; /* Agar link memenuhi lebar */
+  }
+  .main-navigation-frontend ul li a::after {
+    /* Hilangkan garis bawah di mobile jika mau */
+    display: none;
+  }
+
+  .user-actions-frontend .welcome-user {
+    display: none; /* Sembunyikan sambutan di mobile agar hemat tempat */
+  }
+  .user-actions-frontend .btn-nav-action {
+    padding: 6px 10px;
+    font-size: 0.8em;
+  }
+
+  .mobile-menu-toggle {
+    display: block; /* Tampilkan tombol menu mobile */
+  }
+
+  .container-footer {
+    flex-direction: column; /* Susun section footer ke bawah di mobile */
+    align-items: center;
+    text-align: center;
+  }
+  .footer-section {
+    margin-bottom: 20px;
+    min-width: 100%; /* Ambil lebar penuh */
+  }
+  .social-media-links {
+    justify-content: center; /* Ikon sosmed di tengah */
+  }
+}
