@@ -1,0 +1,309 @@
+/* style.css */
+:root {
+  --primary-green: #4caf50; /* Hijau utama, bisa diganti sesuai selera */
+  --light-green: #81c784;
+  --dark-green: #388e3c;
+  --off-white: #f4f4f4; /* Putih tulang */
+  --text-color: #333;
+  --border-color: #ddd;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--off-white);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Untuk login page agar di tengah */
+}
+
+.login-container {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-container h2 {
+  color: var(--primary-green);
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-sizing: border-box; /* Penting agar padding tidak menambah width */
+  font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.btn {
+  background-color: var(--primary-green);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+.btna {
+  background-color: var(--primary-green);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: 14%;
+}
+
+.btn:hover {
+  background-color: var(--dark-green);
+}
+
+.error-message {
+  background-color: #ffdddd;
+  color: #d8000c;
+  border: 1px solid #d8000c;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Style untuk dashboard akan ditambahkan nanti */
+.dashboard-body {
+  display: flex;
+  flex-direction: column; /* Untuk header, content, footer */
+  align-items: normal; /* Reset dari body login */
+  justify-content: normal; /* Reset dari body login */
+}
+
+.main-wrapper {
+  display: flex;
+  min-height: calc(
+    100vh - 60px
+  ); /* 60px adalah tinggi header, sesuaikan jika perlu */
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #333; /* Warna sidebar bisa disesuaikan */
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  color: var(--primary-green);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li a {
+  display: block;
+  color: white;
+  padding: 12px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+  background-color: var(--primary-green);
+  color: white;
+}
+
+.content-area {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: var(--off-white);
+}
+
+.page-header {
+  background-color: #fff; /* Header bisa beda warna */
+  padding: 15px 20px;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-color);
+  height: 60px; /* Sesuaikan */
+  box-sizing: border-box;
+}
+
+.page-header .welcome-admin {
+  font-size: 1.1em;
+}
+
+.page-header .logout-btn {
+  background-color: var(--dark-green);
+  color: white;
+  padding: 8px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.page-header .logout-btn:hover {
+  background-color: var(--primary-green);
+}
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 20px;
+}
+.card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-header h2,
+.card-header h3 {
+  margin: 0;
+  color: var(--primary-green);
+}
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 0.9em;
+}
+.btn-edit {
+  background-color: #ffc107; /* Kuning */
+  color: #333;
+}
+.btn-edit:hover {
+  background-color: #e0a800;
+}
+.btn-delete {
+  background-color: #dc3545; /* Merah */
+  color: white;
+}
+.btn-delete:hover {
+  background-color: #c82333;
+}
+.table-container {
+  overflow-x: auto; /* Agar tabel bisa di-scroll horizontal jika terlalu lebar */
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table.data-table th,
+table.data-table td {
+  border: 1px solid var(--border-color);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+table.data-table thead th {
+  background-color: var(--light-green);
+  color: var(--text-color); /* Bisa juga white kalau kontras */
+  font-weight: bold;
+}
+
+table.data-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Stripe tipis */
+}
+table.data-table tbody tr:hover {
+  background-color: #e9e9e9;
+}
+
+.actions a {
+  margin-right: 5px;
+  text-decoration: none;
+  padding: 5px 8px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.actions a.edit {
+  background-color: var(--primary-green);
+  color: white;
+}
+.actions a.edit:hover {
+  background-color: var(--dark-green);
+}
+
+.actions a.delete {
+  background-color: #f44336; /* Merah */
+  color: white;
+}
+.actions a.delete:hover {
+  background-color: #d32f2f;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
