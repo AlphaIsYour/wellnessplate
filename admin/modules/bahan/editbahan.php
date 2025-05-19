@@ -4,7 +4,7 @@ require_once '../../templates/header.php';
 
 $page_title = "Edit Bahan";
 $id_bahan_to_edit = $_GET['id'] ?? null;
-$base_url = "/modules/bahan/";
+$base_url = "/admin/modules/bahan/";
 
 if (empty($id_bahan_to_edit)) {
     $_SESSION['error_message'] = "ID Bahan tidak valid.";

@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Kelola Bahan Makanan";
-$base_url = "/modules/bahan/";
+$base_url = "/admin/modules/bahan/";
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id_bahan_to_delete = $_GET['id'];
 
