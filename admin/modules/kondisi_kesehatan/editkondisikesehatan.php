@@ -4,7 +4,7 @@ require_once '../../templates/header.php';
 
 $page_title = "Edit Kondisi Kesehatan";
 $id_kondisi_to_edit = $_GET['id'] ?? null;
-$base_url = "/modules/kondisi_kesehatan/";
+$base_url = "/admin/modules/kondisi_kesehatan/";
 if (empty($id_kondisi_to_edit)) {
     $_SESSION['error_message'] = "ID Kondisi Kesehatan tidak valid.";
     header('Location: ' . $base_url . 'kondisikesehatan.php');

@@ -3,7 +3,7 @@ require_once '../../koneksi.php';
 require_once '../../templates/header.php';
 
 $page_title = "Kelola Kondisi Kesehatan";
-$base_url = "/modules/kondisi_kesehatan/";
+$base_url = "/admin/modules/kondisi_kesehatan/";
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id_kondisi_to_delete = $_GET['id'];
 
