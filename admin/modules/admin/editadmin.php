@@ -10,7 +10,6 @@ require_once '../../templates/header.php';
 $page_title = "Edit Admin";
 $base_url = "/admin/modules/admin";
 
-// Ambil id_admin dari URL. id_admin adalah VARCHAR.
 $id_admin_to_edit = isset($_GET['id']) ? trim(mysqli_real_escape_string($koneksi, $_GET['id'])) : '';
 
 if (empty($id_admin_to_edit)) {
@@ -19,9 +18,8 @@ if (empty($id_admin_to_edit)) {
     exit;
 }
 
-// Ambil data admin dari database
 $stmt = mysqli_prepare($koneksi, "SELECT username, nama, email FROM admin WHERE id_admin = ?");
-$admin_data = null; // Inisialisasi $admin_data
+$admin_data = null;
 
 if ($stmt) {
     mysqli_stmt_bind_param($stmt, "s", $id_admin_to_edit);
@@ -36,33 +34,24 @@ if ($stmt) {
     }
     mysqli_stmt_close($stmt);
 } else {
-    // Sebaiknya log error ini, jangan tampilkan mysqli_error ke user di production
     $_SESSION['error_message'] = "Gagal mempersiapkan query untuk mengambil data admin.";
-    // error_log("MySQL Prep Error (get admin for edit): " . mysqli_error($koneksi));
     header('Location: ' . $base_url . '/admin.php');
     exit;
 }
 
-// Jika $admin_data null setelah query (meskipun seharusnya sudah ditangani di atas), handle sebagai error
 if ($admin_data === null) {
      $_SESSION['error_message'] = "Terjadi kesalahan saat mengambil data admin.";
      header('Location: ' . $base_url . '/admin.php');
      exit;
 }
 
-
-// Jika ada input sebelumnya karena error validasi, gunakan itu. Jika tidak, gunakan data dari DB.
-// $_SESSION['form_input_admin_edit'] akan di-set di konfirmasieditadmin.php jika ada error
 $form_input = isset($_SESSION['form_input_admin_edit']) ? $_SESSION['form_input_admin_edit'] : [];
 
-// Menentukan nilai untuk ditampilkan di form
-// Prioritaskan data dari session (jika ada error sebelumnya), lalu data dari DB
 $username_val = isset($form_input['username']) ? htmlspecialchars($form_input['username']) : htmlspecialchars($admin_data['username']);
 $nama_val = isset($form_input['nama']) ? htmlspecialchars($form_input['nama']) : htmlspecialchars($admin_data['nama']);
 $email_val = isset($form_input['email']) ? htmlspecialchars($form_input['email']) : htmlspecialchars($admin_data['email']);
-// Password tidak diisi ulang, jadi tidak perlu diambil dari $form_input['password_baru'] untuk ditampilkan
 
-unset($_SESSION['form_input_admin_edit']); // Hapus session setelah digunakan
+unset($_SESSION['form_input_admin_edit']);
 
 ?>
 
@@ -74,11 +63,10 @@ unset($_SESSION['form_input_admin_edit']); // Hapus session setelah digunakan
         <div class="card-body">
             <?php
             if (isset($_SESSION['error_message'])) {
-                // Pesan error dari konfirmasi biasanya sudah dalam format HTML (dengan <br>)
                 echo "<div class='alert alert-danger'>" . $_SESSION['error_message'] . "</div>";
                 unset($_SESSION['error_message']);
             }
-            if (isset($_SESSION['success_message'])) { // Jarang ada success message di halaman edit, tapi bisa saja
+            if (isset($_SESSION['success_message'])) { 
                 echo "<div class='alert alert-success'>" . htmlspecialchars($_SESSION['success_message']) . "</div>";
                 unset($_SESSION['success_message']);
             }

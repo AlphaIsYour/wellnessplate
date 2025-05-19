@@ -1,11 +1,11 @@
 <?php
+// admin/modules/admin.php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once __DIR__ . '/../../../config/koneksi.php';
-// admin.php
-// ... baris kode lainnya ...
+
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     if ($_GET['id'] == $_SESSION['admin_id']) {
         $_SESSION['error_message'] = "Anda tidak dapat menghapus akun Anda sendiri.";
@@ -14,7 +14,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 
         $stmt_delete = mysqli_prepare($koneksi, "DELETE FROM admin WHERE id_admin = ?");
         if ($stmt_delete) {
-            // UBAH DI SINI: "i" menjadi "s" karena id_admin adalah VARCHAR
             mysqli_stmt_bind_param($stmt_delete, "s", $id_admin_to_delete); 
             if (mysqli_stmt_execute($stmt_delete)) {
                 if (mysqli_stmt_affected_rows($stmt_delete) > 0) {
@@ -33,9 +32,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 
     if (!isset($base_url)) { $base_url = "/admin/modules/admin/"; }
     header('Location: '. $base_url .'admin.php');
-    exit; // Tambahkan exit di sini juga
+    exit;
 }
-// ... sisa kode admin.php ...
 
 require_once '../../templates/header.php';
 

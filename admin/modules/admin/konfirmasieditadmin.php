@@ -20,19 +20,16 @@ $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $password_baru = isset($_POST['password_baru']) ? $_POST['password_baru'] : '';
 $konfirmasi_password_baru = isset($_POST['konfirmasi_password_baru']) ? $_POST['konfirmasi_password_baru'] : '';
 
-// Simpan input form ke session untuk diisi kembali jika ada error
 $_SESSION['form_input_admin_edit'] = $_POST; 
 
-// URL untuk redirect kembali ke form edit jika ada error
 $redirect_url_on_error = $base_url . 'editadmin.php?id=' . urlencode($id_admin);
 
 $errors = [];
 
 if (empty($id_admin)) {
     $errors[] = "ID Admin tidak terdefinisi. Proses tidak dapat dilanjutkan.";
-    // Jika ID admin tidak ada, ini masalah serius, redirect ke halaman utama admin
     $_SESSION['error_message'] = implode("<br>", $errors);
-    unset($_SESSION['form_input_admin_edit']); // Hapus form input karena ID tidak valid
+    unset($_SESSION['form_input_admin_edit']);
     header('Location: ' . $base_url . 'admin.php');
     exit;
 }
@@ -59,7 +56,6 @@ if (empty($email)) {
     $errors[] = "Email maksimal 100 karakter.";
 }
 
-// Validasi password baru (hanya jika diisi)
 $update_password = false;
 if (!empty($password_baru)) {
     if (strlen($password_baru) < 6) {
@@ -68,21 +64,16 @@ if (!empty($password_baru)) {
     if ($password_baru !== $konfirmasi_password_baru) {
         $errors[] = "Password baru dan konfirmasi password baru tidak cocok.";
     }
-    // Hanya set flag jika tidak ada error yang muncul DARI validasi password itu sendiri
-    if (empty(array_filter($errors, function($err_msg) { // Cek apakah ada error password baru
+    if (empty(array_filter($errors, function($err_msg) {
         return strpos($err_msg, 'Password baru') !== false;
     }))) {
         $update_password = true;
     }
 } elseif (!empty($konfirmasi_password_baru) && empty($password_baru)) {
-    // Jika konfirmasi diisi tapi password baru tidak, ini juga error
     $errors[] = "Password baru tidak boleh kosong jika konfirmasi password diisi.";
 }
 
-
-// Lakukan pengecekan keunikan username dan email HANYA JIKA validasi dasar lolos
 if (empty($errors)) {
-    // Cek keunikan username
     $stmt_check_user = mysqli_prepare($koneksi, "SELECT id_admin FROM admin WHERE username = ? AND id_admin != ?");
     if ($stmt_check_user) {
         mysqli_stmt_bind_param($stmt_check_user, "ss", $username, $id_admin);
@@ -94,10 +85,8 @@ if (empty($errors)) {
         mysqli_stmt_close($stmt_check_user);
     } else {
         $errors[] = "Terjadi kesalahan saat memeriksa username. Silakan coba lagi.";
-        // error_log("MySQL Prep Error (check username edit): " . mysqli_error($koneksi));
     }
 
-    // Cek keunikan email
     $stmt_check_email = mysqli_prepare($koneksi, "SELECT id_admin FROM admin WHERE email = ? AND id_admin != ?");
     if ($stmt_check_email) {
         mysqli_stmt_bind_param($stmt_check_email, "ss", $email, $id_admin);
@@ -109,7 +98,6 @@ if (empty($errors)) {
         mysqli_stmt_close($stmt_check_email);
     } else {
         $errors[] = "Terjadi kesalahan saat memeriksa email. Silakan coba lagi.";
-        // error_log("MySQL Prep Error (check email edit): " . mysqli_error($koneksi));
     }
 }
 
@@ -119,15 +107,13 @@ if (!empty($errors)) {
     exit;
 }
 
-// Jika lolos semua validasi, lanjutkan proses update
-// Persiapkan query UPDATE
 $params_type = "";
 $params_values = [];
 
 if ($update_password) {
     $hashed_password_baru = password_hash($password_baru, PASSWORD_DEFAULT);
     $query = "UPDATE admin SET username = ?, nama = ?, email = ?, password = ? WHERE id_admin = ?";
-    $params_type = "sssss"; // username, nama, email, password_baru, id_admin
+    $params_type = "sssss";
     $params_values = [$username, $nama, $email, $hashed_password_baru, $id_admin];
 } else {
     // Update tanpa mengubah password
