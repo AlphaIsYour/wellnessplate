@@ -4,7 +4,6 @@ require_once __DIR__ . '/../../config/koneksi.php';
 $page_title = "Login atau Daftar - WellnessPlate";
 $is_auth_page = true;
 
-// Cek apakah user sudah login
 if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
     header("Location: " . BASE_URL . "/index.php"); // Arahkan ke dashboard atau halaman utama setelah login
     exit;
