@@ -11,7 +11,6 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
 
 $active_form = isset($_GET['form']) && $_GET['form'] === 'register' ? 'register' : 'login';
 
-// Tambahkan variabel untuk stylesheet khusus halaman login
 $additional_css = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/css/style_login.css']; // Pastikan BASE_URL sudah didefinisikan
 $additional_js = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/js/script_login.js'];
 
