@@ -9,7 +9,6 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
     exit;
 }
 
-// Tentukan form mana yang aktif berdasarkan parameter URL
 $active_form = isset($_GET['form']) && $_GET['form'] === 'register' ? 'register' : 'login';
 
 // Tambahkan variabel untuk stylesheet khusus halaman login
