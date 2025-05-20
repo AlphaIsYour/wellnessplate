@@ -11,7 +11,7 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
 
 $active_form = isset($_GET['form']) && $_GET['form'] === 'register' ? 'register' : 'login';
 
-$additional_css = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/css/style_login.css']; // Pastikan BASE_URL sudah didefinisikan
+$additional_css = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/css/style_login.css'];
 $additional_js = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/js/script_login.js'];
 
 // Jika BASE_URL tidak didefinisikan atau kosong, gunakan path relatif dari root
