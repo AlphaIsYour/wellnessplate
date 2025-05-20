@@ -58,7 +58,6 @@ if (!defined('BASE_URL') || BASE_URL === '') {
             </form>
         </div>
 
-        <!-- Form Sign In / Login -->
         <div class="form-container sign-in-container">
             <form action="<?php echo (defined('BASE_URL') ? BASE_URL : ''); ?>/pages/auth/proses_login_user.php" method="POST" id="loginForm">
                 <h1>Login</h1>
