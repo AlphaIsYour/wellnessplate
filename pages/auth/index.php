@@ -2,7 +2,7 @@
 // pages/auth/index.php
 require_once __DIR__ . '/../../config/koneksi.php';
 $page_title = "Login atau Daftar - WellnessPlate";
-$is_auth_page = true; // Tandai ini halaman auth untuk header
+$is_auth_page = true;
 
 // Cek apakah user sudah login
 if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
