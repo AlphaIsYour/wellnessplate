@@ -1,4 +1,4 @@
-    <?php // Konten utama berakhir sebelum ini di file halaman spesifik ?>
+    <?php ?>
     </div> <!-- Penutup .main-content-area-frontend -->
 
     <footer class="site-footer-frontend">
