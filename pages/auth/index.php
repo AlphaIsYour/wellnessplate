@@ -31,7 +31,7 @@ if (!defined('BASE_URL') || BASE_URL === '') {
 
 ?>
 
-<?php require_once __DIR__ . '/../../includes/header.php'; // Pastikan path ini benar ?>
+<?php require_once __DIR__ . '/../../includes/header.php'; ?>
 
 <div class="auth-page-wrapper">
     <div class="auth-container <?php echo ($active_form === 'register') ? 'right-panel-active' : ''; ?>" id="authContainer">
