@@ -5,7 +5,7 @@ $page_title = "Login atau Daftar - WellnessPlate";
 $is_auth_page = true;
 
 if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
-    header("Location: " . BASE_URL . "/index.php"); // Arahkan ke dashboard atau halaman utama setelah login
+    header("Location: " . BASE_URL . "/index.php");
     exit;
 }
 
