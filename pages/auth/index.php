@@ -14,7 +14,6 @@ $active_form = isset($_GET['form']) && $_GET['form'] === 'register' ? 'register'
 $additional_css = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/css/style_login.css'];
 $additional_js = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/js/script_login.js'];
 
-// Jika BASE_URL tidak didefinisikan atau kosong, gunakan path relatif dari root
 if (!defined('BASE_URL') || BASE_URL === '') {
     $base_path_css = '/assets/css/style_login.css';
     $base_path_js = '/assets/js/script_login.js';
