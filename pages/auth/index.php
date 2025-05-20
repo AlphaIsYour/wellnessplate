@@ -80,7 +80,6 @@ if (!defined('BASE_URL') || BASE_URL === '') {
             </form>
         </div>
 
-        <!-- Overlay Container (Panel Geser) -->
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left-content">
