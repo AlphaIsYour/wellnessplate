@@ -1,5 +1,5 @@
     <?php ?>
-    </div> <!-- Penutup .main-content-area-frontend -->
+    </div> 
 
     <footer class="site-footer-frontend">
         <div class="container-footer">
