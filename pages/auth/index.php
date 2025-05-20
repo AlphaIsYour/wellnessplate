@@ -112,7 +112,7 @@ if (!defined('BASE_URL') || BASE_URL === '') {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 120px); /* Sesuaikan dengan tinggi header + footer Anda (misal 60px header + 60px footer) */
+  min-height: calc(100vh - 120px);
   padding: 20px 0;
   background-color: #f7fafc; /* Warna latar belakang halaman */
   overflow-x: hidden; /* Mencegah scroll horizontal jika ada konten meluber sedikit saat animasi */
