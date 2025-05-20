@@ -114,7 +114,7 @@ if (!defined('BASE_URL') || BASE_URL === '') {
   align-items: center;
   min-height: calc(100vh - 120px);
   padding: 20px 0;
-  background-color: #f7fafc; /* Warna latar belakang halaman */
+  background-color: #f7fafc;
   overflow-x: hidden; /* Mencegah scroll horizontal jika ada konten meluber sedikit saat animasi */
 }
 
