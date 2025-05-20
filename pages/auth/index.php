@@ -118,7 +118,6 @@ if (!defined('BASE_URL') || BASE_URL === '') {
   overflow-x: hidden;
 }
 
-/* Animasi ripple untuk tombol */
 button .ripple-effect { /* Targetkan span di dalam button */
   position: absolute;
   border-radius: 50%;
