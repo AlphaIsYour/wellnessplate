@@ -17,7 +17,6 @@ $additional_js = [(defined('BASE_URL') ? BASE_URL : '') . '/assets/js/script_log
 if (!defined('BASE_URL') || BASE_URL === '') {
     $base_path_css = '/assets/css/style_login.css';
     $base_path_js = '/assets/js/script_login.js';
-    // Cek apakah skrip dijalankan dari subdirektori, jika iya, tambahkan '../'
     // Ini hanya contoh sederhana, penyesuaian mungkin diperlukan tergantung struktur proyek Anda
     if (strpos($_SERVER['REQUEST_URI'], '/pages/auth') !== false) {
         $base_path_css = '../../../assets/css/style_login.css';
