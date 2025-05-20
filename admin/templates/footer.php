@@ -1,6 +1,6 @@
 <?php
 if (!isset($base_url)) {
-    $base_url = "/admin_wellnessplate";
+    $base_url = "/wellnessplate";
 }
 ?>
         </main> 
@@ -9,6 +9,6 @@ if (!isset($base_url)) {
     <p style="margin-left: 10px; color: #fff;">© <?php echo date("Y"); ?> WellnessPlate Admin. All rights reserved.</p>
 </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
