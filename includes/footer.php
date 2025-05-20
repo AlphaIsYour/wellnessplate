@@ -39,8 +39,6 @@
     <?php endif; ?>
 
     <?php
-    // Untuk menampilkan SweetAlert dari session (jika ada)
-    // Bisa dipindahkan ke script.js utama jika lebih rapi
     $swal_message = null;
     $swal_type = null;
     if (isset($_SESSION['success_message_frontend'])) {
