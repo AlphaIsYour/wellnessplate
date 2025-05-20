@@ -35,7 +35,6 @@ if (!defined('BASE_URL') || BASE_URL === '') {
 
 <div class="auth-page-wrapper">
     <div class="auth-container <?php echo ($active_form === 'register') ? 'right-panel-active' : ''; ?>" id="authContainer">
-        <!-- Form Sign Up / Register -->
         <div class="form-container sign-up-container">
             <form action="<?php echo (defined('BASE_URL') ? BASE_URL : ''); ?>/pages/auth/proses_register_user.php" method="POST" id="registerForm">
                 <h1>Buat Akun</h1>
