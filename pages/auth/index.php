@@ -1,6 +1,6 @@
 <?php
 // pages/auth/index.php
-require_once __DIR__ . '/../../config/koneksi.php'; // Pastikan path ini benar
+require_once __DIR__ . '/../../config/koneksi.php';
 $page_title = "Login atau Daftar - WellnessPlate";
 $is_auth_page = true; // Tandai ini halaman auth untuk header
 
