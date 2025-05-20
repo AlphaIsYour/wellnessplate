@@ -107,10 +107,6 @@ if (!defined('BASE_URL') || BASE_URL === '') {
 </div>
 
 <style>
-/* Tambahan animasi SVG dan ripple, dipindahkan ke style_login.css untuk kerapian jika memungkinkan,
-   tapi bisa tetap di sini jika hanya untuk halaman ini.
-   Untuk SVG, animasi 'dash' didefinisikan di style_login.css.
-*/
 
 .auth-page-wrapper {
   display: flex;
