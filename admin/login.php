@@ -1,19 +1,24 @@
 <?php
-session_start(); // Mulai session
+// File: admin/login.php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Jika sudah login, redirect ke dashboard
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header("Location: dashboard.php");
+    header("Location: dashboard.php"); // Asumsi dashboard.php ada di folder yang sama
     exit;
 }
+
+$page_title = 'Login Admin - WellnessPlate';
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - WellnessPlate</title>
-    <link rel="stylesheet" href="style.css">
+    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <link rel="stylesheet" href="style.css"> <?php // Pastikan path style.css benar relatif terhadap login.php ?>
 </head>
 <body>
     <div class="login-container">
@@ -22,6 +27,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             <?php
             if (isset($_GET['error'])) {
                 echo "<p class='error-message'>" . htmlspecialchars($_GET['error']) . "</p>";
+            }
+            if (isset($_GET['message'])) {
+                echo "<p class='success-message'>" . htmlspecialchars($_GET['message']) . "</p>";
             }
             ?>
             <div class="form-group">
@@ -35,6 +43,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             <button type="submit" class="btn">Login</button>
         </form>
     </div>
-    <script src="script.js"></script>
+    <?php /* Jika ada script.js khusus untuk login: <script src="script.js"></script> */ ?>
 </body>
 </html>

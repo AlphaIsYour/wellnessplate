@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '../../config/koneksi.php';
+require_once '../config/koneksi.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
@@ -20,15 +20,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: dashboard.php");
             exit;
         } else {
-            header("Location: index.php?error=Username atau password salah.");
+            header("Location: login.php?error=Username atau password salah.");
             exit;
         }
     } else {
-        header("Location: index.php?error=Username atau password salah.");
+        header("Location: login.php?error=Username atau password salah.");
         exit;
     }
 } else {
-    header("Location: index.php");
+    header("Location: login.php");
     exit;
 }
 ?>

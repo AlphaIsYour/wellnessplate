@@ -72,7 +72,7 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
 <?php
 require_once __DIR__ . '/../../../config/koneksi.php';
 
-$base_url = "/modules/gizi/";
+$base_url = "/admin/modules/gizi/";
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Akses tidak sah.";
     header('Location: ' . $base_url . 'gizi.php');
