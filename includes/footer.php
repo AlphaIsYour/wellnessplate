@@ -20,10 +20,10 @@
                 <h4>Hubungi Kami</h4>
                 <p>Email: info@wellnessplate.com</p>
                 <p>Telepon: (021) 123-4567</p>
-                <div class="social-media-links">
-                    <a href="#" aria-label="Facebook"><img src="<?php echo BASE_URL; ?>/assets/images/icon-facebook.png" alt="Facebook"></a>
-                    <a href="#" aria-label="Instagram"><img src="<?php echo BASE_URL; ?>/assets/images/icon-instagram.png" alt="Instagram"></a>
-                    <a href="#" aria-label="Twitter"><img src="<?php echo BASE_URL; ?>/assets/images/icon-twitter.png" alt="Twitter"></a>
+                <div class="social-iconsf">
+                    <a href="#" class="bx bxl-facebook"></a>
+                    <a href="#" class="bx bxl-instagram"></a>
+                    <a href="#" class="bx bxl-twitter"></a>
                 </div>
             </div>
         </div>

@@ -1,636 +1,257 @@
-/* assets/css/style_login.css */
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700,800&display=swap"); /* Tambah 700 untuk bold */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-:root {
-  --auth-primary-color: #4a90e2; /* Biru utama */
-  --auth-secondary-color: #50e3c2; /* Hijau mint */
-  --auth-form-bg: #ffffff;
-  --auth-text-light: #ffffff;
-  --auth-text-dark: #333333;
-  --auth-input-bg: #f2f4f7; /* Sedikit lebih lembut */
-  --auth-shadow: 0 14px 28px rgba(0, 0, 0, 0.15),
-    0 10px 10px rgba(0, 0, 0, 0.12); /* Shadow lebih soft */
-  --auth-transition-speed: 0.6s;
-  --auth-border-radius: 15px; /* Radius lebih konsisten */
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-.auth-container {
-  font-family: "Montserrat", sans-serif;
-  background-color: var(--auth-form-bg);
-  border-radius: var(--auth-border-radius);
-  box-shadow: var(--auth-shadow);
+.container {
   position: relative;
+  width: 850px;
+  height: 550px;
+  background: #fff;
+  margin: 20px;
+  margin-left: 15%;
+  border-radius: 30px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  width: 780px;
-  max-width: calc(100% - 30px); /* Max width dengan padding */
-  min-height: 540px; /* Sedikit lebih tinggi */
-  margin: 20px auto;
-  animation: container-appear 0.7s ease-out forwards;
 }
 
-@keyframes container-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(25px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.container h1 {
+  font-size: 36px;
+  margin: -10px 0;
 }
 
-.auth-container h1 {
-  font-weight: 700; /* Lebih bold */
-  margin: 0 0 12px 0;
-  font-size: 1.9em; /* Sedikit lebih besar */
-  color: var(--auth-text-dark);
-  animation: text-appear 0.5s ease-out 0.3s backwards; /* Backwards agar style awal diterapkan */
+.container p {
+  font-size: 14.5px;
+  margin: 15px 0;
 }
 
-.auth-container p {
-  font-size: 14px;
+form {
+  width: 100%;
+}
+
+.form-box {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  color: #333;
+  text-align: center;
+  padding: 40px;
+  z-index: 1;
+  transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
+}
+
+.container.active .form-box {
+  right: 50%;
+}
+
+.form-box.register {
+  visibility: hidden;
+}
+.container.active .form-box.register {
+  visibility: visible;
+}
+
+.input-box {
+  position: relative;
+  margin: 30px 0;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 13px 50px 13px 20px;
+  background: #eee;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.input-box input::placeholder {
+  color: #888;
   font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: 0.3px;
-  margin: 15px 0 20px;
-  animation: text-appear 0.5s ease-out 0.4s backwards;
 }
 
-.overlay-panel p {
-  color: var(--auth-text-light);
-  max-width: 80%; /* Agar tidak terlalu lebar */
-}
-
-.auth-container span {
-  font-size: 13px;
-  margin-bottom: 12px;
-  color: #555;
-  animation: text-appear 0.5s ease-out 0.5s backwards;
-}
-
-.auth-container a.forgot-password-link {
-  color: #666;
-  font-size: 13px;
-  text-decoration: none;
-  margin: 10px 0 15px 0;
-  transition: color 0.2s ease-in-out;
-  animation: text-appear 0.5s ease-out 0.6s backwards;
-}
-.auth-container a.forgot-password-link:hover {
-  color: var(--auth-primary-color);
-  text-decoration: underline;
-}
-
-@keyframes text-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.form-container button[type="submit"] {
-  border-radius: 25px;
-  border: 1px solid var(--auth-primary-color);
-  background-color: var(--auth-primary-color);
-  color: var(--auth-text-light);
-  font-size: 13px;
-  font-weight: bold;
-  padding: 12px 50px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: transform 80ms ease-in, background-color 0.2s, box-shadow 0.3s;
-  cursor: pointer;
-  margin-top: 15px;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
-  animation: button-appear 0.5s ease-out 0.7s backwards;
-  position: relative; /* Untuk ripple effect */
-  overflow: hidden; /* Untuk ripple effect */
-}
-
-.form-container button[type="submit"]:hover {
-  background-color: #3a80d2;
-  box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
-  transform: translateY(-2px);
-}
-.form-container button[type="submit"]:active {
-  transform: scale(0.96) translateY(0);
-  box-shadow: 0 2px 5px rgba(74, 144, 226, 0.3);
-}
-.form-container button[type="submit"]:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3),
-    0 4px 12px rgba(74, 144, 226, 0.3);
-}
-
-.overlay button.ghost {
-  background-color: transparent;
-  border: 2px solid var(--auth-text-light);
-  color: var(--auth-text-light);
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 12px 45px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: background-color 0.2s, color 0.2s, transform 0.15s,
-    box-shadow 0.2s;
-  cursor: pointer;
-  animation: button-appear 0.5s ease-out 0.8s backwards; /* Delay disesuaikan */
-  margin-top: 10px;
-  position: relative; /* Untuk ripple effect */
-  overflow: hidden; /* Untuk ripple effect */
-}
-.overlay button.ghost:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-.overlay button.ghost:active {
-  transform: scale(0.96) translateY(0);
-}
-
-@keyframes button-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.auth-container form {
-  background-color: var(--auth-form-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 45px; /* Sedikit lebihkan padding */
-  height: 100%;
-  text-align: center;
-}
-
-.auth-container input {
-  background-color: var(--auth-input-bg);
-  border: 1px solid #ddd; /* Border halus */
-  padding: 14px 18px;
-  margin: 8px 0;
-  width: 100%;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  opacity: 0; /* Default opacity untuk animasi */
-}
-
-.animated-input {
-  opacity: 1;
-  border-color: #ddd; /* Reset border color saat animasi */
-  animation: input-appear 0.5s ease-out forwards;
-  animation-delay: calc(
-    0.2s + var(--input-index, 0) * 0.1s
-  ); /* Base delay + stagger */
-}
-
-@keyframes input-appear {
-  0% {
-    opacity: 0;
-    transform: translateX(-15px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.auth-container input:focus {
-  outline: none;
-  border-color: var(--auth-primary-color);
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-  transform: translateY(-1px);
-}
-
-/* Penomoran input untuk animasi stagger */
-.form-container input:nth-of-type(1) {
-  --input-index: 1;
-}
-.form-container input:nth-of-type(2) {
-  --input-index: 2;
-}
-.form-container input:nth-of-type(3) {
-  --input-index: 3;
-}
-.form-container input:nth-of-type(4) {
-  --input-index: 4;
-}
-.form-container input:nth-of-type(5) {
-  --input-index: 5;
-} /* Jika ada lebih banyak input */
-
-.form-container {
+.input-box i {
   position: absolute;
-  top: 0;
-  height: 100%;
-  transition: all var(--auth-transition-speed) ease-in-out;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
 }
 
-.sign-in-container {
-  left: 0;
-  width: 50%;
+.forgot-link {
+  margin: -15px 0 15px;
+}
+.forgot-link a {
+  font-size: 14.5px;
+  color: #333;
+}
+
+.btn {
+  width: 100%;
+  height: 48px;
+  background: #55a630;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icons a {
+  display: inline-flex;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 24px;
+  color: #333;
+  margin: 0 8px;
+}
+.social-iconsf a {
+  display: inline-flex;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 24px;
+  color: #ffffff;
+  margin: 0 8px;
+  -left: 160px;
+}
+
+.toggle-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.toggle-box::before {
+  content: "";
+  position: absolute;
+  left: -250%;
+  width: 300%;
+  height: 100%;
+  background: #55a630;
+  /* border: 2px solid red; */
+  border-radius: 150px;
   z-index: 2;
-}
-.auth-container.right-panel-active .sign-in-container {
-  transform: translateX(100%);
-  opacity: 0;
-  z-index: 1;
-  pointer-events: none;
+  transition: 1.8s ease-in-out;
 }
 
-.sign-up-container {
-  left: 0;
-  width: 50%;
-  opacity: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-.auth-container.right-panel-active .sign-up-container {
-  transform: translateX(100%);
-  opacity: 1;
-  z-index: 5;
-  pointer-events: auto;
-  animation: show-form var(--auth-transition-speed) forwards;
-}
-
-@keyframes show-form {
-  0%,
-  49.99% {
-    opacity: 0;
-    z-index: 1;
-  }
-  50%,
-  100% {
-    opacity: 1;
-    z-index: 5;
-  }
-}
-
-.overlay-container {
-  position: absolute;
-  top: 0;
+.container.active .toggle-box::before {
   left: 50%;
+}
+
+.toggle-panel {
+  position: absolute;
   width: 50%;
   height: 100%;
-  overflow: hidden;
-  transition: transform var(--auth-transition-speed) ease-in-out;
-  z-index: 100;
-  border-radius: 0 var(--auth-border-radius) var(--auth-border-radius) 0;
-}
-.auth-container.right-panel-active .overlay-container {
-  transform: translateX(-100%);
-  border-radius: var(--auth-border-radius) 0 0 var(--auth-border-radius);
-}
-
-.overlay {
-  background: linear-gradient(
-    135deg,
-    var(--auth-primary-color) 0%,
-    var(--auth-secondary-color) 100%
-  );
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 0 0;
-  color: var(--auth-text-light);
-  position: relative;
-  left: -100%;
-  height: 100%;
-  width: 200%;
-  transform: translateX(0);
-  transition: transform var(--auth-transition-speed) ease-in-out;
-  display: flex; /* Untuk mengatur panel kiri dan kanan */
-  align-items: center;
-  justify-content: center;
-}
-.auth-container.right-panel-active .overlay {
-  transform: translateX(50%);
-}
-
-.overlay-panel {
-  /* Ini adalah container untuk konten kiri/kanan di dalam .overlay */
-  position: absolute; /* Setiap konten akan mengisi .overlay */
-  top: 0;
+  /* background: seagreen; */
+  color: #fff;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  padding: 0 40px;
-  text-align: center;
-  height: 100%;
-  width: 50%; /* Karena .overlay lebarnya 200%, 50% ini adalah 100% dari .overlay-container */
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: 0.6s ease-in-out;
 }
 
-.overlay-left-content,
-.overlay-right-content {
-  position: absolute;
-  top: 0;
+.toggle-panel.toggle-left {
   left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: inherit; /* Ambil padding dari .overlay-panel jika ada */
-  text-align: center;
-  transition: opacity calc(var(--auth-transition-speed) * 0.6) ease-in-out,
-    visibility 0s linear calc(var(--auth-transition-speed) * 0.6); /* visibility instan setelah opacity */
-  transition-delay: calc(
-    var(--auth-transition-speed) * 0.4
-  ); /* Muncul setelah panel utama bergeser */
-  pointer-events: none; /* Tidak interaktif saat tersembunyi */
+  transition-delay: 1.2s;
+}
+.container.active .toggle-panel.toggle-left {
+  left: -50%;
+  transition-delay: 0.6s;
 }
 
-.overlay-left-content {
-  /* Untuk "Kembali Login" */
-  opacity: 0;
-  visibility: hidden;
-  /* transform: translateX(0); tidak ada lagi transform aneh */
+.toggle-panel.toggle-right {
+  right: -50%;
+  transition-delay: 0.6s;
 }
-.auth-container.right-panel-active .overlay-left-content {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition-delay: calc(
-    var(--auth-transition-speed) * 0.5
-  ); /* Sedikit lebih cepat muncul */
+.container.active .toggle-panel.toggle-right {
+  right: 0;
+  transition-delay: 1.2s;
 }
 
-.overlay-right-content {
-  /* Untuk "Buat Akun Baru" */
-  /* right: 0; tidak perlu, sudah absolute left 0 width 100% */
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  /* transform: translateX(0); */
-}
-.auth-container.right-panel-active .overlay-right-content {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition-delay: 0s; /* Langsung hilang saat panel bergerak */
+.toggle-panel p {
+  margin-bottom: 20px;
 }
 
-.overlay-panel .animated-svg {
-  /* Ganti dari .overlay-panel svg */
-  margin-bottom: 15px;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
-  transition: transform 0.3s ease;
-  animation: svg-appear 0.7s ease-out backwards;
-  /* Delay animasi SVG akan di-trigger oleh JS atau saat panel visible */
-}
-/* Animasi SVG 'dash' */
-@keyframes dash {
-  to {
-    stroke-dashoffset: 0;
-  }
+.toggle-panel .btn {
+  width: 160px;
+  height: 46px;
+  background: transparent;
+  border: 2px solid #fff;
+  box-shadow: none;
 }
 
-.overlay-panel .animated-svg circle {
-  animation: dash 1.5s ease-in-out 0.5s forwards;
-}
-.overlay-panel .animated-svg path {
-  animation: dash 1s ease-in-out 1s forwards;
-} /* Delay path setelah circle */
-.overlay-panel .animated-svg rect {
-  animation: dash 1.5s ease-in-out 0.5s forwards;
-}
-.overlay-panel .animated-svg line:nth-of-type(1) {
-  animation: dash 0.7s ease-in-out 1s forwards;
-}
-.overlay-panel .animated-svg line:nth-of-type(2) {
-  animation: dash 0.7s ease-in-out 1.3s forwards;
-}
-
-@keyframes svg-appear {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(10px);
-  }
-  70% {
-    transform: scale(1.05) translateY(-2px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-.overlay-panel .animated-svg:hover {
-  transform: scale(1.03) translateY(-2px);
-}
-
-.overlay-panel h2 {
-  /* Ganti dari .overlay-panel h2 */
-  font-weight: 700;
-  margin: 0 0 10px 0;
-  font-size: 1.7em; /* Sedikit lebih besar */
-  color: var(--auth-text-light);
-  animation: text-appear 0.5s ease-out backwards;
-  /* Delay animasi akan di-trigger oleh JS atau saat panel visible */
-}
-
-/* Penyesuaian delay animasi elemen di dalam overlay agar sinkron dengan visibility panelnya */
-.auth-container.right-panel-active .overlay-left-content .animated-svg,
-.auth-container.right-panel-active .overlay-left-content h2,
-.auth-container.right-panel-active .overlay-left-content p,
-.auth-container.right-panel-active .overlay-left-content button.ghost {
-  animation-delay: calc(
-    var(--auth-transition-speed) * 0.5 + 0.2s
-  ); /* Base delay setelah panel visible */
-}
-.auth-container.right-panel-active .overlay-left-content p {
-  animation-delay: calc(var(--auth-transition-speed) * 0.5 + 0.3s);
-}
-.auth-container.right-panel-active .overlay-left-content button.ghost {
-  animation-delay: calc(var(--auth-transition-speed) * 0.5 + 0.4s);
-}
-
-.auth-container:not(.right-panel-active) .overlay-right-content .animated-svg,
-.auth-container:not(.right-panel-active) .overlay-right-content h2,
-.auth-container:not(.right-panel-active) .overlay-right-content p,
-.auth-container:not(.right-panel-active) .overlay-right-content button.ghost {
-  animation-delay: calc(var(--auth-transition-speed) * 0.5 + 0.2s);
-}
-.auth-container:not(.right-panel-active) .overlay-right-content p {
-  animation-delay: calc(var(--auth-transition-speed) * 0.5 + 0.3s);
-}
-.auth-container:not(.right-panel-active) .overlay-right-content button.ghost {
-  animation-delay: calc(var(--auth-transition-speed) * 0.5 + 0.4s);
-}
-
-.form-switcher-text {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #555;
-  animation: text-appear 0.5s ease-out 0.9s backwards;
-  display: none; /* Sembunyikan di desktop, tampilkan di mobile */
-}
-.form-switcher-text a {
-  color: var(--auth-primary-color);
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-.form-switcher-text a:hover {
-  color: #3a80d2;
-  text-decoration: underline;
-}
-
-.auth-error-message,
-.auth-success-message {
-  padding: 12px 18px;
-  margin: 10px 0 15px 0;
-  border-radius: 8px;
-  font-size: 13.5px;
-  width: 100%;
-  text-align: left; /* Pesan error lebih baik rata kiri */
-  border: 1px solid transparent;
-  animation: message-appear 0.4s ease-out backwards;
-  line-height: 1.4;
-}
-@keyframes message-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.auth-error-message {
-  background-color: #fef2f2; /* Tailwind red-50 */
-  color: #b91c1c; /* Tailwind red-700 */
-  border-color: #fecaca; /* Tailwind red-300 */
-}
-.auth-success-message {
-  background-color: #f0fdf4; /* Tailwind green-50 */
-  color: #15803d; /* Tailwind green-700 */
-  border-color: #bbf7d0; /* Tailwind green-300 */
-}
-
-/* Input error styling from JS */
-.input-error-wrapper {
-  /* Wrapper untuk input dan pesan error */
-  width: 100%;
-  margin-bottom: 8px; /* Jarak antar input group */
-}
-.input-error-wrapper input.has-error {
-  border-color: #b91c1c !important; /* Warna border error */
-  box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.2) !important;
-}
-.input-error-message {
-  color: #b91c1c;
-  font-size: 12px;
-  text-align: left;
-  width: 100%;
-  margin-top: 4px;
-  padding-left: 2px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .auth-container {
-    width: 95%;
-    min-height: auto;
-    border-radius: var(--auth-border-radius);
-    margin-top: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.08);
+@media screen and (max-width: 650px) {
+  .container {
+    height: calc(100vh - 40px);
   }
 
-  .form-container {
+  .form-box {
+    bottom: 0;
     width: 100%;
-    position: static; /* Kembali ke static */
-    height: auto;
-    padding: 30px 25px;
-    /* display: none; diatur oleh kelas .right-panel-active */
-    transform: none !important; /* Hapus semua transform */
-    opacity: 1 !important; /* Pastikan opacity 1 */
+    height: 70%;
   }
 
-  .sign-in-container {
-    display: block;
-  }
-  .sign-up-container {
-    display: none;
+  .container.active .form-box {
+    right: 0;
+    bottom: 30%;
   }
 
-  .auth-container.right-panel-active .sign-in-container {
-    display: none;
-  }
-  .auth-container.right-panel-active .sign-up-container {
-    display: block;
-    animation: fade-in-form 0.5s ease-out forwards;
-  }
-
-  @keyframes fade-in-form {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .overlay-container {
-    display: none;
-  }
-
-  .auth-container h1 {
-    font-size: 1.7em;
-  }
-  .auth-container form {
-    padding: 0 25px;
-  }
-  .form-container button[type="submit"] {
-    padding: 12px 40px;
+  .toggle-box::before {
+    left: 0;
+    top: -270%;
     width: 100%;
+    height: 300%;
+    border-radius: 20vw;
   }
-  .form-switcher-text {
-    display: block !important;
-    margin-top: 25px;
+
+  .container.active .toggle-box::before {
+    left: 0;
+    top: 70%;
   }
-  .auth-container a.forgot-password-link {
-    margin: 15px 0;
+
+  .container.active .toggle-panel.toggle-left {
+    left: 0;
+    top: -30%;
+  }
+
+  .toggle-panel {
+    width: 100%;
+    height: 30%;
+  }
+  .toggle-panel.toggle-left {
+    top: 0;
+  }
+  .toggle-panel.toggle-right {
+    right: 0;
+    bottom: -30%;
+  }
+
+  .container.active .toggle-panel.toggle-right {
+    bottom: 0;
   }
 }
 
-@media (max-width: 480px) {
-  .auth-container h1 {
-    font-size: 1.5em;
+@media screen and (max-width: 400px) {
+  .form-box {
+    padding: 20px;
   }
-  .auth-container form {
-    padding: 0 20px;
-  }
-  .auth-error-message,
-  .auth-success-message {
-    font-size: 13px;
-    padding: 10px 15px;
-  }
-  .auth-container input {
-    padding: 12px 15px;
-    font-size: 13.5px;
+
+  .toggle-panel h1 {
+    font-size: 30px;
   }
 }

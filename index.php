@@ -8,5 +8,6 @@
 <body>
     <h1>Halooooo</h1>
     <a href="/admin/login.php">login disini</a>
+    <a href="/pages/auth/index.php">login User disini</a>
 </body>
 </html>

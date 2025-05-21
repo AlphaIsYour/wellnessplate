@@ -1,5 +1,9 @@
 <?php
 // config/koneksi.php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 // --- PENGATURAN KONEKSI DATABASE ---
 $host_db = "localhost";         // Biasanya 'localhost'
@@ -26,23 +30,17 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // --- PENGATURAN URL DASAR APLIKASI ---
-// Ganti 'wellnessplate2' dengan nama folder utama proyekmu jika berbeda.
-// Jika proyekmu langsung di root web server (misal http://localhost/), maka nama_folder_aplikasi bisa dikosongkan.
-$nama_folder_aplikasi_utama = ''; // Sesuaikan ini!
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+// Tentukan host (nama domain atau localhost)
+$host_server = $_SERVER['HTTP_HOST'];
+// Tentukan base path jika proyek ada di subfolder. Jika di root, biarkan kosong atau '/'.
+// Contoh jika proyek ada di wellnessplate.test/proyekku/, maka $subfolder = '/proyekku';
+$subfolder = ''; // Jika langsung di root domain (wellnessplate.test), biarkan kosong
+                 // Jika proyek ada di subfolder (misal wellnessplate.test/wellnessplate), maka: $subfolder = '/wellnessplate';
 
-$protocol_aplikasi = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$host_aplikasi = $_SERVER['HTTP_HOST'];
-
-$base_url_aplikasi = $protocol_aplikasi . $host_aplikasi;
-if (!empty($nama_folder_aplikasi_utama)) {
-    $base_url_aplikasi .= '/' . $nama_folder_aplikasi_utama;
-}
-
-// Definisikan BASE_URL jika belum ada (untuk mencegah redeclare jika file ini di-include berkali-kali secara tidak sengaja)
 if (!defined('BASE_URL')) {
-    define('BASE_URL', $base_url_aplikasi);
+    define('BASE_URL', $protocol . $host_server . $subfolder);
 }
-
 // --- URL MODUL ADMIN ---
 // Diasumsikan folder admin ada di dalam folder utama proyek
 if (!defined('ADMIN_BASE_URL')) {

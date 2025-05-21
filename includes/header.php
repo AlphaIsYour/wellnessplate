@@ -31,10 +31,12 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($current_page_title); ?></title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url( BASE_URL,PHP_URL_PATH) . '/assets/css/style_login.css')): ?>
         <link rel="stylesheet" href="/assets/css/style_login.css">
+
     <?php endif; ?>
-    <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+    <link rel="icon" href="/assets/images/logo.svg" type="image/svg">
     <!-- Tambahkan link CSS atau font lain jika perlu -->
 </head>
 <body class="<?php echo $body_class; ?>">
@@ -42,7 +44,7 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
         <div class="container-navbar">
             <div class="logo-frontend">
                 <a href="<?php echo BASE_URL; ?>/index.php">
-                    <img src="/assets/images/logo-wellnessplate.png" alt="WellnessPlate Logo">
+                    <img src="/assets/images/logo.svg" alt="WellnessPlate Logo">
                     <span>WellnessPlate</span>
                 </a>
             </div>

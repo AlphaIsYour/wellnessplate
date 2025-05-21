@@ -33,123 +33,92 @@ if (!defined('BASE_URL') || BASE_URL === '') {
 
 <?php require_once __DIR__ . '/../../includes/header.php'; ?>
 
-<div class="auth-page-wrapper">
-    <div class="auth-container <?php echo ($active_form === 'register') ? 'right-panel-active' : ''; ?>" id="authContainer">
-        <div class="form-container sign-up-container">
-            <form action="<?php echo (defined('BASE_URL') ? BASE_URL : ''); ?>/pages/auth/proses_register_user.php" method="POST" id="registerForm">
-                <h1>Buat Akun</h1>
-                <?php
-                if (isset($_SESSION['register_error'])) {
-                    echo '<div class="auth-error-message">' . nl2br(htmlspecialchars($_SESSION['register_error'])) . '</div>';
-                    unset($_SESSION['register_error']);
-                }
-                if (isset($_SESSION['register_success'])) {
-                    echo '<div class="auth-success-message">' . htmlspecialchars($_SESSION['register_success']) . '</div>';
-                    unset($_SESSION['register_success']);
-                }
-                ?>
-                <span>Gunakan email untuk pendaftaran</span>
-                <input type="text" name="nama_lengkap" placeholder="Nama Lengkap" value="<?php echo htmlspecialchars($_SESSION['form_data_register']['nama_lengkap'] ?? ''); ?>" required />
-                <input type="email" name="email" placeholder="Email" value="<?php echo htmlspecialchars($_SESSION['form_data_register']['email'] ?? ''); ?>" required />
-                <input type="password" name="password" placeholder="Password" required />
-                <input type="password" name="konfirmasi_password" placeholder="Konfirmasi Password" required />
-                <button type="submit">Daftar</button>
-                <p class="form-switcher-text">Sudah punya akun? <a href="#" id="signInLinkBottom">Login di sini</a></p>
-            </form>
-        </div>
-
-        <div class="form-container sign-in-container">
-            <form action="<?php echo (defined('BASE_URL') ? BASE_URL : ''); ?>/pages/auth/proses_login_user.php" method="POST" id="loginForm">
-                <h1>Login</h1>
-                <?php
-                if (isset($_SESSION['login_error'])) {
-                    echo '<div class="auth-error-message">' . htmlspecialchars($_SESSION['login_error']) . '</div>';
-                    unset($_SESSION['login_error']);
-                }
-                if (isset($_SESSION['login_success'])) {
-                    echo '<div class="auth-success-message">' . htmlspecialchars($_SESSION['login_success']) . '</div>';
-                    unset($_SESSION['login_success']);
-                }
-                ?>
-                <span>Gunakan akun Anda</span>
-                <input type="email" name="email" placeholder="Email" value="<?php echo htmlspecialchars($_SESSION['form_data_login']['email'] ?? ''); ?>" required />
-                <input type="password" name="password" placeholder="Password" required />
-                <a href="<?php echo (defined('BASE_URL') ? BASE_URL : ''); ?>/pages/auth/forgot_password.php" class="forgot-password-link">Lupa password Anda?</a>
-                <button type="submit">Login</button>
-                <p class="form-switcher-text">Belum punya akun? <a href="#" id="signUpLinkBottom">Daftar sekarang</a></p>
-            </form>
-        </div>
-
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left-content">
-                    <svg style="margin-right: 350px;" width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="animated-svg">
-                        <circle cx="50" cy="50" r="45" stroke="white" stroke-width="4" fill="none" stroke-dasharray="283" stroke-dashoffset="283" />
-                        <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="75" stroke-dashoffset="75" />
-                    </svg>
-                    <h2 style="margin-right: 350px;">Kembali Login</h2>
-                    <p style="margin-right: 350px;">Sudah memiliki akun? Login disini.</p>
-                    <button style="margin-right: 350px;" class="ghost" id="signInOverlayBtn">Login</button>
-                </div>
-                <div class="overlay-panel overlay-right-content">
-                     <svg style="margin-left:350px;" width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="animated-svg">
-                        <rect x="20" y="20" width="60" height="60" rx="10" stroke="white" stroke-width="4" fill="none" stroke-dasharray="240" stroke-dashoffset="240" />
-                        <line x1="50" y1="35" x2="50" y2="65" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" />
-                        <line x1="35" y1="50" x2="65" y2="50" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30" />
-                    </svg>
-                    <h2 style="margin-left:350px;">Buat Akun Baru</h2>
-                    <p style="margin-left:350px;">Belum punya akun? Daftar sekarang!</p>
-                    <button style="margin-left:350px;" class="ghost" id="signUpOverlayBtn">Daftar</button>
-                </div>
+<div class="container <?php echo $active_form === 'register' ? 'active' : ''; ?>" id="authContainer">
+    <!-- LOGIN FORM -->
+    <div class="form-box login">
+        <form action="/pages/auth/proses_login_user.php" method="POST">
+            <h1>Login</h1>
+            <?php
+            if (isset($_SESSION['login_error'])) {
+                echo "<p class='error-message'>" . htmlspecialchars($_SESSION['login_error']) . "</p>";
+                unset($_SESSION['login_error']); // Hapus setelah ditampilkan
+            }
+            if (isset($_SESSION['register_success'])) { // Pesan setelah registrasi berhasil
+                echo "<p class='success-message'>" . htmlspecialchars($_SESSION['register_success']) . "</p>";
+                unset($_SESSION['register_success']); // Hapus setelah ditampilkan
+            }
+            ?>
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($form_data_login['username'] ?? ''); ?>" required>
+                <i class='bx bxs-user'></i>
             </div>
-        </div>
+            <div class="input-box">
+                <input type="password" name="password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <div class="forgot-link">
+                <a href="#">Lupa Password?</a> <!-- Nanti buat fiturnya -->
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <p>or login with social platforms</p>
+                  <div class="social-icons">
+                      <a href="#"><i class='bx bxl-google' ></i></a>
+                      <a href="#"><i class='bx bxl-facebook' ></i></a>
+                      <a href="#"><i class='bx bxl-github' ></i></a>
+                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
+                  </div>
+        </form>
     </div>
+
+    <!-- REGISTRATION FORM -->
+    <div class="form-box register">
+        <form action="/pages/auth/proses_register_user.php" method="POST">
+            <h1>Registrasi</h1>
+            <?php
+            if (isset($_SESSION['register_error'])) {
+                echo "<p class='error-message'>" . nl2br(htmlspecialchars($_SESSION['register_error'])) . "</p>"; // nl2br untuk multiline error
+                unset($_SESSION['register_error']); // Hapus setelah ditampilkan
+            }
+            ?>
+            <div class="input-box">
+                      <input type="text" placeholder="Username" required>
+                      <i class='bx bxs-envelope' ></i>
+            </div>
+            <div class="input-box">
+                      <input type="password" placeholder="Password" required>
+                      <i class='bx bxs-lock-alt' ></i>
+            </div>
+            <button type="submit" class="btn">Register</button>
+                  <p>or register with social platforms</p>
+            <div class="social-icons">
+                      <a href="#"><i class='bx bxl-google' ></i></a>
+                      <a href="#"><i class='bx bxl-facebook' ></i></a>
+                      <a href="#"><i class='bx bxl-github' ></i></a>
+                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- TOGGLE PANEL -->
+    <div class="toggle-box">
+              <div class="toggle-panel toggle-left">
+                  <h1>Hello, Welcome!</h1>
+                  <p>Don't have an account?</p>
+                  <button class="btn register-btn">Register</button>
+              </div>
+
+              <div class="toggle-panel toggle-right">
+                  <h1>Welcome Back!</h1>
+                  <p>Already have an account?</p>
+                  <button class="btn login-btn">Login</button>
+              </div>
+          </div>
 </div>
 
-<style>
-
-.auth-page-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 120px);
-  padding: 20px 0;
-  background-color: #f7fafc;
-  overflow-x: hidden;
-}
-
-button .ripple-effect { /* Targetkan span di dalam button */
-  position: absolute;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3); /* Sedikit lebih subtle */
-  transform: scale(0);
-  animation: ripple 0.6s linear;
-  pointer-events: none;
-}
-
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
-
-/* Style untuk "wrapper" di mobile */
-@media (max-width: 768px) {
-  .auth-page-wrapper {
-    padding: 15px 0;
-    min-height: calc(100vh - 100px); /* Sesuaikan dengan tinggi header + footer mobile Anda */
-    align-items: flex-start; /* Mulai dari atas di mobile */
-  }
-}
-</style>
-
 <?php
-// Bersihkan data form session agar tidak muncul lagi saat halaman direfresh atau navigasi
-if (basename($_SERVER['PHP_SELF']) == 'index.php') { // Hanya unset jika ini halaman utama auth
-    unset($_SESSION['form_data_register']);
-    unset($_SESSION['form_data_login']);
-}
-?>
+// Bersihkan sisa data form session yang mungkin belum ter-unset
+unset($_SESSION['form_data_register']);
+unset($_SESSION['form_data_login']);
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; // Pastikan path ini benar ?>
+require_once __DIR__ . '/../../includes/footer.php';
+?>
