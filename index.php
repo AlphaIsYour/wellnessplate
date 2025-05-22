@@ -11,22 +11,22 @@ $page_title = "WellnessPlate - Jaga Kesehatanmu, Mulai Dari Piringmu!";
 // Di aplikasi nyata, ini bisa diambil dari database
 $slider_banners = [
     [
-        'image' => BASE_URL . '/assets/images/slider/1.svg', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/1.png', // Ganti dengan path gambar aslimu
         'alt' => 'Promo Makanan Sehat Minggu Ini',
         'link' => BASE_URL . '/produk/salad'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/2.svg', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/2.png', // Ganti dengan path gambar aslimu
         'alt' => 'Resep Baru Setiap Hari',
         'link' => BASE_URL . '/resep'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/3.svg', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/3.png', // Ganti dengan path gambar aslimu
         'alt' => 'Tips Gaya Hidup Sehat',
         'link' => BASE_URL . '/artikel'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/4.svg', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/4.png', // Ganti dengan path gambar aslimu
         'alt' => 'Tips Gaya Hidup Sehat',
         'link' => BASE_URL . '/artikel'
     ]
@@ -49,22 +49,47 @@ require_once __DIR__ . '/includes/header.php';
 <div class="main-content">
 
     <!-- 1. Search Bar Section -->
-    <section class="search-section" style="padding: 20px 0; background-color: #f8f9fa; text-align: center; border-radius: 10px;">
-        <div class="container" style="max-width: 700px; margin: auto;">
-            <h2>Cari Resep, Artikel, atau Produk Kesehatan</h2>
-            <form action="<?php echo BASE_URL; ?>/pencarian.php" method="GET" style="display: flex; margin-top: 15px;">
-                <input type="text" name="keyword" placeholder="Masukkan kata kunci..." style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px 0 0 4px;" required>
-                <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer;">Cari</button>
-            </form>
-            <!-- Kamu perlu membuat file pencarian.php untuk memproses ini -->
-        </div>
-    </section>
+<?php 
+require_once __DIR__ . '/includes/components/search-bar.php'; // Panggil komponen slider
+?>
+
 
     <!-- 2. Slider Banner Section -->
 <?php 
 require_once __DIR__ . '/includes/components/slider.php'; // Panggil komponen slider
 ?>
 
+    <!-- 4. Komponen Lain (Contoh: Artikel Terbaru) -->
+    <section class="latest-articles-section" style="padding: 30px 0; background-color: #f1f1f1; border-radius: 20px;">
+        <div class="container" style="max-width: 1000px; margin: auto;">
+            <h2 style="text-align: center; margin-bottom: 20px;">Artikel Terbaru</h2>
+            <div class="articles-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <?php
+                // Contoh data artikel, bisa dari database
+                $articles = [
+                    ['title' => 'Manfaat Sarapan Pagi untuk Produktivitas', 'excerpt' => 'Sarapan adalah...', 'image' => BASE_URL . '/assets/images/articles/1.png', 'link' => BASE_URL . '/artikel/manfaat-sarapan'],
+                    ['title' => '5 Olahraga Ringan di Rumah Selama Pandemi', 'excerpt' => 'Tetap aktif...', 'image' => BASE_URL . '/assets/images/articles/2.png', 'link' => BASE_URL . '/artikel/olahraga-rumah'],
+                    ['title' => 'Cara Memilih Buah dan Sayur Segar', 'excerpt' => 'Tips penting...', 'image' => BASE_URL . '/assets/images/articles/1.png', 'link' => BASE_URL . '/artikel/tips-buah-sayur'],
+                ];
+                foreach ($articles as $article):
+                ?>
+                <div class="article-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background-color: white;">
+                    <a href="<?php echo htmlspecialchars($article['link']); ?>">
+                        <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="<?php echo htmlspecialchars($article['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                    </a>
+                    <div style="padding: 15px;">
+                        <h3><a href="<?php echo htmlspecialchars($article['link']); ?>" style="text-decoration: none; color: #333;"><?php echo htmlspecialchars($article['title']); ?></a></h3>
+                        <p style="color: #666; font-size: 0.9em;"><?php echo htmlspecialchars(substr($article['excerpt'], 0, 100)) . '...'; ?></p>
+                        <a href="<?php echo htmlspecialchars($article['link']); ?>" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none;">Baca Selengkapnya →</a>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                 <!-- Pastikan kamu punya folder assets/images/articles/ dan gambar-gambarnya. -->
+            </div>
+        </div>
+    </section>
+
+    
 
     <!-- 3. Komponen Lain (Contoh: Kategori Populer) -->
     <section class="popular-categories-section" style="padding: 30px 0; text-align: center;">
@@ -90,35 +115,12 @@ require_once __DIR__ . '/includes/components/slider.php'; // Panggil komponen sl
         </div>
     </section>
 
-    <!-- 4. Komponen Lain (Contoh: Artikel Terbaru) -->
-    <section class="latest-articles-section" style="padding: 30px 0; background-color: #f1f1f1;">
-        <div class="container" style="max-width: 1000px; margin: auto;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Artikel Terbaru</h2>
-            <div class="articles-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <?php
-                // Contoh data artikel, bisa dari database
-                $articles = [
-                    ['title' => 'Manfaat Sarapan Pagi untuk Produktivitas', 'excerpt' => 'Sarapan adalah...', 'image' => BASE_URL . '/assets/images/articles/artikel1.jpg', 'link' => BASE_URL . '/artikel/manfaat-sarapan'],
-                    ['title' => '5 Olahraga Ringan di Rumah Selama Pandemi', 'excerpt' => 'Tetap aktif...', 'image' => BASE_URL . '/assets/images/articles/artikel2.jpg', 'link' => BASE_URL . '/artikel/olahraga-rumah'],
-                    ['title' => 'Cara Memilih Buah dan Sayur Segar', 'excerpt' => 'Tips penting...', 'image' => BASE_URL . '/assets/images/articles/artikel3.jpg', 'link' => BASE_URL . '/artikel/tips-buah-sayur'],
-                ];
-                foreach ($articles as $article):
-                ?>
-                <div class="article-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background-color: white;">
-                    <a href="<?php echo htmlspecialchars($article['link']); ?>">
-                        <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="<?php echo htmlspecialchars($article['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
-                    </a>
-                    <div style="padding: 15px;">
-                        <h3><a href="<?php echo htmlspecialchars($article['link']); ?>" style="text-decoration: none; color: #333;"><?php echo htmlspecialchars($article['title']); ?></a></h3>
-                        <p style="color: #666; font-size: 0.9em;"><?php echo htmlspecialchars(substr($article['excerpt'], 0, 100)) . '...'; ?></p>
-                        <a href="<?php echo htmlspecialchars($article['link']); ?>" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none;">Baca Selengkapnya →</a>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-                 <!-- Pastikan kamu punya folder assets/images/articles/ dan gambar-gambarnya. -->
-            </div>
-        </div>
-    </section>
+    <?php 
+require_once __DIR__ . '/includes/components/about.php'; // Panggil komponen slider
+?>
+    <?php 
+require_once __DIR__ . '/includes/components/faq.php'; // Panggil komponen slider
+?>
 
     <?php
     // Tampilkan pesan jika ada (misalnya setelah login berhasil dari redirect)

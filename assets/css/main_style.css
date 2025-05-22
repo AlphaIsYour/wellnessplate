@@ -1,273 +1,47 @@
-/* main_style_optimized.css - Banner Slider component CSS */
+/* simple_slider_style.css */
 
-/* ========= Slider Container ========= */
-.custom-slider-section {
-  --slider-height: 400px;
-  --slider-max-width: 1200px;
-  --slider-border-radius: 12px;
-  --slider-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --slider-background: #fff;
-  --slider-transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-  --slider-indicator-size: 10px;
-  --slider-indicator-active-size: 12px;
-  --slider-indicator-color: rgba(209, 213, 219, 0.7);
-  --slider-indicator-active-color: rgba(255, 255, 255, 0.9);
-  --slider-nav-btn-size: 36px;
-  --slider-nav-btn-icon-size: 20px;
-  --slider-nav-btn-color: rgba(255, 255, 255, 0.9);
-  --slider-nav-btn-bg: rgba(255, 255, 255, 0.7);
-  --slider-nav-btn-hover-bg: rgba(255, 255, 255, 0.9);
-  --slider-caption-bg: rgba(0, 0, 0, 0.5);
-  --slider-caption-color: #fff;
-
-  margin-bottom: 2rem;
-  width: 100%;
-  overflow: hidden;
-}
-
-.slider-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: var(--slider-max-width);
-  height: var(--slider-height); /* Will be set dynamically by JS */
-  margin: 0 auto;
-  border-radius: var(--slider-border-radius);
-  box-shadow: var(--slider-shadow);
-  background-color: var(--slider-background);
-  user-select: none; /* Prevent text selection during dragging */
-  touch-action: pan-y; /* Improve touch behavior */
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
-  overflow: hidden; /* Ensure no overflow outside the slider */
-  contain: content; /* Optimize performance */
-
-  /* Create a containing block for absolute positioning */
-  transform: translateZ(0);
-  /* Hardware acceleration for smoother animations */
-  will-change: transform;
-}
-
-/* ========= Slider Container Structure ========= */
-.slider-outer-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: var(--slider-border-radius);
-}
-
-.slider-inner-container {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  /* Transition will be managed by JS */
-  transition: var(--slider-transition);
-  transform: translateX(0);
-}
-
-/* ========= Slides ========= */
-.slide-item {
-  min-width: 100%;
-  height: 100%;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.slide-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: var(--slider-border-radius);
-  /* Improve rendering of images during zoom/scale */
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
-/* Optional fade effect for inactive slides */
-.slider-inner-container[data-fade="true"] .slide-item {
-  opacity: 0.5;
-  transition: opacity 0.5s ease;
-}
-
-.slider-inner-container[data-fade="true"] .slide-item[aria-hidden="false"] {
-  opacity: 1;
-}
-
-/* ========= Caption ========= */
-.slide-item-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--slider-caption-bg);
-  color: var(--slider-caption-color);
-  padding: 1rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  border-radius: 0 0 var(--slider-border-radius) var(--slider-border-radius);
-  z-index: 5;
-}
-
-.slide-item[aria-hidden="false"] .slide-item-caption {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-item-caption h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.slide-item-caption p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-/* ========= Navigation Buttons ========= */
-.slider-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--slider-nav-btn-size);
-  height: var(--slider-nav-btn-size);
-  background-color: var(--slider-nav-btn-bg);
-  border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease, background-color 0.2s ease, transform 0.3s ease;
-}
-
-.slider-nav-btn svg {
-  width: var(--slider-nav-btn-icon-size);
-  height: var(--slider-nav-btn-icon-size);
-  stroke: #333;
-  stroke-width: 2.5px;
-  transition: stroke 0.2s ease;
-}
-
-.slider-nav-btn.prev {
-  left: 15px;
-  transform: translateY(-50%) translateX(-10px);
-}
-
-.slider-nav-btn.next {
-  right: 15px;
-  transform: translateY(-50%) translateX(10px);
-}
-
-/* Show buttons on hover */
-.slider-wrapper:hover .slider-nav-btn,
-.slider-wrapper:focus-within .slider-nav-btn {
-  opacity: 1;
-}
-
-.slider-wrapper:hover .slider-nav-btn.prev,
-.slider-wrapper:focus-within .slider-nav-btn.prev {
-  transform: translateY(-50%) translateX(0);
-}
-
-.slider-wrapper:hover .slider-nav-btn.next,
-.slider-wrapper:focus-within .slider-nav-btn.next {
-  transform: translateY(-50%) translateX(0);
-}
-
-/* Button hover states */
-.slider-nav-btn:hover,
-.slider-nav-btn:focus {
-  background-color: var(--slider-nav-btn-hover-bg);
-  outline: none;
-}
-
-.slider-nav-btn:hover svg,
-.slider-nav-btn:focus svg {
-  stroke: #000;
-}
-
-/* Button active state */
-.slider-nav-btn:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.slider-nav-btn.prev:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.slider-nav-btn.next:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-/* ========= Indicators ========= */
-.slider-indicators {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 10;
-  padding: 5px 10px;
+.simple-slider-section {
+  position: relative; /* Untuk skeleton */
+  /* --- PERUBAHAN --- */
+  max-width: 1400px; /* Lebar maksimum section slider */
+  width: 100%; /* Agar responsif hingga max-width */
+  margin: 20px auto 2rem auto; /* Atas 20px, Kiri/Kanan auto (tengah), Bawah 2rem */
+  /* height: 300px; <-- Dihapus, biarkan wrapper yang mengatur tinggi */
+  /* --- AKHIR PERUBAHAN --- */
+  overflow: hidden; /* Mencegah konten section meluber */
   border-radius: 20px;
-  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.indicator-dot {
-  width: var(--slider-indicator-size);
-  height: var(--slider-indicator-size);
-  border-radius: 50%;
-  background-color: var(--slider-indicator-color);
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease,
-    box-shadow 0.3s ease;
+.simple-slider-wrapper {
+  position: relative;
+  width: 1300px; /* Lebar maksimum konten slider (banner), bisa 100% jika ingin sama dengan section */
+  height: 300px;
+  margin: 0 auto; /* Menengahkan wrapper di dalam section (jika max-width < 100%) */
+  overflow: hidden; /* Penting untuk efek slide */
+  border-radius: 8px; /* Opsional */
+  background-color: #f0f0f0; /* Warna dasar saat gambar belum load */
+  /* min-height: 300px;  <-- Bisa jadi redundant jika aspect-ratio selalu terpenuhi, tapi bisa jadi fallback */
+  aspect-ratio: 16 / 9; /* Default aspect ratio, sesuaikan jika banner SVG punya rasio lain */
+  /* Jika banner Anda punya rasio spesifik, misal 3:1, gunakan '3 / 1' */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Dipindahkan dari bawah untuk kerapian */
 }
 
-.indicator-dot.active {
-  background-color: var(--slider-indicator-active-color);
-  transform: scale(1.2);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-}
-
-.indicator-dot:hover,
-.indicator-dot:focus {
-  transform: scale(1.1);
-  outline: none;
-}
-
-.indicator-dot.active:hover,
-.indicator-dot.active:focus {
-  transform: scale(1.3);
-}
-
-/* ========= Skeleton Loading ========= */
-.slider-skeleton {
+/* Skeleton Loading */
+.simple-slider-skeleton {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: #e0e0e0;
-  border-radius: var(--slider-border-radius);
-  z-index: 20;
-  overflow: hidden;
-  display: flex;
+  z-index: 10;
+  display: flex; /* Akan disembunyikan oleh JS */
   align-items: center;
   justify-content: center;
+  transition: opacity 0.5s ease-out; /* Efek fade out saat skeleton hilang */
 }
 
-.skeleton-item {
+.skeleton-item-simple {
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -277,10 +51,10 @@
     rgba(224, 224, 224, 0.8) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: simple-shimmer 1.5s infinite linear;
 }
 
-@keyframes shimmer {
+@keyframes simple-shimmer {
   0% {
     background-position: 200% 0;
   }
@@ -289,153 +63,27 @@
   }
 }
 
-/* Optional loading text/icon */
-.skeleton-item::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-/* ========= Responsive Adjustments ========= */
-@media (max-width: 768px) {
-  .custom-slider-section {
-    --slider-nav-btn-size: 32px;
-    --slider-nav-btn-icon-size: 18px;
-    --slider-indicator-size: 8px;
-  }
-
-  .slider-nav-btn {
-    opacity: 0.7; /* Always slightly visible on mobile */
-  }
-
-  .slider-nav-btn.prev {
-    left: 8px;
-  }
-
-  .slider-nav-btn.next {
-    right: 8px;
-  }
-
-  .slide-item-caption {
-    padding: 8px;
-  }
-
-  .slide-item-caption h3 {
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .slide-item-caption p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .custom-slider-section {
-    --slider-nav-btn-size: 28px;
-    --slider-nav-btn-icon-size: 16px;
-    --slider-border-radius: 8px;
-  }
-
-  .slider-indicators {
-    bottom: 8px;
-    gap: 6px;
-  }
-}
-
-/* ========= Accessibility Focus States ========= */
-.slider-wrapper:focus-within {
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5), var(--slider-shadow);
-  outline: none;
-}
-
-.slider-nav-btn:focus,
-.indicator-dot:focus {
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-  outline: none;
-}
-
-/* ========= Helper Classes ========= */
-.slider-fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* RTL Support */
-[dir="rtl"] .slider-nav-btn.prev {
-  left: auto;
-  right: 15px;
-}
-
-[dir="rtl"] .slider-nav-btn.next {
-  right: auto;
-  left: 15px;
-}
-
-/* Print-friendly styles */
-@media print {
-  .slider-wrapper {
-    height: auto !important;
-    box-shadow: none;
-  }
-
-  .slider-outer-container {
-    position: static;
-    height: auto;
-  }
-
-  .slider-inner-container {
-    display: block;
-    transform: none !important;
-  }
-
-  .slide-item {
-    display: block;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    margin-bottom: 20px;
-  }
-
-  .slide-item[aria-hidden="true"] {
-    display: none;
-  }
-
-  .slider-nav-btn,
-  .slider-indicators,
-  .slider-skeleton {
-    display: none !important;
-  }
-}
-
-/* Enable hardware acceleration for smoother animations */
-.slider-wrapper,
-.slider-inner-container,
-.slide-item {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+/* Slider Structure */
+.simple-slider-inner {
+  display: flex;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); /* Kecepatan dan easing transisi slide */
   will-change: transform;
 }
+
+.simple-slide-item {
+  min-width: 100%; /* Setiap slide mengambil lebar penuh wrapper */
+  height: 100%;
+  flex-shrink: 0;
+  position: relative; /* Untuk positioning caption */
+  overflow: hidden;
+}
+
+.simple-slide-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Gambar akan menutupi area slide. Untuk SVG, 'contain' mungkin lebih baik jika tidak ingin ada cropping, tergantung desain SVGnya. */
+  display: block; /* Menghilangkan spasi bawah default pada inline-block */
+}
+
+/* Opsional: sedikit shadow pada wrapper sudah dipindahkan ke atas */
