@@ -34,6 +34,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/js/script.js"></script>
+    <script src="<?php echo BASE_URL; ?>/assets/js/main_script.js"></script>
     <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url(BASE_URL, PHP_URL_PATH) . '/assets/js/script_login.js')): ?>
         <script src="/assets/js/script_login.js"></script>
     <?php endif; ?>

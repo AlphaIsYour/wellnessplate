@@ -33,6 +33,17 @@ body {
   z-index: 1000; /* Pastikan di atas konten lain */
 }
 
+.social-iconsf a {
+  display: inline-flex;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 24px;
+  color: #ffffff;
+  margin: 0 8px;
+  -left: 160px;
+}
+
 .container-navbar {
   display: flex;
   justify-content: space-between;
