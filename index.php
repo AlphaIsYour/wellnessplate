@@ -60,34 +60,10 @@ require_once __DIR__ . '/includes/components/slider.php'; // Panggil komponen sl
 ?>
 
     <!-- 4. Komponen Lain (Contoh: Artikel Terbaru) -->
-    <section class="latest-articles-section" style="padding: 30px 0; background-color: #f1f1f1; border-radius: 20px;">
-        <div class="container" style="max-width: 1000px; margin: auto;">
-            <h2 style="text-align: center; margin-bottom: 20px;">Artikel Terbaru</h2>
-            <div class="articles-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <?php
-                // Contoh data artikel, bisa dari database
-                $articles = [
-                    ['title' => 'Manfaat Sarapan Pagi untuk Produktivitas', 'excerpt' => 'Sarapan adalah...', 'image' => BASE_URL . '/assets/images/articles/1.png', 'link' => BASE_URL . '/artikel/manfaat-sarapan'],
-                    ['title' => '5 Olahraga Ringan di Rumah Selama Pandemi', 'excerpt' => 'Tetap aktif...', 'image' => BASE_URL . '/assets/images/articles/2.png', 'link' => BASE_URL . '/artikel/olahraga-rumah'],
-                    ['title' => 'Cara Memilih Buah dan Sayur Segar', 'excerpt' => 'Tips penting...', 'image' => BASE_URL . '/assets/images/articles/1.png', 'link' => BASE_URL . '/artikel/tips-buah-sayur'],
-                ];
-                foreach ($articles as $article):
-                ?>
-                <div class="article-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background-color: white;">
-                    <a href="<?php echo htmlspecialchars($article['link']); ?>">
-                        <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="<?php echo htmlspecialchars($article['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
-                    </a>
-                    <div style="padding: 15px;">
-                        <h3><a href="<?php echo htmlspecialchars($article['link']); ?>" style="text-decoration: none; color: #333;"><?php echo htmlspecialchars($article['title']); ?></a></h3>
-                        <p style="color: #666; font-size: 0.9em;"><?php echo htmlspecialchars(substr($article['excerpt'], 0, 100)) . '...'; ?></p>
-                        <a href="<?php echo htmlspecialchars($article['link']); ?>" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none;">Baca Selengkapnya →</a>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-                 <!-- Pastikan kamu punya folder assets/images/articles/ dan gambar-gambarnya. -->
-            </div>
-        </div>
-    </section>
+<?php 
+require_once __DIR__ . '/includes/components/article.php'; // Panggil komponen slider
+?>
+    
 
     
 

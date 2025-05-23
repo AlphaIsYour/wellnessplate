@@ -1,0 +1,338 @@
+/* assets/css/search.css */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #fff;
+  color: #333;
+  line-height: 1.6;
+}
+
+.search-page-container {
+  max-width: 1500px;
+  padding: 0 15px;
+}
+
+.search-bar-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-layout {
+  display: flex;
+  gap: 25px;
+}
+
+.filter-sidebar {
+  width: 25%;
+  min-width: 280px;
+  background-color: #28a745; /* PERUBAHAN: Warna background teal */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  align-self: flex-start;
+  color: #f0f0f0; /* PERUBAHAN: Warna teks default untuk kontras */
+}
+
+.filter-group {
+  margin-bottom: 25px;
+}
+
+.filter-group h4 {
+  font-size: 1.1em;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #000000; /* PERUBAHAN: Warna border kontras dengan teal */
+  color: #fff; /* PERUBAHAN: Warna judul filter */
+}
+
+.checkbox-list label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  cursor: pointer;
+  color: #fff; /* PERUBAHAN: Warna label checkbox */
+}
+.checkbox-list label:hover {
+  color: #fff;
+}
+.checkbox-list input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Tombol "Show More" dan input manual tidak lagi digunakan dari UI, style bisa dihapus/dikomentari */
+/* .show-more-btn { ... } */
+/* .manual-filter-input { ... } */
+
+.btn-apply-filter {
+  /* PERUBAHAN: Style untuk tombol Terapkan Filter */
+  background-color: #ffffff; /* Warna lebih gelap dari teal atau warna kontras */
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 12px 15px;
+  width: 100%;
+  border-radius: 4px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.2s;
+}
+.btn-apply-filter:hover {
+  background-color: #cff5ee;
+}
+
+.search-results-area {
+  flex-grow: 1;
+}
+
+.search-results-area h1 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+.search-results-area h1 em {
+  color: #28a745;
+  font-style: normal;
+}
+
+.results-info {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.selected-filters-container {
+  margin-bottom: 25px;
+  padding: 12px 15px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.selected-filters-container > span {
+  font-weight: 500;
+  margin-right: 5px;
+  color: #495057;
+}
+
+.filter-tag {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 0.85em;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  height: 25px;
+  box-sizing: border-box;
+}
+
+.filter-tag .remove-filter-btn {
+  background: none;
+  border: none;
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 0;
+  line-height: 0.5;
+}
+.filter-tag .remove-filter-btn:hover {
+  opacity: 0.8;
+}
+
+#clearAllFiltersBtn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  margin-left: auto;
+}
+#clearAllFiltersBtn:hover {
+  background-color: #c82333;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.menu-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden; /* Penting untuk border-radius gambar dan ellipsis */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  /* PERUBAHAN: Sesuaikan tinggi card karena deskripsi hilang.
+       Ini mungkin perlu penyesuaian lebih lanjut tergantung konten lain.
+       Atau bisa juga 'auto' jika ingin tinggi dinamis tapi tombol tetap di bawah. */
+  height: 350px; /* Misalnya, atau coba 320px */
+}
+.menu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.menu-card img {
+  width: 100%;
+  height: 180px; /* Tinggi gambar bisa disesuaikan jika perlu */
+  object-fit: cover;
+}
+
+.menu-card-content {
+  padding: 12px; /* Sedikit kurangi padding jika perlu */
+  flex-grow: 1; /* Konten mengambil sisa ruang vertikal */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; Ini akan kita atur dengan margin-top: auto pada tombol */
+}
+
+.menu-card-content .menu-info {
+  /* Div baru untuk membungkus judul dan tags */
+  /* Biarkan div ini mengambil ruang yang dibutuhkan oleh judul dan tags */
+  margin-bottom: 10px; /* Jarak antara info dan tombol (jika judul & tag pendek) */
+}
+
+.menu-card-content h3 {
+  font-size: 1rem; /* PERUBAHAN: Kecilkan font size judul, misal 1rem atau 1.1rem */
+  margin-top: 0;
+  margin-bottom: 8px; /* Jarak antara judul dan tags */
+  line-height: 1.3; /* Sesuaikan line-height untuk 2 baris */
+
+  /* Teknik Ellipsis untuk Judul (misal, 2 baris) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Untuk memastikan ada ruang minimal untuk 2 baris, meskipun judulnya pendek
+       Ini membantu konsistensi tinggi bagian atas card. */
+  min-height: 2.6em; /* (1.3em line-height * 2 baris). Sesuaikan jika line-height berubah. */
+  max-height: 2.6em; /* Opsional, jika ingin strict 2 baris */
+}
+.menu-card-content h3 a {
+  text-decoration: none;
+  color: #333;
+}
+.menu-card-content h3 a:hover {
+  color: #007bff;
+}
+
+/* Style untuk .menu-description sudah tidak relevan karena dihilangkan dari HTML */
+
+.menu-tags {
+  /* margin-bottom sudah diatur oleh .menu-info */
+}
+.menu-tags .tag {
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #555;
+  font-size: 0.75em; /* Sedikit kecilkan tag jika perlu */
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-right: 4px;
+  margin-bottom: 4px; /* Untuk tag yang wrap ke baris baru */
+}
+
+.btn-details {
+  display: block; /* Agar width 100% dan margin auto bekerja dengan baik */
+  background-color: #28a745;
+  color: white !important;
+  padding: 10px 0; /* Padding atas bawah, kiri kanan 0 karena width 100% */
+  text-align: center;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  width: 100%; /* Buat tombol memenuhi lebar card-content */
+  box-sizing: border-box; /* Padding dan border termasuk dalam width */
+  margin-top: auto; /* PERUBAHAN KUNCI: Ini akan mendorong tombol ke bawah */
+  transition: background-color 0.2s;
+  flex-shrink: 0; /* Mencegah tombol menyusut jika konten di atasnya "mendesak" */
+}
+.btn-details:hover {
+  background-color: #218838;
+}
+
+.pagination {
+  margin-top: 30px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+.pagination a,
+.pagination span {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0 3px;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  color: #007bff;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.pagination a:hover {
+  background-color: #e9ecef;
+  border-color: #ccc;
+}
+.pagination .current-page {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.pagination .disabled {
+  color: #aaa;
+  pointer-events: none;
+  border-color: #eee;
+}
+
+.no-results {
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 40px 0;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .menu-card {
+    height: 370px; /* Sesuaikan tinggi card jika perlu di viewport berbeda */
+  }
+}
+@media (max-width: 992px) {
+  .search-layout {
+    flex-direction: column;
+  }
+  .filter-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .menu-card {
+    height: auto; /* Biarkan tinggi otomatis pada tampilan tablet ke bawah */
+  }
+}
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
