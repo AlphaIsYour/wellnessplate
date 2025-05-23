@@ -1,17 +1,10 @@
 <?php
-// File: index.php (di root folder proyek wellnessplate/)
-
-// Pastikan koneksi.php di-include untuk session_start() dan BASE_URL
-// Path ini mengasumsikan koneksi.php ada di wellnessplate/config/koneksi.php
 require_once __DIR__ . '/config/koneksi.php';
 
 $page_title = "WellnessPlate - Jaga Kesehatanmu, Mulai Dari Piringmu!";
-
-// --- Data untuk Slider Banner (Contoh) ---
-// Di aplikasi nyata, ini bisa diambil dari database
 $slider_banners = [
     [
-        'image' => BASE_URL . '/assets/images/slider/1.png', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/1.png',
         'alt' => 'Promo Makanan Sehat Minggu Ini',
         'link' => BASE_URL . '/produk/salad'
     ],
@@ -39,10 +32,7 @@ $slider_options = [
     'show_captions' => true,
     'aspect_ratio' => '16:9'
 ];
-// Pastikan kamu punya folder assets/images/slider/ dan gambar-gambarnya.
 
-// Panggil header.php untuk struktur HTML dasar
-// Path ini mengasumsikan header.php ada di wellnessplate/includes/header.php
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -50,18 +40,18 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- 1. Search Bar Section -->
 <?php 
-require_once __DIR__ . '/includes/components/search-bar.php'; // Panggil komponen slider
+require_once __DIR__ . '/includes/components/search-bar.php';
 ?>
 
 
     <!-- 2. Slider Banner Section -->
 <?php 
-require_once __DIR__ . '/includes/components/slider.php'; // Panggil komponen slider
+require_once __DIR__ . '/includes/components/slider.php';
 ?>
 
     <!-- 4. Komponen Lain (Contoh: Artikel Terbaru) -->
 <?php 
-require_once __DIR__ . '/includes/components/article.php'; // Panggil komponen slider
+require_once __DIR__ . '/includes/components/article.php';
 ?>
     
 
@@ -73,7 +63,6 @@ require_once __DIR__ . '/includes/components/article.php'; // Panggil komponen s
             <h2>Kategori Populer</h2>
             <div class="categories-grid" style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px;">
                 <?php
-                // Contoh data kategori, bisa dari database
                 $categories = [
                     ['name' => 'Makanan Diet', 'icon' => '🥗', 'link' => BASE_URL . '/kategori/diet'],
                     ['name' => 'Resep Vegan', 'icon' => '🥕', 'link' => BASE_URL . '/kategori/vegan'],
@@ -92,14 +81,13 @@ require_once __DIR__ . '/includes/components/article.php'; // Panggil komponen s
     </section>
 
     <?php 
-require_once __DIR__ . '/includes/components/about.php'; // Panggil komponen slider
+require_once __DIR__ . '/includes/components/about.php';
 ?>
     <?php 
-require_once __DIR__ . '/includes/components/faq.php'; // Panggil komponen slider
+require_once __DIR__ . '/includes/components/faq.php';
 ?>
 
     <?php
-    // Tampilkan pesan jika ada (misalnya setelah login berhasil dari redirect)
     if (isset($_GET['message'])) {
         echo "<p style='text-align: center; color: green; border: 1px solid green; padding: 10px; margin: 15px auto; max-width: 600px;'>" . htmlspecialchars($_GET['message']) . "</p>";
     }
@@ -115,9 +103,8 @@ require_once __DIR__ . '/includes/components/faq.php'; // Panggil komponen slide
         </div>
     <?php endif; ?>
 
-</div> <!-- .main-content -->
+</div>
 
 <?php
-// Panggil footer.php
 require_once __DIR__ . '/includes/footer.php';
 ?>

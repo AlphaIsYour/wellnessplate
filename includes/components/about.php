@@ -25,7 +25,7 @@ $key_features = [
 ];
 
 $call_to_action_text = "Pelajari Kisah Kami Lebih Dalam";
-$call_to_action_link = "#"; // Ganti dengan URL halaman "Tentang Kami" yang lebih detail
+$call_to_action_link = "#";
 
 ?>
 
@@ -45,7 +45,7 @@ $call_to_action_link = "#"; // Ganti dengan URL halaman "Tentang Kami" yang lebi
             <?php foreach ($key_features as $feature) : ?>
             <div class="feature-item">
                 <div class="feature-icon">
-                    <?php echo $feature['icon_svg_code']; // Output SVG code directly ?>
+                    <?php echo $feature['icon_svg_code'];  ?>
                 </div>
                 <h3 class="feature-title"><?php echo htmlspecialchars($feature['title']); ?></h3>
                 <p class="feature-description"><?php echo htmlspecialchars($feature['description']); ?></p>

@@ -1,11 +1,5 @@
 <?php
-// Pastikan BASE_URL sudah didefinisikan, misalnya dari config.php
 if (!defined('BASE_URL')) {
-    // Anda bisa include config.php di sini jika komponen ini dipanggil secara independen
-    // atau pastikan file yang memanggil komponen ini sudah include config.php
-    // require_once __DIR__ . '/../config.php'; // Contoh jika struktur foldernya seperti di atas
-    // Untuk sementara, jika belum ada, kita set default agar tidak error saat testing komponen saja
-    // define('BASE_URL', 'http://localhost/wellnessplate'); // HAPUS INI JIKA CONFIG.PHP SUDAH DI-INCLUDE DI FILE UTAMA
 }
 ?>
 <section class="search-section" style="padding: 5px 0; background-color: #fff; text-align: center; border-radius: 10px; margin-bottom: 20px;">

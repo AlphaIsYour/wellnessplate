@@ -1,26 +1,18 @@
 <?php
-// Pastikan session sudah dimulai (biasanya di koneksi.php)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Pastikan BASE_URL sudah terdefinisi (dari config/koneksi.php)
-// Jika file ini dipanggil sebelum koneksi.php, BASE_URL tidak akan ada.
-// Solusi terbaik: pastikan koneksi.php di-include pertama di file halaman utama.
 if (!defined('BASE_URL')) {
-    // Fallback sederhana jika BASE_URL belum ada, tapi ini bukan solusi ideal
-    // Sebaiknya pastikan koneksi.php di-include sebelum header ini
-    // Jika kamu pakai folder 'wellnessplate2'
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     $host_name = $_SERVER['HTTP_HOST'];
-    define('BASE_URL', $protocol . $host_name .''); // Ganti 'wellnessplate2' jika perlu
+    define('BASE_URL', $protocol . $host_name .'');
 }
 
 $page_title_default = "WellnessPlate - Resep Sehat Untukmu";
-$current_page_title = $page_title ?? $page_title_default; // Gunakan $page_title dari halaman atau default
+$current_page_title = $page_title ?? $page_title_default;
 
-$body_class = ''; // Untuk class body spesifik halaman
-if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset di halaman auth
+$body_class = '';
+if (isset($is_auth_page) && $is_auth_page === true) { 
     $body_class = 'auth-page';
 }
 ?>
@@ -39,7 +31,6 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
 
     <?php endif; ?>
     <link rel="icon" href="/assets/images/logo.svg" type="image/svg">
-    <!-- Tambahkan link CSS atau font lain jika perlu -->
 </head>
 <body class="<?php echo $body_class; ?>">
     <header class="site-header-frontend">
@@ -72,4 +63,4 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
         </div>
     </header>
     <div class="main-content-area-frontend">
-    <?php // Konten utama akan dimulai setelah ini di file halaman spesifik ?>
+    <?php  ?>

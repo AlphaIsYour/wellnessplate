@@ -1,8 +1,6 @@
 <?php
-// File: wellnessplate/includes/components/slider.php
 
 if (!isset($slider_banners) || !is_array($slider_banners) || empty($slider_banners)) {
-    // echo "<p>Error: Data slider tidak ditemukan atau kosong.</p>";
     return;
 }
 if (!isset($slider_options) || !is_array($slider_options)) {
@@ -11,9 +9,8 @@ if (!isset($slider_options) || !is_array($slider_options)) {
 
 $num_slides = count($slider_banners);
 $slider_id = $slider_id ?? 'simple-slider-' . uniqid();
-// Default 5 detik sudah di sini
 $autoplay_speed = (int)($slider_options['autoplay_speed'] ?? 5000); 
-$enable_autoplay = (bool)($slider_options['enable_autoplay'] ?? true); // Default autoplay aktif
+$enable_autoplay = (bool)($slider_options['enable_autoplay'] ?? true);
 $show_captions = $slider_options['show_captions'] ?? true;
 ?>
 

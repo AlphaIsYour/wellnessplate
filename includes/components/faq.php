@@ -1,10 +1,7 @@
 <?php
 // File: wellnessplate/includes/components/faq.php
-// Komponen FAQ sederhana dengan dropdown.
 
 $faq_title = "Pertanyaan yang Sering Diajukan (FAQ)";
-
-// Array untuk data FAQ. Anda bisa menambah atau mengubahnya.
 $faq_items = [
     [
         'question' => 'Apa itu WellnessPlate?',
@@ -28,7 +25,6 @@ $faq_items = [
     ]
 ];
 
-// Generate unique ID untuk section FAQ agar JS bisa lebih spesifik jika ada >1 FAQ section
 $faq_section_id = 'faq-section-' . uniqid();
 ?>
 
@@ -64,15 +60,11 @@ $faq_section_id = 'faq-section-' . uniqid();
 </section>
 
 <?php
-// Kita akan tambahkan JavaScript langsung di sini untuk kemudahan.
-// Idealnya, ini akan ada di file JS terpisah dan di-enqueue.
-// Memastikan skrip hanya dimuat sekali jika komponen dipanggil berkali-kali (meskipun tidak ideal)
 if (!defined('FAQ_SCRIPT_INCLUDED')) {
     define('FAQ_SCRIPT_INCLUDED', true);
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Cari semua section FAQ yang mungkin ada di halaman
     const faqSections = document.querySelectorAll('.faq-section');
 
     faqSections.forEach(faqSection => {
@@ -87,10 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isExpanded = questionButton.getAttribute('aria-expanded') === 'true';
 
                 questionButton.setAttribute('aria-expanded', !isExpanded);
-                answerPanel.setAttribute('aria-hidden', isExpanded); // Jika tadinya true (expanded), maka jadi hidden (collapsed)
+                answerPanel.setAttribute('aria-hidden', isExpanded);
 
                 if (!isExpanded) {
-                    // Expand: set max-height agar transisi CSS bekerja
                     answerPanel.style.maxHeight = answerPanel.scrollHeight + 'px';
                     answerPanel.style.opacity = '1';
                     icon.style.transform = 'rotate(180deg)';
@@ -103,9 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('active');
                 }
             });
-
-            // Set initial state for collapsed answers to have 0 opacity and maxHeight
-            // This ensures the transition works on first click as well
             if (questionButton.getAttribute('aria-expanded') === 'false') {
                 answerPanel.style.maxHeight = '0';
                 answerPanel.style.opacity = '0';
@@ -115,5 +103,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php
-} // End if (!defined('FAQ_SCRIPT_INCLUDED'))
+}
 ?>

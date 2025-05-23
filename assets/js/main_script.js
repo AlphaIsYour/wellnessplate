@@ -10,13 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!inner || !slides || slides.length === 0) {
       if (skeleton) skeleton.style.display = "none";
-      return; // Tidak ada slide, hentikan
+      return;
     }
 
     let currentIndex = 0;
     const numSlides = slides.length;
     const autoplayEnabled = sliderSection.dataset.autoplay === "true";
-    // Ini akan mengambil nilai 5000 dari data attribute atau PHP
     const autoplaySpeed = parseInt(sliderSection.dataset.autoplaySpeed) || 5000;
     let autoplayInterval;
 
@@ -55,9 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function stopAutoplay() {
       clearInterval(autoplayInterval);
     }
-
-    // Inisialisasi
-    // Mengandalkan CSS aspect-ratio untuk dimensi. JS hanya menyembunyikan skeleton.
     const firstImage = slides[0] ? slides[0].querySelector("img") : null;
     if (firstImage) {
       const hideSkeleton = () => {
@@ -72,16 +68,12 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       if (firstImage.complete) {
-        // Jika gambar sudah di cache atau non-SVG yang cepat
         hideSkeleton();
       } else {
-        // Untuk SVG, 'load' event adalah yang paling reliable
-        // Untuk img biasa, 'load' juga bekerja
         firstImage.addEventListener("load", hideSkeleton);
-        firstImage.addEventListener("error", hideSkeleton); // Juga sembunyikan jika error
+        firstImage.addEventListener("error", hideSkeleton);
       }
     } else {
-      // Tidak ada gambar sama sekali
       if (skeleton) skeleton.style.display = "none";
     }
 

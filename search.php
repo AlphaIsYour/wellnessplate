@@ -1,22 +1,16 @@
 <?php
 require_once 'includes/config.php';
-// require_once 'includes/functions.php';
 
 $keyword = isset($_GET['keyword']) ? trim(htmlspecialchars($_GET['keyword'])) : '';
 
-// Ambil filter dari GET request
 $selected_kondisi = isset($_GET['kondisi']) && is_array($_GET['kondisi']) ? array_map('htmlspecialchars', $_GET['kondisi']) : [];
 $selected_jenis = isset($_GET['jenis']) && is_array($_GET['jenis']) ? array_map('htmlspecialchars', $_GET['jenis']) : [];
-// HAPUS: $manual_kondisi dan $manual_jenis dari GET params dan logika
 
 $page_title = "Pencarian Menu Makanan";
 if (!empty($keyword)) {
     $page_title .= " untuk \"$keyword\"";
 }
 require_once __DIR__ . '/includes/header.php';
-
-// --- DATA MENU MAKANAN (Contoh, idealnya dari database) ---
-// Pastikan deskripsi cukup panjang untuk menguji ellipsis
 $all_food_menus = [
     ['id' => 1, 'name' => 'Salad Ayam Panggang Rendah Kalori', 'description' => 'Salad segar dengan potongan ayam panggang tanpa kulit, sayuran hijau, tomat ceri, dan dressing lemon rendah lemak. Pilihan tepat untuk diet dan menjaga gula darah. Sangat direkomendasikan bagi Anda yang aktif.', 'image' => BASE_URL . '/assets/images/menu/1.jpg', 'tags' => ['sayuran', 'daging', 'diet', 'diabetes', 'rendah_kalori', 'protein_tinggi']],
     ['id' => 2, 'name' => 'Smoothie Bayam Pisang Antioksidan', 'description' => 'Smoothie hijau kaya serat dan vitamin dari bayam, pisang, dan sedikit jahe. Cocok untuk sarapan atau camilan sehat. Memberikan energi tahan lama sepanjang hari.', 'image' => BASE_URL . '/assets/images/menu/2.jpg', 'tags' => ['jus', 'sayuran', 'buah', 'diet', 'vegetarian', 'antioksidan']],
@@ -43,9 +37,8 @@ if (!empty($keyword)) {
     });
 }
 
-// Fungsi untuk mengecek tag (disederhanakan karena tidak ada manual filter dari UI)
 function check_tags_simple($menu_tags, $selected_filters) {
-    if (empty($selected_filters)) return true; // Jika tidak ada filter dipilih, semua lolos
+    if (empty($selected_filters)) return true; 
     foreach ($selected_filters as $filter) {
         $filter_found_in_tags = false;
         foreach ($menu_tags as $menu_tag) {
@@ -55,10 +48,10 @@ function check_tags_simple($menu_tags, $selected_filters) {
             }
         }
         if (!$filter_found_in_tags) {
-            return false; // Jika satu filter WAJIB tidak ada di tags, menu tidak cocok
+            return false;
         }
     }
-    return true; // Semua filter yang dipilih ada di tags menu
+    return true;
 }
 
 
@@ -84,7 +77,6 @@ $current_page = max(1, min($current_page, $total_pages == 0 ? 1 : $total_pages))
 $offset = ($current_page - 1) * $items_per_page;
 $paginated_results = array_slice($search_results, $offset, $items_per_page);
 
-// Data untuk filter checkboxes
 $kondisi_kesehatan_options = [
     'diabetes' => 'Diabetes', 'diet' => 'Diet', 'kolesterol' => 'Kolesterol', 'asam_urat' => 'Asam Urat', 'darah_tinggi' => 'Darah Tinggi',
     'jantung' => 'Jantung', 'ginjal' => 'Ginjal', 'maag' => 'Maag', 'alergi_gluten' => 'Alergi Gluten', 'rendah_garam' => 'Rendah Garam'
@@ -99,14 +91,13 @@ function build_filter_query_string($exclude_key = null) {
     if ($exclude_key && isset($params[$exclude_key])) {
         unset($params[$exclude_key]);
     }
-    // HAPUS: Parameter manual_kondisi dan manual_jenis jika ada dari URL lama
     unset($params['manual_kondisi']);
     unset($params['manual_jenis']);
     return http_build_query($params);
 }
 ?>
 
-<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/search.css?v=<?= time() ?>"> <!-- Tambah versi untuk cache busting -->
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/search.css?v=<?= time() ?>">
 
 <div class="search-page-container">
         <?php require_once __DIR__ . '/includes/components/search-bar.php'; ?>
@@ -126,8 +117,6 @@ function build_filter_query_string($exclude_key = null) {
                             </label>
                         <?php endforeach; ?>
                     </div>
-                    <!-- HAPUS: Tombol Show More -->
-                    <!-- HAPUS: Input Manual -->
                 </div>
 
                 <div class="filter-group">
@@ -140,11 +129,9 @@ function build_filter_query_string($exclude_key = null) {
                             </label>
                         <?php endforeach; ?>
                     </div>
-                    <!-- HAPUS: Tombol Show More -->
-                    <!-- HAPUS: Input Manual -->
                 </div>
                 
-                <button type="submit" class="btn-apply-filter">Terapkan Filter</button> <!-- PERUBAHAN: Tombol submit -->
+                <button type="submit" class="btn-apply-filter">Terapkan Filter</button>
             </form>
         </aside>
 
@@ -153,7 +140,7 @@ function build_filter_query_string($exclude_key = null) {
                 <?php
                 if (!empty($keyword)) {
                     echo "Hasil Pencarian untuk: <em>" . htmlspecialchars($keyword) . "</em>";
-                } elseif (!empty($selected_kondisi) || !empty($selected_jenis)) { // Disederhanakan
+                } elseif (!empty($selected_kondisi) || !empty($selected_jenis)) { 
                     echo "Hasil Pencarian Berdasarkan Filter";
                 } else {
                     echo "Semua Menu Makanan";
@@ -164,7 +151,7 @@ function build_filter_query_string($exclude_key = null) {
             <p class="results-info">Ditemukan <?= $total_items ?> hasil menu makanan.</p>
 
             <?php
-            $active_filters_exist = !empty($selected_kondisi) || !empty($selected_jenis); // Disederhanakan
+            $active_filters_exist = !empty($selected_kondisi) || !empty($selected_jenis); 
             if ($active_filters_exist):
             ?>
                 <div class="selected-filters-container">
@@ -174,14 +161,12 @@ function build_filter_query_string($exclude_key = null) {
                             <button class="remove-filter-btn" data-filter-type="kondisi" data-filter-value="<?= $sk ?>">×</button>
                         </span>
                     <?php endforeach; ?>
-                    <!-- HAPUS: Tag untuk manual_kondisi -->
 
                     <?php foreach ($selected_jenis as $sj): ?>
                         <span class="filter-tag"><?= htmlspecialchars($jenis_makanan_options[$sj] ?? $sj) ?>
                             <button class="remove-filter-btn" data-filter-type="jenis" data-filter-value="<?= $sj ?>">×</button>
                         </span>
                     <?php endforeach; ?>
-                    <!-- HAPUS: Tag untuk manual_jenis -->
                     <button id="clearAllFiltersBtn">Clear All Filters</button>
                 </div>
             <?php endif; ?>
@@ -191,11 +176,11 @@ function build_filter_query_string($exclude_key = null) {
     <div class="menu-grid">
         <?php foreach ($paginated_results as $menu): ?>
             <div class="menu-card">
-                <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>"> <!-- Link gambar -->
+                <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>">
                     <img src="<?= htmlspecialchars($menu['image']) ?>" alt="<?= htmlspecialchars($menu['name']) ?>">
                 </a>
                 <div class="menu-card-content">
-                    <div class="menu-info"> <!-- Wrapper untuk judul dan tags -->
+                    <div class="menu-info">
                         <h3>
                             <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>" title="<?= htmlspecialchars($menu['name']) ?>"> <!-- Tambahkan title attribute untuk full name on hover -->
                                 <?= htmlspecialchars($menu['name']) ?>
@@ -204,24 +189,18 @@ function build_filter_query_string($exclude_key = null) {
                         <?php if (!empty($menu['tags'])): ?>
                         <div class="menu-tags">
                             <?php 
-                            $tag_limit = 2; // Atau 3 jika masih ada ruang
+                            $tag_limit = 2;
                             $displayed_tags = 0;
                             foreach ($menu['tags'] as $tag_text): 
-                                // Opsi: Jangan tampilkan tag yang sudah jadi filter aktif (bisa di-uncomment jika mau)
-                                // if (in_array($tag_text, $selected_kondisi) || in_array($tag_text, $selected_jenis)) {
-                                //     continue; 
-                                // }
                                 if ($displayed_tags >= $tag_limit) break;
                             ?>
                                 <span class="tag"><?= htmlspecialchars(ucwords(str_replace('_', ' ', $tag_text))) ?></span>
                             <?php 
                                 $displayed_tags++;
                             endforeach; 
-                            
-                            // Logika untuk menampilkan '...' jika ada lebih banyak tag (tidak termasuk yang sudah difilter)
+
                             $relevant_tags_count = 0;
                             foreach($menu['tags'] as $t){
-                                // Hitung tag yang relevan (bukan yang sedang aktif sebagai filter)
                                 if (!(in_array($t, $selected_kondisi) || in_array($t, $selected_jenis))) {
                                      $relevant_tags_count++;
                                 }
@@ -240,14 +219,12 @@ function build_filter_query_string($exclude_key = null) {
     <?php if ($total_pages > 1): ?>
         <nav class="pagination">
             <?php
-            // Previous page
             if ($current_page > 1) {
                 echo '<a href="?page=' . ($current_page - 1) . '&' . build_filter_query_string('page') . '">« Prev</a>';
             } else {
                 echo '<span class="disabled">« Prev</span>';
             }
 
-            // Page numbers
             $num_links = 2; 
             if ($current_page > ($num_links + 1) ) {
                 echo '<a href="?page=1&' . build_filter_query_string('page') . '">1</a>';
@@ -268,8 +245,7 @@ function build_filter_query_string($exclude_key = null) {
                 }
                 echo '<a href="?page=' . $total_pages . '&' . build_filter_query_string('page') . '">' . $total_pages . '</a>';
             }
-            
-            // Next page
+
             if ($current_page < $total_pages) {
                 echo '<a href="?page=' . ($current_page + 1) . '&' . build_filter_query_string('page') . '">Next »</a>';
             } else {
@@ -293,7 +269,7 @@ function build_filter_query_string($exclude_key = null) {
     </div>
 </div>
 
-<script src="<?= BASE_URL ?>/assets/js/search.js?v=<?= time() ?>"></script> <!-- Tambah versi untuk cache busting -->
+<script src="<?= BASE_URL ?>/assets/js/search.js?v=<?= time() ?>"></script>
 <?php
 require_once __DIR__ . '/includes/footer.php';
 ?>
