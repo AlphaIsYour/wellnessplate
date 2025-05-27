@@ -90,18 +90,13 @@ if (!empty($errors)) {
     exit;
 }
 
-// --- PEMBUATAN ID_ADMIN (VARCHAR 10) ---
-// Kita akan buat id unik dengan prefix 'ADM' dan 7 karakter acak/berbasis waktu.
-// Ini contoh sederhana. Untuk produksi, pertimbangkan UUID atau metode yang lebih kuat.
 $id_admin_generated = false;
-$max_generate_tries = 5; // Batas percobaan generate ID jika terjadi collision
+$max_generate_tries = 5;
 $try_count = 0;
 $new_id_admin = '';
 
 while (!$id_admin_generated && $try_count < $max_generate_tries) {
     $prefix = "ADM";
-    // Menghasilkan 7 karakter unik. Bisa dari timestamp atau random.
-    // Contoh: microtime untuk variasi cepat + sedikit random
     $unique_part = substr(str_shuffle(str_replace('.', '', microtime(true))), 0, 7);
     $new_id_admin = $prefix . $unique_part;
     
