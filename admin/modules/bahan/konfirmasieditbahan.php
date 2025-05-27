@@ -4,7 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Jika file ini dipanggil sebelum koneksi.php, BASE_URL tidak akan ada.
 // Solusi terbaik: pastikan koneksi.php di-include pertama di file halaman utama.
 if (!defined('BASE_URL')) {
     // Fallback sederhana jika BASE_URL belum ada, tapi ini bukan solusi ideal
