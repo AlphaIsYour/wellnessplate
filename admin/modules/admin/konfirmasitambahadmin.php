@@ -100,7 +100,6 @@ while (!$id_admin_generated && $try_count < $max_generate_tries) {
     $unique_part = substr(str_shuffle(str_replace('.', '', microtime(true))), 0, 7);
     $new_id_admin = $prefix . $unique_part;
     
-    // Pastikan panjangnya tepat 10 karakter (jika metode di atas bisa menghasilkan lebih/kurang)
     if (strlen($new_id_admin) > 10) {
         $new_id_admin = substr($new_id_admin, 0, 10);
     } elseif (strlen($new_id_admin) < 10) {
