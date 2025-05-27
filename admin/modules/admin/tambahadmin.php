@@ -40,9 +40,7 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
         include_once  '../../templates/sidebar.php';
         ?>
         <main class="content-area">
-            <!-- Konten utama halaman akan ada di sini -->
 <?php
-// modules/admin/tambahadmin.php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
