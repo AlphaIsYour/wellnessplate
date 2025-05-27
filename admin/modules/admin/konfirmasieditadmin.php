@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Ambil data dari form
 $id_admin = isset($_POST['id_admin']) ? trim($_POST['id_admin']) : '';
 $username = isset($_POST['username']) ? trim($_POST['username']) : '';
 $nama = isset($_POST['nama']) ? trim($_POST['nama']) : '';
