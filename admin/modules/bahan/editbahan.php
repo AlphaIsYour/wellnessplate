@@ -40,7 +40,6 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
         include_once  '../../templates/sidebar.php';
         ?>
         <main class="content-area">
-            <!-- Konten utama halaman akan ada di sini -->
 <?php
 require_once __DIR__ . '/../../../config/koneksi.php';
 
