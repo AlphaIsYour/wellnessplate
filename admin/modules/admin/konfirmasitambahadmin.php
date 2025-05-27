@@ -50,13 +50,12 @@ if (empty($email)) {
     $errors[] = "Email tidak boleh kosong.";
 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Format email tidak valid.";
-} elseif (strlen($email) > 100) { // Sesuai VARCHAR(100)
+} elseif (strlen($email) > 100) {
     $errors[] = "Email maksimal 100 karakter.";
 }
 
 // Lakukan pengecekan keunikan username dan email HANYA JIKA validasi dasar lolos
 if (empty($errors)) {
-    // Cek keunikan username
     $stmt_check_user = mysqli_prepare($koneksi, "SELECT id_admin FROM admin WHERE username = ?");
     if ($stmt_check_user) {
         mysqli_stmt_bind_param($stmt_check_user, "s", $username);
@@ -67,12 +66,9 @@ if (empty($errors)) {
         }
         mysqli_stmt_close($stmt_check_user);
     } else {
-        // Sebaiknya log error ini, jangan tampilkan mysqli_error ke user di production
         $errors[] = "Terjadi kesalahan saat memeriksa username. Silakan coba lagi."; 
-        // error_log("MySQL Prep Error (check user): " . mysqli_error($koneksi));
     }
 
-    // Cek keunikan email (jika tidak ada error sebelumnya)
     $stmt_check_email = mysqli_prepare($koneksi, "SELECT id_admin FROM admin WHERE email = ?");
     if ($stmt_check_email) {
         mysqli_stmt_bind_param($stmt_check_email, "s", $email);
@@ -84,7 +80,6 @@ if (empty($errors)) {
         mysqli_stmt_close($stmt_check_email);
     } else {
         $errors[] = "Terjadi kesalahan saat memeriksa email. Silakan coba lagi.";
-        // error_log("MySQL Prep Error (check email): " . mysqli_error($koneksi));
     }
 }
 
