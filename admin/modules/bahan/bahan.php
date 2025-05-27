@@ -41,7 +41,7 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
         ?>
         <main class="content-area">
 <?php
-// admin/modules/bahan/bahan.php
+
 require_once __DIR__ . '/../../../config/koneksi.php';
 
 $page_title = "Kelola Bahan Makanan";
