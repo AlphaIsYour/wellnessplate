@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Ambil data dari form
 $username = isset($_POST['username']) ? trim($_POST['username']) : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 $konfirmasi_password = isset($_POST['konfirmasi_password']) ? $_POST['konfirmasi_password'] : '';
@@ -21,7 +20,6 @@ $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 
 $_SESSION['form_input'] = $_POST;
 
-// Validasi dasar
 $errors = [];
 if (empty($username)) {
     $errors[] = "Username tidak boleh kosong.";
