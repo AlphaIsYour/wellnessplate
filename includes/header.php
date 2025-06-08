@@ -1,11 +1,15 @@
+
 <?php
+// ===== HEADER.PHP =====
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 if (!defined('BASE_URL')) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     $host_name = $_SERVER['HTTP_HOST'];
-    define('BASE_URL', $protocol . $host_name .'');
+    $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    define('BASE_URL', $protocol . $host_name . $base_path);
 }
 
 $page_title_default = "WellnessPlate - Resep Sehat Untukmu";
@@ -21,23 +25,35 @@ if (isset($is_auth_page) && $is_auth_page === true) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Content Security Policy untuk handle eval error -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; font-src 'self' https://unpkg.com; img-src 'self' data: https:;">
+    
     <title><?php echo htmlspecialchars($current_page_title); ?></title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/search.css">
+    
+    <!-- CSS Files - konsisten pakai BASE_URL -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/search.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/main_style.css">
+    
+    <!-- External CSS -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url( BASE_URL,PHP_URL_PATH) . '/assets/css/style_login.css')): ?>
-        <link rel="stylesheet" href="/assets/css/style_login.css">
-
+    
+    <!-- Conditional CSS for auth pages -->
+    <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url(BASE_URL, PHP_URL_PATH) . '/assets/css/style_login.css')): ?>
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style_login.css">
     <?php endif; ?>
-    <link rel="icon" href="/assets/images/logo.svg" type="image/svg">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="<?php echo BASE_URL; ?>/assets/images/logo.svg" type="image/svg+xml">
 </head>
 <body class="<?php echo $body_class; ?>">
     <header class="site-header-frontend">
         <div class="container-navbar">
             <div class="logo-frontend">
                 <a href="<?php echo BASE_URL; ?>/index.php">
-                    <img src="/assets/images/logo.svg" alt="WellnessPlate Logo">
+                    <img src="<?php echo BASE_URL; ?>/assets/images/logo.svg" alt="WellnessPlate Logo">
                     <span>WellnessPlate</span>
                 </a>
             </div>
@@ -63,4 +79,3 @@ if (isset($is_auth_page) && $is_auth_page === true) {
         </div>
     </header>
     <div class="main-content-area-frontend">
-    <?php  ?>

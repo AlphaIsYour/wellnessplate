@@ -24,6 +24,7 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
     <link rel="stylesheet" href="../../style.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body class="dashboard-body">
     <header class="page-header">
@@ -79,7 +80,42 @@ if ($result_bahan_all_q) {
 $form_input = isset($_SESSION['form_input_resep']) ? $_SESSION['form_input_resep'] : [];
 $resep_bahans_input = isset($form_input['resep_bahan']) && is_array($form_input['resep_bahan']) ? $form_input['resep_bahan'] : [['id_bahan' => '', 'jumlah' => '']];
 $gizi_input = $form_input['gizi'] ?? [];
+$tags_input = isset($form_input['tags']) ? json_decode($form_input['tags'], true) : [];
 unset($_SESSION['form_input_resep']);
+
+// Predefined tags
+$tag_categories = [
+    'jenis' => [
+        'mie' => 'Mie',
+        'jus' => 'Jus',
+        'sayuran' => 'Sayuran',
+        'daging' => 'Daging',
+        'seafood' => 'Seafood',
+        'buah' => 'Buah',
+        'nasi' => 'Nasi',
+        'sup' => 'Sup',
+        'camilan' => 'Camilan',
+        'sarapan' => 'Sarapan'
+    ],
+    'kondisi' => [
+        'diabetes' => 'Diabetes',
+        'diet' => 'Diet',
+        'kolesterol' => 'Kolesterol',
+        'asam_urat' => 'Asam Urat',
+        'darah_tinggi' => 'Darah Tinggi',
+        'jantung' => 'Jantung',
+        'ginjal' => 'Ginjal',
+        'maag' => 'Maag'
+    ],
+    'karakteristik' => [
+        'rendah_kalori' => 'Rendah Kalori',
+        'tinggi_protein' => 'Tinggi Protein',
+        'rendah_garam' => 'Rendah Garam',
+        'vegetarian' => 'Vegetarian',
+        'vegan' => 'Vegan',
+        'bebas_gluten' => 'Bebas Gluten'
+    ]
+];
 ?>
 
 <div class="container mx-auto py-8">
@@ -94,10 +130,21 @@ unset($_SESSION['form_input_resep']);
                 unset($_SESSION['error_message']);
             }
             ?>
-            <form action="<?php echo $base_url; ?>konfirmasitambahresep.php" method="POST">
+            <form action="<?php echo $base_url; ?>konfirmasitambahresep.php" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="nama_resep">Nama Resep</label>
                     <input type="text" id="nama_resep" name="nama_resep" value="<?php echo htmlspecialchars($form_input['nama_resep'] ?? ''); ?>" required maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi Resep</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="4" required><?php echo htmlspecialchars($form_input['deskripsi'] ?? ''); ?></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Foto Resep</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <small>Format yang diperbolehkan: JPG, JPEG, PNG. Ukuran maksimal: 2MB</small>
                 </div>
 
                 <div class="form-group">
@@ -125,6 +172,24 @@ unset($_SESSION['form_input_resep']);
                 </div>
 
                 <div class="form-group">
+                    <label>Tags</label>
+                    <?php foreach ($tag_categories as $category => $tags): ?>
+                        <div class="tag-category">
+                            <h4><?php echo ucfirst($category); ?></h4>
+                            <div class="tag-options">
+                                <?php foreach ($tags as $value => $label): ?>
+                                    <label class="tag-checkbox">
+                                        <input type="checkbox" name="tags[]" value="<?php echo $value; ?>"
+                                            <?php echo (in_array($value, $tags_input)) ? 'checked' : ''; ?>>
+                                        <?php echo htmlspecialchars($label); ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="form-group">
                     <label for="cara_buat">Cara Membuat</label>
                     <textarea id="cara_buat" name="cara_buat" rows="8" required><?php echo htmlspecialchars($form_input['cara_buat'] ?? ''); ?></textarea>
                 </div>
@@ -136,7 +201,7 @@ unset($_SESSION['form_input_resep']);
                     <div class="bahan-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #eee;">
                         <div style="flex: 5; margin-right: 10px;">
                             <label for="resep_bahan_<?php echo $index; ?>_id_bahan" class="sr-only">Bahan</label>
-                            <select name="resep_bahan[<?php echo $index; ?>][id_bahan]" id="resep_bahan_<?php echo $index; ?>_id_bahan" class="form-control" required>
+                            <select name="resep_bahan[<?php echo $index; ?>][id_bahan]" id="resep_bahan_<?php echo $index; ?>_id_bahan" class="form-control bahan-select" required>
                                 <option value="">-- Pilih Bahan --</option>
                                 <?php foreach ($bahans_all as $bahan_opt) : ?>
                                     <option value="<?php echo $bahan_opt['id_bahan']; ?>" <?php echo (isset($item_bahan_input['id_bahan']) && $item_bahan_input['id_bahan'] == $bahan_opt['id_bahan']) ? 'selected' : ''; ?>>
@@ -183,6 +248,9 @@ unset($_SESSION['form_input_resep']);
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const bahanRepeater = document.getElementById('bahan-repeater');
@@ -207,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         newItem.innerHTML = `
             <div style="flex: 5; margin-right: 10px;">
-                <select name="resep_bahan[${index}][id_bahan]" class="form-control" required>
+                <select name="resep_bahan[${index}][id_bahan]" class="form-control bahan-select" required>
                     ${bahanOptionsHtml}
                 </select>
             </div>
@@ -224,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addBahanBtn.addEventListener('click', function() {
         const newItem = createBahanItem(bahanIndex);
         bahanRepeater.appendChild(newItem);
+        $(newItem).find('.bahan-select').select2();
         bahanIndex++;
     });
 
@@ -242,18 +311,62 @@ document.addEventListener('DOMContentLoaded', function() {
          bahanRepeater.appendChild(firstItem);
          bahanIndex = 1;
     }
+
+    // Initialize Select2 for existing selects
+    $('.bahan-select').select2();
 });
 </script>
-    <?php
+
+<style>
+.tag-category {
+    margin-bottom: 15px;
+}
+
+.tag-category h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.tag-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-checkbox {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-checkbox:hover {
+    background-color: #e9e9e9;
+}
+
+.tag-checkbox input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+</style>
+
+<?php
 if (!isset($base_url)) {
     $base_url = "/wellnessplate";
 }
 ?>
         </main> 
     </div> 
-<div  style="background-color:rgb(98, 98, 98);">
-    <p style="margin-left: 10px; color: #fff;">© <?php echo date("Y"); ?> WellnessPlate Admin. All rights reserved.</p>
-</div>
+    <footer>
+        <div style="background-color:rgb(98, 98, 98);">
+            <p style="margin-left: 10px; color: #fff;">© <?php echo date("Y"); ?> WellnessPlate Admin. All rights reserved.</p>
+        </div>
     </footer>
     <script src="../../script.js"></script>
 </body>

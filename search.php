@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/config.php';
+require_once 'config/koneksi.php';
 
 $keyword = isset($_GET['keyword']) ? trim(htmlspecialchars($_GET['keyword'])) : '';
 
@@ -11,60 +11,48 @@ if (!empty($keyword)) {
     $page_title .= " untuk \"$keyword\"";
 }
 require_once __DIR__ . '/includes/header.php';
-$all_food_menus = [
-    ['id' => 1, 'name' => 'Salad Ayam Panggang Rendah Kalori', 'description' => 'Salad segar dengan potongan ayam panggang tanpa kulit, sayuran hijau, tomat ceri, dan dressing lemon rendah lemak. Pilihan tepat untuk diet dan menjaga gula darah. Sangat direkomendasikan bagi Anda yang aktif.', 'image' => BASE_URL . '/assets/images/menu/1.jpg', 'tags' => ['sayuran', 'daging', 'diet', 'diabetes', 'rendah_kalori', 'protein_tinggi']],
-    ['id' => 2, 'name' => 'Smoothie Bayam Pisang Antioksidan', 'description' => 'Smoothie hijau kaya serat dan vitamin dari bayam, pisang, dan sedikit jahe. Cocok untuk sarapan atau camilan sehat. Memberikan energi tahan lama sepanjang hari.', 'image' => BASE_URL . '/assets/images/menu/2.jpg', 'tags' => ['jus', 'sayuran', 'buah', 'diet', 'vegetarian', 'antioksidan']],
-    ['id' => 3, 'name' => 'Ikan Salmon Panggang Omega-3', 'description' => 'Fillet ikan salmon dipanggang dengan bumbu minimalis, disajikan dengan brokoli kukus. Sumber omega-3 yang baik untuk jantung dan otak. Rasanya lezat dan mudah dibuat.', 'image' => BASE_URL . '/assets/images/menu/3.jpg', 'tags' => ['daging', 'kolesterol', 'darah_tinggi', 'jantung', 'omega_3']],
-    ['id' => 4, 'name' => 'Mie Shirataki Goreng Seafood Lezat', 'description' => 'Mie shirataki rendah kalori digoreng dengan udang, cumi, dan sayuran segar pilihan. Alternatif mie yang lebih sehat dan aman untuk penderita diabetes. Kenyang lebih lama.', 'image' => BASE_URL . '/assets/images/menu/4.jpg', 'tags' => ['mie', 'seafood', 'diet', 'diabetes', 'rendah_karbo']],
-    ['id' => 5, 'name' => 'Bubur Quinoa Apel Kayu Manis Hangat', 'description' => 'Bubur hangat dari quinoa dengan potongan apel segar dan taburan kayu manis. Sarapan sehat bebas gluten dan tinggi serat, sangat baik untuk pencernaan Anda.', 'image' => BASE_URL . '/assets/images/menu/5.jpg', 'tags' => ['sarapan', 'buah', 'diet', 'vegetarian', 'alergi_gluten', 'serat_tinggi']],
-    // Tambahkan lebih banyak menu jika perlu
-    ['id' => 6, 'name' => 'Sop Buntut Rempah Spesial', 'description' => 'Sop buntut sapi pilihan dengan kuah kaldu kaya rempah, wortel, dan kentang. Cocok untuk penderita asam urat jika dikonsumsi dalam porsi terkontrol dan tanpa emping.', 'image' => BASE_URL . '/assets/images/menu/6.jpg', 'tags' => ['daging', 'sup', 'rempah', 'asam_urat_moderat']],
-    ['id' => 7, 'name' => 'Jus Tiga Diva Segar Menyehatkan', 'description' => 'Kombinasi jus wortel, tomat, dan apel yang menyegarkan dan kaya vitamin. Baik untuk kesehatan mata dan kulit. Minuman detoksifikasi alami yang nikmat.', 'image' => BASE_URL . '/assets/images/menu/7.jpg', 'tags' => ['jus', 'sayuran', 'buah', 'vitamin_a', 'antioksidan']],
-    ['id' => 8, 'name' => 'Nasi Goreng Beras Merah Komplit', 'description' => 'Nasi goreng menggunakan beras merah yang lebih kaya serat, ditambah aneka sayuran segar, telur, dan potongan ayam. Pilihan karbohidrat kompleks yang mengenyangkan.', 'image' => BASE_URL . '/assets/images/menu/8.jpg', 'tags' => ['nasi', 'sayuran', 'diet', 'serat_tinggi', 'daging']],
-    ['id' => 9, 'name' => 'Tumis Kangkung Bawang Putih Praktis', 'description' => 'Tumis kangkung sederhana dengan aroma bawang putih yang menggugah selera. Sumber zat besi yang baik dan cepat disajikan untuk keluarga.', 'image' => BASE_URL . '/assets/images/menu/9.jpg', 'tags' => ['sayuran', 'vegetarian', 'zat_besi', 'rendah_garam_opsi']],
-    ['id' => 10, 'name' => 'Ayam Popcorn Krispi Rendah Garam', 'description' => 'Potongan ayam fillet dibalut tepung tipis dan digoreng hingga renyah sempurna, dengan penggunaan garam minimal. Camilan lebih sehat dan tinggi protein.', 'image' => BASE_URL . '/assets/images/menu/10.jpg', 'tags' => ['daging', 'camilan', 'rendah_garam', 'protein_tinggi']],
-    ['id' => 11, 'name' => 'Puding Chia Seed Mangga Lembut', 'description' => 'Puding sehat dari chia seed dengan puree mangga segar dan manis. Kaya serat dan omega-3, cocok untuk dessert atau sarapan. Teksturnya lembut dan nikmat.', 'image' => BASE_URL . '/assets/images/menu/4.jpg', 'tags' => ['dessert', 'buah', 'diet', 'vegetarian', 'serat_tinggi', 'omega_3']],
-    ['id' => 12, 'name' => 'Steak Tempe Lada Hitam Gurih', 'description' => 'Steak dari tempe pilihan dengan saus lada hitam kental yang gurih. Alternatif protein nabati yang lezat dan mengenyangkan. Cocok untuk vegetarian dan vegan.', 'image' => BASE_URL . '/assets/images/menu/8.jpg', 'tags' => ['protein_nabati', 'vegetarian', 'diet', 'rendah_kolesterol']],
-];
-
 
 // --- LOGIKA PENCARIAN & FILTER ---
-$search_results = $all_food_menus;
+$query = "SELECT id_resep, nama_resep, deskripsi, image, tags FROM resep WHERE 1=1";
+$params = [];
+$types = "";
 
 if (!empty($keyword)) {
-    $search_results = array_filter($search_results, function ($menu) use ($keyword) {
-        return stripos($menu['name'], $keyword) !== false || stripos($menu['description'], $keyword) !== false;
-    });
+    $query .= " AND (nama_resep LIKE ? OR deskripsi LIKE ?)";
+    $keyword_param = "%" . $keyword . "%";
+    $params[] = $keyword_param;
+    $params[] = $keyword_param;
+    $types .= "ss";
 }
 
-function check_tags_simple($menu_tags, $selected_filters) {
-    if (empty($selected_filters)) return true; 
-    foreach ($selected_filters as $filter) {
-        $filter_found_in_tags = false;
-        foreach ($menu_tags as $menu_tag) {
-            if (strtolower($filter) === strtolower($menu_tag)) {
-                $filter_found_in_tags = true;
-                break;
-            }
-        }
-        if (!$filter_found_in_tags) {
-            return false;
-        }
+// Filter berdasarkan tags (kondisi dan jenis)
+if (!empty($selected_kondisi) || !empty($selected_jenis)) {
+    $all_filters = array_merge($selected_kondisi, $selected_jenis);
+    $tag_conditions = [];
+    foreach ($all_filters as $filter) {
+        $tag_conditions[] = "JSON_CONTAINS(tags, ?)";
+        $params[] = json_encode($filter);
+        $types .= "s";
     }
-    return true;
+    if (!empty($tag_conditions)) {
+        $query .= " AND " . implode(" AND ", $tag_conditions);
+    }
 }
 
+$query .= " ORDER BY tanggal_dibuat DESC";
 
-if (!empty($selected_kondisi)) {
-    $search_results = array_filter($search_results, function ($menu) use ($selected_kondisi) {
-        return check_tags_simple($menu['tags'], $selected_kondisi);
-    });
+// Prepare and execute the statement
+$stmt = mysqli_prepare($koneksi, $query);
+if (!empty($params)) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
 }
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-if (!empty($selected_jenis)) {
-    $search_results = array_filter($search_results, function ($menu) use ($selected_jenis) {
-        return check_tags_simple($menu['tags'], $selected_jenis);
-    });
+$search_results = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $row['tags'] = json_decode($row['tags'], true);
+    $search_results[] = $row;
 }
 
 // --- PAGINATION ---
@@ -100,7 +88,7 @@ function build_filter_query_string($exclude_key = null) {
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/search.css?v=<?= time() ?>">
 
 <div class="search-page-container">
-        <?php require_once __DIR__ . '/includes/components/search-bar.php'; ?>
+    <?php require_once __DIR__ . '/includes/components/search-bar.php'; ?>
 
     <div class="search-layout">
         <aside class="filter-sidebar">
@@ -171,100 +159,99 @@ function build_filter_query_string($exclude_key = null) {
                 </div>
             <?php endif; ?>
 
-
             <?php if (!empty($paginated_results)): ?>
-    <div class="menu-grid">
-        <?php foreach ($paginated_results as $menu): ?>
-            <div class="menu-card">
-                <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>">
-                    <img src="<?= htmlspecialchars($menu['image']) ?>" alt="<?= htmlspecialchars($menu['name']) ?>">
-                </a>
-                <div class="menu-card-content">
-                    <div class="menu-info">
-                        <h3>
-                            <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>" title="<?= htmlspecialchars($menu['name']) ?>"> <!-- Tambahkan title attribute untuk full name on hover -->
-                                <?= htmlspecialchars($menu['name']) ?>
+                <div class="menu-grid">
+                    <?php foreach ($paginated_results as $menu): ?>
+                        <div class="menu-card">
+                            <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id_resep'] ?>">
+                                <img src="<?= BASE_URL . '/assets/images/menu/' . htmlspecialchars($menu['image']) ?>" alt="<?= htmlspecialchars($menu['nama_resep']) ?>">
                             </a>
-                        </h3>
-                        <?php if (!empty($menu['tags'])): ?>
-                        <div class="menu-tags">
-                            <?php 
-                            $tag_limit = 2;
-                            $displayed_tags = 0;
-                            foreach ($menu['tags'] as $tag_text): 
-                                if ($displayed_tags >= $tag_limit) break;
-                            ?>
-                                <span class="tag"><?= htmlspecialchars(ucwords(str_replace('_', ' ', $tag_text))) ?></span>
-                            <?php 
-                                $displayed_tags++;
-                            endforeach; 
+                            <div class="menu-card-content">
+                                <div class="menu-info">
+                                    <h3>
+                                        <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id_resep'] ?>" title="<?= htmlspecialchars($menu['nama_resep']) ?>">
+                                            <?= htmlspecialchars($menu['nama_resep']) ?>
+                                        </a>
+                                    </h3>
+                                    <?php if (!empty($menu['tags'])): ?>
+                                    <div class="menu-tags">
+                                        <?php 
+                                        $tag_limit = 2;
+                                        $displayed_tags = 0;
+                                        foreach ($menu['tags'] as $tag_text): 
+                                            if ($displayed_tags >= $tag_limit) break;
+                                        ?>
+                                            <span class="tag"><?= htmlspecialchars(ucwords(str_replace('_', ' ', $tag_text))) ?></span>
+                                        <?php 
+                                            $displayed_tags++;
+                                        endforeach; 
 
-                            $relevant_tags_count = 0;
-                            foreach($menu['tags'] as $t){
-                                if (!(in_array($t, $selected_kondisi) || in_array($t, $selected_jenis))) {
-                                     $relevant_tags_count++;
-                                }
-                            }
-                            if ($relevant_tags_count > $tag_limit) echo '<span class="tag">...</span>';
-                            ?>
+                                        $relevant_tags_count = 0;
+                                        foreach($menu['tags'] as $t){
+                                            if (!(in_array($t, $selected_kondisi) || in_array($t, $selected_jenis))) {
+                                                 $relevant_tags_count++;
+                                            }
+                                        }
+                                        if ($relevant_tags_count > $tag_limit) echo '<span class="tag">...</span>';
+                                        ?>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id_resep'] ?>" class="btn-details">Lihat Detail</a>
+                            </div>
                         </div>
-                        <?php endif; ?>
-                    </div>
-                    <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id'] ?>" class="btn-details">Lihat Detail</a>
+                    <?php endforeach; ?>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
 
-    <?php if ($total_pages > 1): ?>
-        <nav class="pagination">
-            <?php
-            if ($current_page > 1) {
-                echo '<a href="?page=' . ($current_page - 1) . '&' . build_filter_query_string('page') . '">« Prev</a>';
-            } else {
-                echo '<span class="disabled">« Prev</span>';
-            }
+                <?php if ($total_pages > 1): ?>
+                    <nav class="pagination">
+                        <?php
+                        if ($current_page > 1) {
+                            echo '<a href="?page=' . ($current_page - 1) . '&' . build_filter_query_string('page') . '">« Prev</a>';
+                        } else {
+                            echo '<span class="disabled">« Prev</span>';
+                        }
 
-            $num_links = 2; 
-            if ($current_page > ($num_links + 1) ) {
-                echo '<a href="?page=1&' . build_filter_query_string('page') . '">1</a>';
-                if ($current_page > ($num_links + 2) ) {
-                    echo '<span class="disabled">...</span>';
-                }
-            }
-            for ($i = max(1, $current_page - $num_links); $i <= min($total_pages, $current_page + $num_links); $i++) {
-                if ($i == $current_page) {
-                    echo '<span class="current-page">' . $i . '</span>';
-                } else {
-                    echo '<a href="?page=' . $i . '&' . build_filter_query_string('page') . '">' . $i . '</a>';
-                }
-            }
-            if ($current_page < ($total_pages - $num_links) ) {
-                if ($current_page < ($total_pages - $num_links - 1) ) {
-                     echo '<span class="disabled">...</span>';
-                }
-                echo '<a href="?page=' . $total_pages . '&' . build_filter_query_string('page') . '">' . $total_pages . '</a>';
-            }
+                        $num_links = 2; 
+                        if ($current_page > ($num_links + 1) ) {
+                            echo '<a href="?page=1&' . build_filter_query_string('page') . '">1</a>';
+                            if ($current_page > ($num_links + 2) ) {
+                                echo '<span class="disabled">...</span>';
+                            }
+                        }
+                        for ($i = max(1, $current_page - $num_links); $i <= min($total_pages, $current_page + $num_links); $i++) {
+                            if ($i == $current_page) {
+                                echo '<span class="current-page">' . $i . '</span>';
+                            } else {
+                                echo '<a href="?page=' . $i . '&' . build_filter_query_string('page') . '">' . $i . '</a>';
+                            }
+                        }
+                        if ($current_page < ($total_pages - $num_links) ) {
+                            if ($current_page < ($total_pages - $num_links - 1) ) {
+                                 echo '<span class="disabled">...</span>';
+                            }
+                            echo '<a href="?page=' . $total_pages . '&' . build_filter_query_string('page') . '">' . $total_pages . '</a>';
+                        }
 
-            if ($current_page < $total_pages) {
-                echo '<a href="?page=' . ($current_page + 1) . '&' . build_filter_query_string('page') . '">Next »</a>';
-            } else {
-                echo '<span class="disabled">Next »</span>';
-            }
-            ?>
-        </nav>
-    <?php endif; ?>
+                        if ($current_page < $total_pages) {
+                            echo '<a href="?page=' . ($current_page + 1) . '&' . build_filter_query_string('page') . '">Next »</a>';
+                        } else {
+                            echo '<span class="disabled">Next »</span>';
+                        }
+                        ?>
+                    </nav>
+                <?php endif; ?>
 
-<?php else: ?>
-     <p class="no-results">
-        <?php if (!empty($keyword) || !empty($selected_kondisi) || !empty($selected_jenis)): ?>
-            Maaf, tidak ada menu makanan yang cocok dengan kata kunci dan filter yang dipilih.
-        <?php else: ?>
-            Silakan masukkan kata kunci atau pilih filter untuk mencari menu.
-        <?php endif; ?>
-        <br>Coba ubah filter atau kata kunci pencarian Anda.
-    </p>
-<?php endif; ?>
+            <?php else: ?>
+                 <p class="no-results">
+                    <?php if (!empty($keyword) || !empty($selected_kondisi) || !empty($selected_jenis)): ?>
+                        Maaf, tidak ada menu makanan yang cocok dengan kata kunci dan filter yang dipilih.
+                    <?php else: ?>
+                        Silakan masukkan kata kunci atau pilih filter untuk mencari menu.
+                    <?php endif; ?>
+                    <br>Coba ubah filter atau kata kunci pencarian Anda.
+                </p>
+            <?php endif; ?>
         </main>
     </div>
 </div>

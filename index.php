@@ -58,28 +58,11 @@ require_once __DIR__ . '/includes/components/article.php';
     
 
     <!-- 3. Komponen Lain (Contoh: Kategori Populer) -->
-    <section class="popular-categories-section" style="padding: 30px 0; text-align: center;">
-        <div class="container" style="max-width: 1000px; margin: auto;">
-            <h2>Kategori Populer</h2>
-            <div class="categories-grid" style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px;">
-                <?php
-                $categories = [
-                    ['name' => 'Makanan Diet', 'icon' => '🥗', 'link' => BASE_URL . '/kategori/diet'],
-                    ['name' => 'Resep Vegan', 'icon' => '🥕', 'link' => BASE_URL . '/kategori/vegan'],
-                    ['name' => 'Minuman Sehat', 'icon' => '🥤', 'link' => BASE_URL . '/kategori/minuman'],
-                    ['name' => 'Camilan Sehat', 'icon' => '🥜', 'link' => BASE_URL . '/kategori/camilan'],
-                ];
-                foreach ($categories as $category):
-                ?>
-                <a href="<?php echo htmlspecialchars($category['link']); ?>" class="category-item" style="text-decoration: none; color: #333; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin: 10px; width: 200px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <div style="font-size: 2em; margin-bottom: 10px;"><?php echo $category['icon']; ?></div>
-                    <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
 
+
+    <?php 
+require_once __DIR__ . '/includes/components/category.php';
+?>
     <?php 
 require_once __DIR__ . '/includes/components/about.php';
 ?>

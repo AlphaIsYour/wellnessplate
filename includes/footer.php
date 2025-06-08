@@ -1,4 +1,6 @@
-    <?php ?>
+<?php
+// ===== FOOTER.PHP =====
+?>
     </div> 
 
     <footer class="site-footer-frontend">
@@ -32,14 +34,18 @@
         </div>
     </footer>
 
+    <!-- JavaScript Files - konsisten pakai BASE_URL -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/assets/js/script.js"></script>
-    <script src="/assets/js/search.js"></script>
+    <script src="<?php echo BASE_URL; ?>/assets/js/script.js"></script>
+    <script src="<?php echo BASE_URL; ?>/assets/js/search.js"></script>
     <script src="<?php echo BASE_URL; ?>/assets/js/main_script.js"></script>
+    
+    <!-- Conditional JS for auth pages -->
     <?php if ($body_class === 'auth-page' && file_exists($_SERVER['DOCUMENT_ROOT'] . parse_url(BASE_URL, PHP_URL_PATH) . '/assets/js/script_login.js')): ?>
-        <script src="/assets/js/script_login.js"></script>
+        <script src="<?php echo BASE_URL; ?>/assets/js/script_login.js"></script>
     <?php endif; ?>
 
+    <!-- SweetAlert2 Messages -->
     <?php
     $swal_message = null;
     $swal_type = null;

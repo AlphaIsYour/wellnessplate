@@ -24,6 +24,7 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
     <link rel="stylesheet" href="../../style.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body class="dashboard-body">
     <header class="page-header">
@@ -53,7 +54,7 @@ if (empty($id_resep_to_edit)) {
     exit;
 }
 
-$stmt_get_resep = mysqli_prepare($koneksi, "SELECT id_resep, id_admin, id_kondisi, nama_resep, cara_buat FROM resep WHERE id_resep = ?");
+$stmt_get_resep = mysqli_prepare($koneksi, "SELECT id_resep, id_admin, id_kondisi, nama_resep, deskripsi, image, cara_buat, tags FROM resep WHERE id_resep = ?");
 if (!$stmt_get_resep) die("Prepare resep gagal: " . mysqli_error($koneksi));
 mysqli_stmt_bind_param($stmt_get_resep, "s", $id_resep_to_edit);
 mysqli_stmt_execute($stmt_get_resep);
@@ -90,9 +91,38 @@ if (!$gizi_data_db) $gizi_data_db = [];
 
 
 $users_admin = [];
-$query_users_admin = "SELECT id_user, nama_lengkap FROM users ORDER BY nama_lengkap ASC";
+
+// First, get the admin table structure
+$admin_columns = [];
+$describe_result = mysqli_query($koneksi, "DESCRIBE admin");
+if ($describe_result) {
+    while ($row = mysqli_fetch_assoc($describe_result)) {
+        $admin_columns[] = $row['Field'];
+    }
+}
+
+// Build the query based on available columns
+$select_fields = "id_admin";
+if (in_array('username', $admin_columns)) {
+    $select_fields .= ", username as nama_lengkap";
+} elseif (in_array('nama', $admin_columns)) {
+    $select_fields .= ", nama as nama_lengkap";
+} elseif (in_array('name', $admin_columns)) {
+    $select_fields .= ", name as nama_lengkap";
+} else {
+    $select_fields .= ", id_admin as nama_lengkap"; // Fallback to showing ID if no name column found
+}
+
+$query_users_admin = "SELECT $select_fields FROM admin ORDER BY id_admin ASC";
 $result_users_admin = mysqli_query($koneksi, $query_users_admin);
-if ($result_users_admin) while ($row = mysqli_fetch_assoc($result_users_admin)) $users_admin[] = $row;
+if ($result_users_admin) {
+    while ($row = mysqli_fetch_assoc($result_users_admin)) {
+        $users_admin[] = $row;
+    }
+}
+
+// Debug information
+echo "<!-- Available admin columns: " . implode(", ", $admin_columns) . " -->";
 
 $kondisi_kesehatans = [];
 $query_kondisi = "SELECT id_kondisi, nama_kondisi FROM kondisi_kesehatan ORDER BY nama_kondisi ASC";
@@ -110,7 +140,42 @@ $resep_bahans_input = isset($_SESSION['form_input_resep_edit']['resep_bahan']) &
                         ? $_SESSION['form_input_resep_edit']['resep_bahan'] 
                         : (empty($resep_bahans_db) ? [['id_bahan' => '', 'jumlah' => '']] : $resep_bahans_db);
 $gizi_input = isset($_SESSION['form_input_resep_edit']['gizi']) ? $_SESSION['form_input_resep_edit']['gizi'] : $gizi_data_db;
+$tags_input = isset($form_input['tags']) ? json_decode($form_input['tags'], true) : [];
 unset($_SESSION['form_input_resep_edit']);
+
+// Predefined tags
+$tag_categories = [
+    'jenis' => [
+        'mie' => 'Mie',
+        'jus' => 'Jus',
+        'sayuran' => 'Sayuran',
+        'daging' => 'Daging',
+        'seafood' => 'Seafood',
+        'buah' => 'Buah',
+        'nasi' => 'Nasi',
+        'sup' => 'Sup',
+        'camilan' => 'Camilan',
+        'sarapan' => 'Sarapan'
+    ],
+    'kondisi' => [
+        'diabetes' => 'Diabetes',
+        'diet' => 'Diet',
+        'kolesterol' => 'Kolesterol',
+        'asam_urat' => 'Asam Urat',
+        'darah_tinggi' => 'Darah Tinggi',
+        'jantung' => 'Jantung',
+        'ginjal' => 'Ginjal',
+        'maag' => 'Maag'
+    ],
+    'karakteristik' => [
+        'rendah_kalori' => 'Rendah Kalori',
+        'tinggi_protein' => 'Tinggi Protein',
+        'rendah_garam' => 'Rendah Garam',
+        'vegetarian' => 'Vegetarian',
+        'vegan' => 'Vegan',
+        'bebas_gluten' => 'Bebas Gluten'
+    ]
+];
 ?>
 
 <div class="container mx-auto py-8">
@@ -125,7 +190,7 @@ unset($_SESSION['form_input_resep_edit']);
                 unset($_SESSION['error_message']);
             }
             ?>
-            <form action="<?php echo $base_url; ?>konfirmasieditresep.php" method="POST">
+            <form action="<?php echo $base_url; ?>konfirmasieditresep.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id_resep" value="<?php echo htmlspecialchars($resep_data_db['id_resep']); ?>">
 
                 <div class="form-group">
@@ -134,11 +199,29 @@ unset($_SESSION['form_input_resep_edit']);
                 </div>
 
                 <div class="form-group">
+                    <label for="deskripsi">Deskripsi Resep</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="4" required><?php echo htmlspecialchars($form_input['deskripsi'] ?? ''); ?></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Foto Resep</label>
+                    <?php if (!empty($resep_data_db['image'])): ?>
+                        <div class="current-image">
+                            <img src="<?php echo BASE_URL . '/assets/images/menu/' . htmlspecialchars($resep_data_db['image']); ?>" alt="Foto resep saat ini" style="max-width: 200px; margin: 10px 0;">
+                            <p>Foto saat ini: <?php echo htmlspecialchars($resep_data_db['image']); ?></p>
+                        </div>
+                    <?php endif; ?>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($resep_data_db['image']); ?>">
+                    <small>Format yang diperbolehkan: JPG, JPEG, PNG. Ukuran maksimal: 2MB. Biarkan kosong jika tidak ingin mengubah foto.</small>
+                </div>
+
+                <div class="form-group">
                     <label for="id_admin">Dibuat Oleh (Admin)</label>
                     <select id="id_admin" name="id_admin" required>
                         <option value="">-- Pilih Admin --</option>
                         <?php foreach ($users_admin as $ua) : ?>
-                            <option value="<?php echo $ua['id_user']; ?>" <?php echo (isset($form_input['id_admin']) && $form_input['id_admin'] == $ua['id_user']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $ua['id_admin']; ?>" <?php echo (isset($form_input['id_admin']) && $form_input['id_admin'] == $ua['id_admin']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($ua['nama_lengkap']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -158,6 +241,24 @@ unset($_SESSION['form_input_resep_edit']);
                 </div>
 
                 <div class="form-group">
+                    <label>Tags</label>
+                    <?php foreach ($tag_categories as $category => $tags): ?>
+                        <div class="tag-category">
+                            <h4><?php echo ucfirst($category); ?></h4>
+                            <div class="tag-options">
+                                <?php foreach ($tags as $value => $label): ?>
+                                    <label class="tag-checkbox">
+                                        <input type="checkbox" name="tags[]" value="<?php echo $value; ?>"
+                                            <?php echo (in_array($value, $tags_input)) ? 'checked' : ''; ?>>
+                                        <?php echo htmlspecialchars($label); ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="form-group">
                     <label for="cara_buat">Cara Membuat</label>
                     <textarea id="cara_buat" name="cara_buat" rows="8" required><?php echo htmlspecialchars($form_input['cara_buat'] ?? ''); ?></textarea>
                 </div>
@@ -168,7 +269,7 @@ unset($_SESSION['form_input_resep_edit']);
                     <?php foreach ($resep_bahans_input as $index => $item_bahan_input) : ?>
                     <div class="bahan-item" style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #eee;">
                         <div style="flex: 5; margin-right: 10px;">
-                            <select name="resep_bahan[<?php echo $index; ?>][id_bahan]" class="form-control" required>
+                            <select name="resep_bahan[<?php echo $index; ?>][id_bahan]" class="form-control bahan-select" required>
                                 <option value="">-- Pilih Bahan --</option>
                                 <?php foreach ($bahans_all as $bahan_opt) : ?>
                                     <option value="<?php echo $bahan_opt['id_bahan']; ?>" <?php echo (isset($item_bahan_input['id_bahan']) && $item_bahan_input['id_bahan'] == $bahan_opt['id_bahan']) ? 'selected' : ''; ?>>
@@ -215,6 +316,8 @@ unset($_SESSION['form_input_resep_edit']);
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const bahanRepeaterEdit = document.getElementById('bahan-repeater-edit');
@@ -238,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newItem.style.border = '1px solid #eee';
         newItem.innerHTML = `
             <div style="flex: 5; margin-right: 10px;">
-                <select name="resep_bahan[${index}][id_bahan]" class="form-control" required>
+                <select name="resep_bahan[${index}][id_bahan]" class="form-control bahan-select" required>
                     ${bahanOptionsHtmlEdit}
                 </select>
             </div>
@@ -255,6 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addBahanBtnEdit.addEventListener('click', function() {
         const newItem = createBahanItemEdit(bahanIndexEdit);
         bahanRepeaterEdit.appendChild(newItem);
+        $(newItem).find('.bahan-select').select2();
         bahanIndexEdit++;
     });
 
@@ -273,8 +377,63 @@ document.addEventListener('DOMContentLoaded', function() {
          bahanRepeaterEdit.appendChild(firstItem);
          bahanIndexEdit = 1;
     }
+
+    // Initialize Select2 for existing selects
+    $('.bahan-select').select2();
 });
 </script>
+
+<style>
+.tag-category {
+    margin-bottom: 15px;
+}
+
+.tag-category h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.tag-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-checkbox {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-checkbox:hover {
+    background-color: #e9e9e9;
+}
+
+.tag-checkbox input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+.current-image {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.current-image img {
+    display: block;
+    margin-bottom: 5px;
+}
+</style>
+
 <?php
 if(isset($result_resep_db)) mysqli_free_result($result_resep_db);
 if(isset($result_bahan_resep_db)) mysqli_free_result($result_bahan_resep_db);
