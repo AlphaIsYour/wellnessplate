@@ -35,46 +35,12 @@ while ($row = mysqli_fetch_assoc($result_kondisi)) {
     $kondisi_kesehatan_options[$slug] = $row['nama_kondisi'];
 }
 
-// Ambil tags makanan yang unik dari tabel resep
-$query_tags = "SELECT DISTINCT JSON_UNQUOTE(JSON_EXTRACT(tags, '$[*]')) as tag 
-               FROM resep 
-               WHERE JSON_EXTRACT(tags, '$[*]') IS NOT NULL 
-               AND JSON_EXTRACT(tags, '$[*]') != ''";
+// Ambil semua tags dari database
+$query_tags = "SELECT id_tag, nama_tag, slug FROM tags ORDER BY nama_tag ASC";
 $result_tags = mysqli_query($koneksi, $query_tags);
-$all_tags = [];
-while ($row = mysqli_fetch_assoc($result_tags)) {
-    if (!empty($row['tag'])) {
-        $tag = trim($row['tag'], '"'); // Hapus tanda kutip jika ada
-        if (!in_array($tag, array_keys($kondisi_kesehatan_options))) {
-            $all_tags[] = $tag;
-        }
-    }
-}
-
-// Filter dan kelompokkan tags untuk jenis makanan
 $jenis_makanan_options = [];
-$common_food_categories = [
-    'mie' => ['mie', 'noodle', 'pasta'],
-    'nasi' => ['nasi', 'rice', 'karbohidrat'],
-    'sayuran' => ['sayur', 'vegetable', 'sayuran'],
-    'daging' => ['daging', 'meat', 'ayam', 'chicken', 'sapi', 'beef'],
-    'seafood' => ['seafood', 'ikan', 'fish', 'udang', 'shrimp'],
-    'sup' => ['sup', 'soup', 'soto', 'kuah'],
-    'jus' => ['jus', 'juice', 'minuman', 'drink'],
-    'camilan' => ['snack', 'camilan', 'kue'],
-    'sarapan' => ['breakfast', 'sarapan', 'pagi'],
-    'buah' => ['buah', 'fruit']
-];
-
-foreach ($all_tags as $tag) {
-    foreach ($common_food_categories as $category => $keywords) {
-        foreach ($keywords as $keyword_check) {
-            if (stripos($tag, $keyword_check) !== false) {
-                $jenis_makanan_options[$category] = ucwords(str_replace('_', ' ', $category));
-                break 2;
-            }
-        }
-    }
+while ($row = mysqli_fetch_assoc($result_tags)) {
+    $jenis_makanan_options[$row['slug']] = $row['nama_tag'];
 }
 
 // --- LOGIKA PENCARIAN & FILTER ---
@@ -84,6 +50,12 @@ $base_query = "SELECT DISTINCT r.* FROM resep r";
 if (!empty($selected_kondisi)) {
     $base_query .= " INNER JOIN resep_kondisi rk ON r.id_resep = rk.id_resep";
     $base_query .= " INNER JOIN kondisi_kesehatan k ON rk.id_kondisi = k.id_kondisi";
+}
+
+// Jika ada filter jenis makanan, tambahkan join dengan resep_tags
+if (!empty($selected_jenis)) {
+    $base_query .= " INNER JOIN resep_tags rt ON r.id_resep = rt.id_resep";
+    $base_query .= " INNER JOIN tags t ON rt.id_tag = t.id_tag";
 }
 
 $base_query .= " WHERE 1=1";
@@ -112,12 +84,12 @@ if (!empty($selected_kondisi)) {
     }
 }
 
-// Filter berdasarkan jenis makanan
+// Filter berdasarkan jenis makanan (tags)
 if (!empty($selected_jenis)) {
     $jenis_conditions = [];
     foreach ($selected_jenis as $jenis) {
-        $jenis_conditions[] = "r.tags LIKE ?";
-        $params[] = "%\"$jenis\"%";
+        $jenis_conditions[] = "t.slug = ?";
+        $params[] = $jenis;
         $types .= "s";
     }
     if (!empty($jenis_conditions)) {
@@ -145,12 +117,22 @@ echo "<!-- Debug Result Rows: " . mysqli_num_rows($result) . " -->";
 
 $search_results = [];
 while ($row = mysqli_fetch_assoc($result)) {
-    // Konversi string tags menjadi array jika ada
-    if (!empty($row['tags'])) {
-        $row['tags'] = json_decode($row['tags'], true) ?: [];
-    } else {
-        $row['tags'] = [];
+    // Ambil tags untuk resep ini
+    $query_tags_resep = "SELECT t.nama_tag, t.slug 
+                        FROM tags t 
+                        JOIN resep_tags rt ON t.id_tag = rt.id_tag 
+                        WHERE rt.id_resep = ?";
+    $stmt_tags = mysqli_prepare($koneksi, $query_tags_resep);
+    mysqli_stmt_bind_param($stmt_tags, "s", $row['id_resep']);
+    mysqli_stmt_execute($stmt_tags);
+    $result_tags_resep = mysqli_stmt_get_result($stmt_tags);
+    
+    $row['tags'] = [];
+    while ($tag = mysqli_fetch_assoc($result_tags_resep)) {
+        $row['tags'][] = $tag['nama_tag'];
+        $row['tag_slugs'][] = $tag['slug'];
     }
+    mysqli_stmt_close($stmt_tags);
     
     // Ambil kondisi kesehatan untuk resep ini
     $query_kondisi_resep = "SELECT k.nama_kondisi, k.slug 
@@ -158,20 +140,21 @@ while ($row = mysqli_fetch_assoc($result)) {
                            JOIN resep_kondisi rk ON k.id_kondisi = rk.id_kondisi 
                            WHERE rk.id_resep = ?";
     $stmt_kondisi = mysqli_prepare($koneksi, $query_kondisi_resep);
-    mysqli_stmt_bind_param($stmt_kondisi, "i", $row['id_resep']);
+    mysqli_stmt_bind_param($stmt_kondisi, "s", $row['id_resep']);
     mysqli_stmt_execute($stmt_kondisi);
     $result_kondisi_resep = mysqli_stmt_get_result($stmt_kondisi);
     
     $kondisi_list = [];
+    $kondisi_slugs = [];
     while ($kondisi = mysqli_fetch_assoc($result_kondisi_resep)) {
         $kondisi_list[] = $kondisi['nama_kondisi'];
-        // Tambahkan juga slug ke tags untuk memudahkan filtering di frontend
-        $row['tags'][] = $kondisi['slug'];
+        $kondisi_slugs[] = $kondisi['slug'];
     }
     mysqli_stmt_close($stmt_kondisi);
     
     // Tambahkan kondisi kesehatan ke tags
     $row['tags'] = array_merge($row['tags'], $kondisi_list);
+    $row['tag_slugs'] = array_merge($row['tag_slugs'] ?? [], $kondisi_slugs);
     
     $search_results[] = $row;
 }
@@ -182,8 +165,7 @@ if (!empty($selected_kondisi)) {
     foreach ($search_results as $result) {
         $match = false;
         foreach ($selected_kondisi as $kondisi) {
-            // Cek apakah kondisi ada dalam tags
-            if (!empty($result['tags']) && in_array($kondisi, $result['tags'])) {
+            if (in_array($kondisi, $result['tag_slugs'])) {
                 $match = true;
                 break;
             }
@@ -199,15 +181,15 @@ if (!empty($selected_kondisi)) {
 $items_per_page = 8;
 $total_items = count($search_results);
 $total_pages = ceil($total_items / $items_per_page);
-$current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-$current_page = max(1, min($current_page, $total_pages == 0 ? 1 : $total_pages));
-
+$current_page = isset($_GET['page']) ? max(1, min($total_pages, intval($_GET['page']))) : 1;
 $offset = ($current_page - 1) * $items_per_page;
-$paginated_results = array_slice($search_results, $offset, $items_per_page);
+$current_items = array_slice($search_results, $offset, $items_per_page);
 
+// Fungsi untuk membangun query string
 function build_filter_query_string($exclude_key = null) {
     $params = $_GET;
-    if ($exclude_key && isset($params[$exclude_key])) {
+    unset($params['page']); // Reset pagination when changing filters
+    if ($exclude_key) {
         unset($params[$exclude_key]);
     }
     return http_build_query($params);
@@ -221,51 +203,52 @@ function build_filter_query_string($exclude_key = null) {
 
     <div class="search-layout">
         <aside class="filter-sidebar">
-            <form id="filterForm" method="GET" action="<?= BASE_URL ?>/search.php">
-                <?php if (!empty($keyword)): ?>
-                <input type="hidden" name="keyword" value="<?= htmlspecialchars($keyword) ?>">
-                <?php endif; ?>
+            <div class="search-filters">
+                <form action="" method="GET" id="filterForm">
+                    <!-- Preserve search keyword if exists -->
+                    <?php if (!empty($keyword)): ?>
+                        <input type="hidden" name="keyword" value="<?php echo htmlspecialchars($keyword); ?>">
+                    <?php endif; ?>
 
-                <div class="filter-group">
-                    <h4>Kondisi Kesehatan</h4>
-                    <div class="checkbox-list" id="kondisiKesehatanList">
-                        <?php foreach ($kondisi_kesehatan_options as $value => $label): ?>
-                            <label>
-                                <input type="checkbox" name="kondisi[]" value="<?= $value ?>" <?= in_array($value, $selected_kondisi) ? 'checked' : '' ?>>
-                                <?= $label ?>
-                            </label>
+                    <h3>Filter Pencarian</h3>
+                    
+                    <!-- Filter Kondisi Kesehatan -->
+                    <div class="filter-section">
+                        <h4>Kondisi Kesehatan</h4>
+                        <?php foreach ($kondisi_kesehatan_options as $slug => $nama): ?>
+                            <div class="filter-item">
+                                <label>
+                                    <input type="checkbox" name="kondisi[]" value="<?php echo $slug; ?>"
+                                           <?php echo in_array($slug, $selected_kondisi) ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($nama); ?>
+                                </label>
+                            </div>
                         <?php endforeach; ?>
                     </div>
-                </div>
 
-                <div class="filter-group">
-                    <h4>Jenis Makanan</h4>
-                    <div class="checkbox-list" id="jenisMakananList">
-                        <?php 
-                        $jenis_makanan_options = [
-                            'mie' => 'Mie',
-                            'nasi' => 'Nasi',
-                            'sayuran' => 'Sayuran',
-                            'daging' => 'Daging',
-                            'seafood' => 'Seafood',
-                            'sup' => 'Sup',
-                            'jus' => 'Jus',
-                            'camilan' => 'Camilan',
-                            'sarapan' => 'Sarapan',
-                            'buah' => 'Buah'
-                        ];
-                        foreach ($jenis_makanan_options as $value => $label): 
-                        ?>
-                            <label>
-                                <input type="checkbox" name="jenis[]" value="<?= $value ?>" <?= in_array($value, $selected_jenis) ? 'checked' : '' ?>>
-                                <?= $label ?>
-                            </label>
+                    <!-- Filter Jenis Makanan -->
+                    <div class="filter-section">
+                        <h4>Jenis Makanan</h4>
+                        <?php foreach ($jenis_makanan_options as $slug => $nama): ?>
+                            <div class="filter-item">
+                                <label>
+                                    <input type="checkbox" name="jenis[]" value="<?php echo $slug; ?>"
+                                           <?php echo in_array($slug, $selected_jenis) ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($nama); ?>
+                                </label>
+                            </div>
                         <?php endforeach; ?>
                     </div>
-                </div>
-                
-                <button type="submit" class="btn-apply-filter">Terapkan Filter</button>
-            </form>
+
+                    <!-- Tombol Terapkan Filter -->
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                        <?php if (!empty($selected_kondisi) || !empty($selected_jenis)): ?>
+                            <a href="?<?php echo !empty($keyword) ? 'keyword=' . urlencode($keyword) : ''; ?>" class="btn btn-secondary">Reset Filter</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
         </aside>
 
         <main class="search-results-area">
@@ -304,9 +287,9 @@ function build_filter_query_string($exclude_key = null) {
                 </div>
             <?php endif; ?>
 
-            <?php if (!empty($paginated_results)): ?>
+            <?php if (!empty($current_items)): ?>
                 <div class="menu-grid">
-                    <?php foreach ($paginated_results as $menu): ?>
+                    <?php foreach ($current_items as $menu): ?>
                         <div class="menu-card">
                             <a href="<?= BASE_URL . '/menu/detail.php?id=' . $menu['id_resep'] ?>">
                                 <img src="<?= BASE_URL . '/assets/images/menu/' . htmlspecialchars($menu['image']) ?>" alt="<?= htmlspecialchars($menu['nama_resep']) ?>">
@@ -444,5 +427,411 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<style>
+/* Enhanced Search Page Styles */
+:root {
+    --primary-green: #28a745;
+    --light-green: #e8f5e8;
+    --medium-green: #d4edda;
+    --dark-green: #155724;
+    --border-green: #c3e6cb;
+    --hover-green: #b8dcc8;
+}
+
+.search-page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* Filter Sidebar Styling */
+.filter-sidebar {
+    background: var(--light-green);
+    border-radius: 12px;
+    border: 2px solid var(--border-green);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.search-filters {
+    padding: 0;
+}
+
+.search-filters h3 {
+    background: var(--primary-green);
+    color: white;
+    margin: 0;
+    padding: 16px 20px;
+    border-radius: 10px 10px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    margin: 0;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-green);
+}
+
+.filter-section:last-of-type {
+    border-bottom: none;
+}
+
+.filter-section h4 {
+    color: var(--dark-green);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--medium-green);
+}
+
+/* Add max-height and scrolling for jenis makanan filter section */
+.filter-section:nth-of-type(2) {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Enhanced Filter Items */
+.filter-item {
+    margin: 10px 0;
+}
+
+.filter-item label {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: white;
+    border: 2px solid var(--border-green);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: var(--dark-green);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.filter-item label:hover {
+    background: var(--hover-green);
+    border-color: var(--primary-green);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.filter-item input[type="checkbox"] {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-green);
+    cursor: pointer;
+}
+
+.filter-item input[type="checkbox"]:checked + span {
+    font-weight: 600;
+    color: var(--dark-green);
+}
+
+.filter-item label:has(input[type="checkbox"]:checked) {
+    background: var(--medium-green);
+    border-color: var(--primary-green);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+/* Filter Actions */
+.filter-actions {
+    margin: 0;
+    padding: 20px;
+    border-top: 2px solid var(--border-green);
+    background: var(--medium-green);
+    border-radius: 0 0 10px 10px;
+    text-align: center;
+}
+
+.filter-actions .btn {
+    display: inline-block;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Search Results Area */
+.search-results-area {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.search-results-area h1 {
+    color: var(--dark-green);
+    margin-bottom: 10px;
+}
+
+.results-info {
+    color: #666;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+/* Selected Filters */
+.selected-filters-container {
+    background: var(--light-green);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-green);
+    margin-bottom: 25px;
+}
+
+.selected-filters-container span:first-child {
+    font-weight: 600;
+    color: var(--dark-green);
+    margin-right: 10px;
+}
+
+.filter-tag {
+    display: inline-block;
+    background: var(--primary-green);
+    color: white;
+    padding: 6px 12px;
+    margin: 4px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter-tag .remove-filter-btn {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.filter-tag .remove-filter-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+#clearAllFiltersBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+#clearAllFiltersBtn:hover {
+    background: #c82333;
+}
+
+/* Menu Grid */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.menu-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.menu-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.menu-card-content {
+    padding: 20px;
+}
+
+.menu-info h3 {
+    margin: 0 0 10px 0;
+    color: var(--dark-green);
+}
+
+.menu-info h3 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-info h3 a:hover {
+    color: var(--primary-green);
+}
+
+.menu-tags {
+    margin: 10px 0;
+}
+
+.menu-tags .tag {
+    display: inline-block;
+    background: var(--light-green);
+    color: var(--dark-green);
+    padding: 4px 8px;
+    margin: 2px;
+    border-radius: 12px;
+    font-size: 12px;
+    border: 1px solid var(--border-green);
+}
+
+.btn-details {
+    display: inline-block;
+    background: var(--primary-green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-details:hover {
+    background: #218838;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.pagination a, .pagination span {
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pagination a {
+    background: var(--light-green);
+    color: var(--dark-green);
+    border: 1px solid var(--border-green);
+}
+
+.pagination a:hover {
+    background: var(--primary-green);
+    color: white;
+}
+
+.pagination .current-page {
+    background: var(--primary-green);
+    color: white;
+    font-weight: 600;
+}
+
+.pagination .disabled {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin: 40px 0;
+    padding: 40px;
+    background: var(--light-green);
+    border-radius: 12px;
+    border: 2px dashed var(--border-green);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .filter-sidebar {
+        position: static;
+    }
+    
+    .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .search-page-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-actions .btn {
+        display: block;
+        margin: 5px 0;
+        text-align: center;
+    }
+}
+</style>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -1,6 +1,20 @@
 <?php
 require_once __DIR__ . '/config/koneksi.php';
 
+// Handle account deletion messages before any output
+$account_deleted_message = '';
+$delete_error_message = '';
+
+if (isset($_COOKIE['account_deleted'])) {
+    $account_deleted_message = $_COOKIE['account_deleted'];
+    setcookie('account_deleted', '', time() - 3600, '/');
+}
+
+if (isset($_COOKIE['delete_error'])) {
+    $delete_error_message = $_COOKIE['delete_error'];
+    setcookie('delete_error', '', time() - 3600, '/');
+}
+
 $page_title = "WellnessPlate - Jaga Kesehatanmu, Mulai Dari Piringmu!";
 $slider_banners = [
     [
@@ -34,6 +48,29 @@ $slider_options = [
 ];
 
 require_once __DIR__ . '/includes/header.php';
+
+// Display account deletion messages after header
+if ($account_deleted_message) {
+    echo "<script>
+        Swal.fire({
+            title: 'Akun Berhasil Dihapus',
+            text: '" . addslashes($account_deleted_message) . "',
+            icon: 'success',
+            confirmButtonColor: '#28a745'
+        });
+    </script>";
+}
+
+if ($delete_error_message) {
+    echo "<script>
+        Swal.fire({
+            title: 'Gagal Menghapus Akun',
+            text: '" . addslashes($delete_error_message) . "',
+            icon: 'error',
+            confirmButtonColor: '#dc3545'
+        });
+    </script>";
+}
 ?>
 
 <div class="main-content">

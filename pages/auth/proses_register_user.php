@@ -4,114 +4,111 @@
 // koneksi.php akan otomatis start session dan define BASE_URL
 require_once __DIR__ . '/../../config/koneksi.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $konfirmasi_password = $_POST['konfirmasi_password'] ?? '';
+// Simpan data form untuk digunakan kembali jika ada error
+$form_data = [
+    'username' => $_POST['username'] ?? '',
+    'email' => $_POST['email'] ?? '',
+    'nama_lengkap' => $_POST['nama_lengkap'] ?? '',
+    'tanggal_lahir' => $_POST['tanggal_lahir'] ?? '',
+    'jenis_kelamin' => $_POST['jenis_kelamin'] ?? ''
+];
+$_SESSION['form_data_register'] = $form_data;
 
-    $_SESSION['form_data_register'] = $_POST; // Simpan input untuk diisi ulang jika error
-    $errors = [];
+// Validasi field yang wajib diisi
+$required_fields = [
+    'username' => 'Username',
+    'email' => 'Email',
+    'password' => 'Password',
+    'confirm_password' => 'Konfirmasi Password',
+    'nama_lengkap' => 'Nama Lengkap'
+];
 
-    if (empty($nama_lengkap)) $errors[] = "Nama lengkap wajib diisi.";
-    if (empty($email)) $errors[] = "Email wajib diisi.";
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Format email tidak valid.";
-    
-    if (empty($password)) {
-        $errors[] = "Password wajib diisi.";
-    } elseif (strlen($password) < 8) {
-        $errors[] = "Password minimal 8 karakter.";
+$errors = [];
+
+foreach ($required_fields as $field => $label) {
+    if (empty($_POST[$field])) {
+        $errors[] = "$label wajib diisi!";
     }
-    
-    if (empty($konfirmasi_password)) {
-        $errors[] = "Konfirmasi password wajib diisi.";
-    } elseif ($password !== $konfirmasi_password) {
-        $errors[] = "Konfirmasi password tidak cocok.";
+}
+
+// Validasi konfirmasi password
+if (!empty($_POST['password']) && !empty($_POST['confirm_password'])) {
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        $errors[] = "Password dan Konfirmasi Password tidak cocok!";
     }
+    if (strlen($_POST['password']) < 6) {
+        $errors[] = "Password harus minimal 6 karakter!";
+    }
+}
 
+// Jika ada error, kembali ke halaman registrasi
+if (!empty($errors)) {
+    $_SESSION['register_error'] = implode("\n", $errors);
+    header('Location: ' . BASE_URL . '/pages/auth/index.php?form=register');
+    exit;
+}
 
-    // Cek duplikasi email hanya jika tidak ada error sebelumnya dan email valid
-    if (empty($errors) && !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $stmt_check_email = mysqli_prepare($koneksi, "SELECT id_user FROM users WHERE email = ?");
-        if ($stmt_check_email) {
-            mysqli_stmt_bind_param($stmt_check_email, "s", $email);
-            mysqli_stmt_execute($stmt_check_email);
-            mysqli_stmt_store_result($stmt_check_email);
-            if (mysqli_stmt_num_rows($stmt_check_email) > 0) {
-                $errors[] = "Email sudah terdaftar.";
-            }
-            mysqli_stmt_close($stmt_check_email);
+try {
+    // Generate ID User
+    $stmt = $koneksi->prepare("SELECT MAX(CAST(SUBSTRING(id_user, 2) AS UNSIGNED)) as max_id FROM users");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $next_id = $row['max_id'] + 1;
+    $id_user = 'U' . str_pad($next_id, 9, '0', STR_PAD_LEFT);
+
+    // Hash password
+    $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    // Prepare SQL statement
+    $sql = "INSERT INTO users (id_user, username, password, email, nama_lengkap, tanggal_lahir, jenis_kelamin, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+    
+    $stmt = $koneksi->prepare($sql);
+    
+    // Bind parameters
+    $tanggal_lahir = !empty($_POST['tanggal_lahir']) ? $_POST['tanggal_lahir'] : null;
+    $jenis_kelamin = !empty($_POST['jenis_kelamin']) ? $_POST['jenis_kelamin'] : null;
+    
+    $stmt->bind_param("sssssss", 
+        $id_user,
+        $_POST['username'],
+        $hashed_password,
+        $_POST['email'],
+        $_POST['nama_lengkap'],
+        $tanggal_lahir,
+        $jenis_kelamin
+    );
+    
+    // Execute statement
+    $stmt->execute();
+    
+    // Clear form data session
+    unset($_SESSION['form_data_register']);
+    
+    // Set success message
+    $_SESSION['success_message'] = "Registrasi berhasil! Silakan login.";
+    header('Location: ' . BASE_URL . '/pages/auth/index.php');
+    exit;
+    
+} catch (Exception $e) {
+    $error_message = '';
+    
+    // Check for duplicate entry
+    if ($koneksi->errno == 1062) { // MySQL error code for duplicate entry
+        if (strpos($e->getMessage(), 'username') !== false) {
+            $error_message = "Username sudah digunakan!";
+        } elseif (strpos($e->getMessage(), 'email') !== false) {
+            $error_message = "Email sudah terdaftar!";
         } else {
-            $errors[] = "Gagal memeriksa email. Silakan coba lagi.";
-            error_log("MySQLi prepare (check_email) failed: " . mysqli_error($koneksi));
+            $error_message = "Data sudah ada dalam sistem!";
         }
-    }
-
-    if (!empty($errors)) {
-        $_SESSION['register_error'] = implode("<br>", $errors);
-        header("Location: " . BASE_URL . "/pages/auth/index.php?form=register");
-        exit;
-    }
-
-    // Jika validasi lolos
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT); // PASSWORD_DEFAULT lebih disarankan
-    
-    // Generate id_user (contoh sederhana, pastikan unik di produksi)
-    // Pertimbangkan menggunakan UUID atau auto_increment di database
-    $prefix = "USR";
-    $unique_part = strtoupper(substr(uniqid(), -7)); // Cukup untuk contoh, tapi tidak 100% unik global
-    $id_user = $prefix . $unique_part;
-    if (strlen($id_user) > 10) $id_user = substr($id_user, 0, 10);
-    
-    // Pastikan id_user unik, ini contoh sederhana, di produksi perlu loop cek
-    // $is_unique = false;
-    // while(!$is_unique) {
-    //     $stmt_check_id = mysqli_prepare($koneksi, "SELECT id_user FROM users WHERE id_user = ?");
-    //     mysqli_stmt_bind_param($stmt_check_id, "s", $id_user);
-    //     mysqli_stmt_execute($stmt_check_id);
-    //     mysqli_stmt_store_result($stmt_check_id);
-    //     if (mysqli_stmt_num_rows($stmt_check_id) == 0) {
-    //         $is_unique = true;
-    //     } else {
-    //         // Generate ulang jika sudah ada
-    //         $unique_part = strtoupper(substr(uniqid(), -7));
-    //         $id_user = $prefix . $unique_part;
-    //         if (strlen($id_user) > 10) $id_user = substr($id_user, 0, 10);
-    //     }
-    //     mysqli_stmt_close($stmt_check_id);
-    // }
-
-
-    $current_datetime = date('Y-m-d H:i:s');
-    // Asumsikan username juga ada di tabel users, jika tidak, hapus dari query
-    $username_default = explode('@', $email)[0] . rand(100,999); // Contoh username sementara
-
-    $stmt_insert = mysqli_prepare($koneksi, "INSERT INTO users (id_user, username, password, email, nama_lengkap, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    if (!$stmt_insert) {
-        error_log("MySQLi prepare (insert_user) failed: " . mysqli_error($koneksi));
-        $_SESSION['register_error'] = "Pendaftaran gagal karena kesalahan sistem. Silakan coba lagi.";
-        header("Location: " . BASE_URL . "/pages/auth/index.php?form=register");
-        exit;
-    }
-
-    mysqli_stmt_bind_param($stmt_insert, "sssssss", $id_user, $username_default, $hashed_password, $email, $nama_lengkap, $current_datetime, $current_datetime);
-
-    if (mysqli_stmt_execute($stmt_insert)) {
-        unset($_SESSION['form_data_register']); // Hapus data form jika sukses
-        unset($_SESSION['register_error']);     // Hapus error sebelumnya jika ada
-        $_SESSION['register_success'] = "Pendaftaran berhasil! Silakan login.";
-        header("Location: " . BASE_URL . "/pages/auth/index.php?form=login");
-        exit;
     } else {
-        error_log("MySQLi execute (insert_user) failed: " . mysqli_stmt_error($stmt_insert));
-        $_SESSION['register_error'] = "Pendaftaran gagal. Silakan coba lagi. " . mysqli_stmt_error($stmt_insert);
-        header("Location: " . BASE_URL . "/pages/auth/index.php?form=register");
-        exit;
+        $error_message = "Terjadi kesalahan! Silakan coba lagi.";
     }
-    mysqli_stmt_close($stmt_insert);
-
-} else {
-    header("Location: " . BASE_URL . "/pages/auth/index.php");
+    
+    $_SESSION['register_error'] = $error_message;
+    header('Location: ' . BASE_URL . '/pages/auth/index.php?form=register');
     exit;
 }
 ?>

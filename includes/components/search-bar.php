@@ -11,7 +11,7 @@ if (!defined('BASE_URL')) {
                    value="<?= isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : '' ?>"
                    class="search-input">
             <button type="submit" class="search-button">
-                <i class="fas fa-search"></i>
+                Search
             </button>
         </div>
         

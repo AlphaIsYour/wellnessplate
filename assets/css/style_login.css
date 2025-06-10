@@ -3,7 +3,7 @@
 .container {
   position: relative;
   width: 850px;
-  height: 550px;
+  height: 600px;
   background: #fff;
   margin: 20px;
   margin-left: 15%;
@@ -13,13 +13,13 @@
 }
 
 .container h1 {
-  font-size: 36px;
-  margin: -10px 0;
+  font-size: 32px;
+  margin: -10px 0 10px;
 }
 
 .container p {
-  font-size: 14.5px;
-  margin: 15px 0;
+  font-size: 14px;
+  margin: 10px 0;
 }
 
 form {
@@ -36,7 +36,7 @@ form {
   align-items: center;
   color: #333;
   text-align: center;
-  padding: 40px;
+  padding: 30px;
   z-index: 1;
   transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
 }
@@ -47,87 +47,149 @@ form {
 
 .form-box.register {
   visibility: hidden;
+  padding: 20px 30px;
+  overflow-y: auto;
 }
+
 .container.active .form-box.register {
   visibility: visible;
 }
 
-.input-box {
-  position: relative;
-  margin: 30px 0;
+.form-box.register::-webkit-scrollbar {
+  width: 6px;
 }
 
-.input-box input {
+.form-box.register::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.form-box.register::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.form-box.register::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.input-box {
+  position: relative;
+  margin: 15px 0;
+}
+
+.input-box input,
+.input-box select {
   width: 100%;
-  padding: 13px 50px 13px 20px;
+  padding: 10px 40px 10px 15px;
   background: #eee;
-  border-radius: 8px;
+  border-radius: 6px;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
   font-weight: 500;
+}
+
+.input-box i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #666;
 }
 
 .input-box input::placeholder {
   color: #888;
   font-weight: 400;
+  font-size: 13px;
 }
 
-.input-box i {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
+.input-box input[type="date"] {
+  padding-right: 15px;
+}
+
+.input-box select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 40px;
+  font-size: 13px;
+  color: #666;
+}
+
+.input-box select::-ms-expand {
+  display: none;
+}
+
+.input-box select option {
+  color: #333;
+}
+
+.input-box select option:first-child {
+  color: #888;
 }
 
 .forgot-link {
   margin: -15px 0 15px;
 }
+
 .forgot-link a {
-  font-size: 14.5px;
+  font-size: 14px;
   color: #333;
 }
 
 .btn {
   width: 100%;
-  height: 48px;
+  height: 42px;
   background: #55a630;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   color: #fff;
   font-weight: 600;
+  margin-top: 5px;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
+  margin-top: 10px;
 }
 
 .social-icons a {
   display: inline-flex;
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 24px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 20px;
   color: #333;
-  margin: 0 8px;
-}
-.social-iconsf a {
-  display: inline-flex;
-  padding: 5px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 24px;
-  color: #ffffff;
-  margin: 0 8px;
-  -left: 160px;
+  margin: 0 4px;
 }
 
+.error-message {
+  color: #dc3545;
+  background-color: #fde8e8;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.success-message {
+  color: #28a745;
+  background-color: #e8f5e9;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+/* Toggle Box Styles */
 .toggle-box {
   position: absolute;
   width: 100%;
@@ -141,7 +203,6 @@ form {
   width: 300%;
   height: 100%;
   background: #55a630;
-  /* border: 2px solid red; */
   border-radius: 150px;
   z-index: 2;
   transition: 1.8s ease-in-out;
@@ -155,7 +216,6 @@ form {
   position: absolute;
   width: 50%;
   height: 100%;
-  /* background: seagreen; */
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -169,6 +229,7 @@ form {
   left: 0;
   transition-delay: 1.2s;
 }
+
 .container.active .toggle-panel.toggle-left {
   left: -50%;
   transition-delay: 0.6s;
@@ -178,6 +239,7 @@ form {
   right: -50%;
   transition-delay: 0.6s;
 }
+
 .container.active .toggle-panel.toggle-right {
   right: 0;
   transition-delay: 1.2s;
@@ -193,6 +255,10 @@ form {
   background: transparent;
   border: 2px solid #fff;
   box-shadow: none;
+}
+
+.gender-box i {
+  pointer-events: none;
 }
 
 @media screen and (max-width: 650px) {
@@ -233,9 +299,11 @@ form {
     width: 100%;
     height: 30%;
   }
+
   .toggle-panel.toggle-left {
     top: 0;
   }
+
   .toggle-panel.toggle-right {
     right: 0;
     bottom: -30%;

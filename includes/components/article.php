@@ -9,19 +9,19 @@
             [
                 'title' => 'Manfaat Sarapan Pagi untuk Produktivitas Optimal', 
                 'excerpt' => 'Sarapan sering disebut sebagai waktu makan terpenting, dan bukan tanpa alasan. Memulai hari dengan nutrisi yang tepat...', 
-                'image' => BASE_URL . '/assets/images/articles/1.png',
+                'image' => BASE_URL . '/assets/images/articles/sarapan.png',
                 'link' => BASE_URL . '/artikel/manfaat-sarapan'
             ],
             [
                 'title' => '5 Olahraga Ringan yang Efektif Dilakukan di Rumah', 
                 'excerpt' => 'Tetap aktif secara fisik tidak harus selalu pergi ke gym. Ada banyak olahraga ringan namun efektif yang bisa Anda lakukan...', 
-                'image' => BASE_URL . '/assets/images/articles/2.png',
+                'image' => BASE_URL . '/assets/images/articles/olahraga.png',
                 'link' => BASE_URL . '/artikel/olahraga-rumah'
             ],
             [
                 'title' => 'Panduan Praktis Memilih Buah dan Sayur Segar Berkualitas', 
                 'excerpt' => 'Mengonsumsi buah dan sayur segar adalah kunci diet seimbang. Namun, bagaimana cara memilih yang terbaik di pasar atau supermarket?...', 
-                'image' => BASE_URL . '/assets/images/articles/1.png', 
+                'image' => BASE_URL . '/assets/images/articles/buahan.png', 
                 'link' => BASE_URL . '/artikel/tips-buah-sayur'
             ],
         ];
