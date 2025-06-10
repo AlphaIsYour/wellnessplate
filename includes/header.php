@@ -60,10 +60,9 @@ if (isset($is_auth_page) && $is_auth_page === true) {
             <nav class="main-navigation-frontend">
                 <ul>
                     <li><a href="<?php echo BASE_URL; ?>/index.php">Beranda</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/search.php">Cari Resep</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/artikel/index.php">Artikel</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/kategori/index.php">Kategori</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/about.php">Tentang Kami</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/search.php">Cari Resep</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/artikel.php">Artikel</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/about.php">Tentang Kami</a></li>
                 </ul>
             </nav>
             <div class="user-actions-frontend">

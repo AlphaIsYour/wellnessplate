@@ -12,10 +12,10 @@
             <div class="footer-section quick-links">
                 <h4>Link Cepat</h4>
                 <ul>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/faq.php">FAQ</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>/pages/contact.php">Kontak Kami</a></li>
-                    <li><a href="#">Kebijakan Privasi</a></li>
-                    <li><a href="#">Syarat & Ketentuan</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/faq.php">FAQ</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/contact.php">Kontak Kami</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/privacy-policy.php">Kebijakan Privasi</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/terms.php">Syarat & Ketentuan</a></li>
                 </ul>
             </div>
             <div class="footer-section contact-info">

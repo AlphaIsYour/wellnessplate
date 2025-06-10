@@ -1,4 +1,3 @@
-
 <?php
 // Pastikan session sudah dimulai (biasanya di koneksi.php)
 if (session_status() == PHP_SESSION_NONE) {
@@ -89,15 +88,29 @@ if (empty($nama_kondisi)) {
 } elseif (strlen($nama_kondisi) > 100) {
     $errors[] = "Nama kondisi maksimal 100 karakter.";
 } else {
-    $stmt_check_nama = mysqli_prepare($koneksi, "SELECT id_kondisi FROM kondisi_kesehatan WHERE nama_kondisi = ?");
-    if ($stmt_check_nama) {
-        mysqli_stmt_bind_param($stmt_check_nama, "s", $nama_kondisi);
-        mysqli_stmt_execute($stmt_check_nama);
-        mysqli_stmt_store_result($stmt_check_nama);
-        if (mysqli_stmt_num_rows($stmt_check_nama) > 0) {
-            $errors[] = "Nama kondisi '" . htmlspecialchars($nama_kondisi) . "' sudah ada.";
+    // Generate slug
+    $slug = strtolower(
+        preg_replace(
+            '/[^a-z0-9]+/', 
+            '_', 
+            str_replace(
+                ['&', "'", '"', '.', ','], 
+                ['dan', '', '', '', ''], 
+                strtolower(trim($nama_kondisi))
+            )
+        )
+    );
+    
+    // Check if nama_kondisi or slug already exists
+    $stmt_check = mysqli_prepare($koneksi, "SELECT id_kondisi FROM kondisi_kesehatan WHERE nama_kondisi = ? OR slug = ?");
+    if ($stmt_check) {
+        mysqli_stmt_bind_param($stmt_check, "ss", $nama_kondisi, $slug);
+        mysqli_stmt_execute($stmt_check);
+        mysqli_stmt_store_result($stmt_check);
+        if (mysqli_stmt_num_rows($stmt_check) > 0) {
+            $errors[] = "Nama kondisi atau slug '" . htmlspecialchars($nama_kondisi) . "' sudah ada.";
         }
-        mysqli_stmt_close($stmt_check_nama);
+        mysqli_stmt_close($stmt_check);
     } else {
         $errors[] = "Gagal memeriksa nama kondisi: " . mysqli_error($koneksi);
     }
@@ -120,12 +133,11 @@ $unique_part = strtoupper(substr(uniqid(), -7));
 $id_kondisi = $prefix . $unique_part;
 if (strlen($id_kondisi) > 10) $id_kondisi = substr($id_kondisi, 0, 10);
 
-
-$query_insert = "INSERT INTO kondisi_kesehatan (id_kondisi, nama_kondisi, deskripsi) VALUES (?, ?, ?)";
+$query_insert = "INSERT INTO kondisi_kesehatan (id_kondisi, nama_kondisi, slug, deskripsi) VALUES (?, ?, ?, ?)";
 $stmt_insert = mysqli_prepare($koneksi, $query_insert);
 
 if ($stmt_insert) {
-    mysqli_stmt_bind_param($stmt_insert, "sss", $id_kondisi, $nama_kondisi, $deskripsi);
+    mysqli_stmt_bind_param($stmt_insert, "ssss", $id_kondisi, $nama_kondisi, $slug, $deskripsi);
 
     if (mysqli_stmt_execute($stmt_insert)) {
         $_SESSION['success_message'] = "Kondisi kesehatan '" . htmlspecialchars($nama_kondisi) . "' berhasil ditambahkan.";

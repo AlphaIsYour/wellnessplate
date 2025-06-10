@@ -16,6 +16,7 @@ function isActive($module, $page_name) {
         <li><a href="/admin/modules/bahan/bahan.php" class="<?php echo isActive('bahan', 'bahan.php') ? 'active' : ''; ?>">Kelola Bahan</a></li>
         <li><a href="/admin/modules/kondisi_kesehatan/kondisikesehatan.php" class="<?php echo isActive('kondisi_kesehatan', 'kondisikesehatan.php') ? 'active' : ''; ?>">Kelola Kondisi Kesehatan</a></li>
         <li><a href="/admin/modules/resep/resep.php" class="<?php echo isActive('resep', 'resep.php') ? 'active' : ''; ?>">Kelola Resep</a></li>
+        <li><a href="/admin/modules/resep_kondisi/resepkondisi.php" class="<?php echo isActive('resepkondisi', 'resepkondisi.php') ? 'active' : ''; ?>">Kelola Resep Kondisi</a></li>
         <li><a href="/admin/modules/gizi/gizi.php" class="<?php echo isActive('gizi', 'gizi.php') ? 'active' : ''; ?>">Kelola Gizi</a></li>
     </ul>
 </aside>

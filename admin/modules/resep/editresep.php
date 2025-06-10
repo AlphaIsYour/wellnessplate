@@ -134,48 +134,46 @@ $query_bahan_all = "SELECT id_bahan, nama_bahan, satuan FROM bahan ORDER BY nama
 $result_bahan_all_q = mysqli_query($koneksi, $query_bahan_all);
 if ($result_bahan_all_q) while ($row = mysqli_fetch_assoc($result_bahan_all_q)) $bahans_all[] = $row;
 
+// Get all tags from database
+$all_tags = [];
+$query_tags = "SELECT id_tag, nama_tag, slug FROM tags ORDER BY nama_tag ASC";
+$result_tags = mysqli_query($koneksi, $query_tags);
+if ($result_tags) {
+    while ($row = mysqli_fetch_assoc($result_tags)) {
+        $all_tags[] = $row;
+    }
+}
+
 
 $form_input = isset($_SESSION['form_input_resep_edit']) ? $_SESSION['form_input_resep_edit'] : $resep_data_db;
 $resep_bahans_input = isset($_SESSION['form_input_resep_edit']['resep_bahan']) && is_array($_SESSION['form_input_resep_edit']['resep_bahan']) 
                         ? $_SESSION['form_input_resep_edit']['resep_bahan'] 
                         : (empty($resep_bahans_db) ? [['id_bahan' => '', 'jumlah' => '']] : $resep_bahans_db);
 $gizi_input = isset($_SESSION['form_input_resep_edit']['gizi']) ? $_SESSION['form_input_resep_edit']['gizi'] : $gizi_data_db;
-$tags_input = isset($form_input['tags']) ? json_decode($form_input['tags'], true) : [];
-unset($_SESSION['form_input_resep_edit']);
 
-// Predefined tags
-$tag_categories = [
-    'jenis' => [
-        'mie' => 'Mie',
-        'jus' => 'Jus',
-        'sayuran' => 'Sayuran',
-        'daging' => 'Daging',
-        'seafood' => 'Seafood',
-        'buah' => 'Buah',
-        'nasi' => 'Nasi',
-        'sup' => 'Sup',
-        'camilan' => 'Camilan',
-        'sarapan' => 'Sarapan'
-    ],
-    'kondisi' => [
-        'diabetes' => 'Diabetes',
-        'diet' => 'Diet',
-        'kolesterol' => 'Kolesterol',
-        'asam_urat' => 'Asam Urat',
-        'darah_tinggi' => 'Darah Tinggi',
-        'jantung' => 'Jantung',
-        'ginjal' => 'Ginjal',
-        'maag' => 'Maag'
-    ],
-    'karakteristik' => [
-        'rendah_kalori' => 'Rendah Kalori',
-        'tinggi_protein' => 'Tinggi Protein',
-        'rendah_garam' => 'Rendah Garam',
-        'vegetarian' => 'Vegetarian',
-        'vegan' => 'Vegan',
-        'bebas_gluten' => 'Bebas Gluten'
-    ]
-];
+// Get selected tags for this recipe from database
+$selected_tags = [];
+if (isset($_SESSION['form_input_resep_edit']['tags'])) {
+    // If from session (form submission), it should be an array of tag IDs
+    $selected_tags = is_array($_SESSION['form_input_resep_edit']['tags']) 
+                    ? $_SESSION['form_input_resep_edit']['tags'] 
+                    : [];
+} else {
+    // Get selected tags from resep_tags table
+    $query_selected_tags = "SELECT rt.id_tag FROM resep_tags rt WHERE rt.id_resep = ?";
+    $stmt_selected_tags = mysqli_prepare($koneksi, $query_selected_tags);
+    if ($stmt_selected_tags) {
+        mysqli_stmt_bind_param($stmt_selected_tags, "s", $id_resep_to_edit);
+        mysqli_stmt_execute($stmt_selected_tags);
+        $result_selected_tags = mysqli_stmt_get_result($stmt_selected_tags);
+        while ($row = mysqli_fetch_assoc($result_selected_tags)) {
+            $selected_tags[] = $row['id_tag'];
+        }
+        mysqli_stmt_close($stmt_selected_tags);
+    }
+}
+
+unset($_SESSION['form_input_resep_edit']);
 ?>
 
 <div class="container mx-auto py-8">
@@ -195,12 +193,12 @@ $tag_categories = [
 
                 <div class="form-group">
                     <label for="nama_resep">Nama Resep</label>
-                    <input type="text" id="nama_resep" name="nama_resep" value="<?php echo htmlspecialchars($form_input['nama_resep'] ?? ''); ?>" required maxlength="100">
+                    <input type="text" id="nama_resep" name="nama_resep" value="<?php echo htmlspecialchars($form_input['nama_resep'] ?? $resep_data_db['nama_resep'] ?? ''); ?>" required maxlength="100">
                 </div>
 
                 <div class="form-group">
                     <label for="deskripsi">Deskripsi Resep</label>
-                    <textarea id="deskripsi" name="deskripsi" rows="4" required><?php echo htmlspecialchars($form_input['deskripsi'] ?? ''); ?></textarea>
+                    <textarea id="deskripsi" name="deskripsi" rows="4" required><?php echo htmlspecialchars($form_input['deskripsi'] ?? $resep_data_db['deskripsi'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="form-group">
@@ -221,7 +219,7 @@ $tag_categories = [
                     <select id="id_admin" name="id_admin" required>
                         <option value="">-- Pilih Admin --</option>
                         <?php foreach ($users_admin as $ua) : ?>
-                            <option value="<?php echo $ua['id_admin']; ?>" <?php echo (isset($form_input['id_admin']) && $form_input['id_admin'] == $ua['id_admin']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $ua['id_admin']; ?>" <?php echo (isset($form_input['id_admin']) ? $form_input['id_admin'] == $ua['id_admin'] : $resep_data_db['id_admin'] == $ua['id_admin']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($ua['nama_lengkap']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -233,7 +231,7 @@ $tag_categories = [
                     <select id="id_kondisi" name="id_kondisi" required>
                         <option value="">-- Pilih Kondisi Kesehatan --</option>
                         <?php foreach ($kondisi_kesehatans as $kondisi) : ?>
-                            <option value="<?php echo $kondisi['id_kondisi']; ?>" <?php echo (isset($form_input['id_kondisi']) && $form_input['id_kondisi'] == $kondisi['id_kondisi']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $kondisi['id_kondisi']; ?>" <?php echo (isset($form_input['id_kondisi']) ? $form_input['id_kondisi'] == $kondisi['id_kondisi'] : $resep_data_db['id_kondisi'] == $kondisi['id_kondisi']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($kondisi['nama_kondisi']); ?>
                             </option>
                         <?php endforeach; ?>
@@ -241,26 +239,27 @@ $tag_categories = [
                 </div>
 
                 <div class="form-group">
-                    <label>Tags</label>
-                    <?php foreach ($tag_categories as $category => $tags): ?>
-                        <div class="tag-category">
-                            <h4><?php echo ucfirst($category); ?></h4>
-                            <div class="tag-options">
-                                <?php foreach ($tags as $value => $label): ?>
-                                    <label class="tag-checkbox">
-                                        <input type="checkbox" name="tags[]" value="<?php echo $value; ?>"
-                                            <?php echo (in_array($value, $tags_input)) ? 'checked' : ''; ?>>
-                                        <?php echo htmlspecialchars($label); ?>
-                                    </label>
-                                <?php endforeach; ?>
-                            </div>
+                    <label>Tags Resep</label>
+                    <div class="tags-container">
+                        <div class="tag-options">
+                            <?php foreach ($all_tags as $tag): ?>
+                                <label class="tag-checkbox">
+                                    <input type="checkbox" name="tags[]" value="<?php echo htmlspecialchars($tag['id_tag']); ?>"
+                                        <?php echo (in_array($tag['id_tag'], $selected_tags)) ? 'checked' : ''; ?>>
+                                    <span class="checkmark"></span>
+                                    <?php echo htmlspecialchars($tag['nama_tag']); ?>
+                                </label>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
+                        <?php if (empty($all_tags)): ?>
+                            <p class="no-tags-message">Belum ada tags yang tersedia. Silakan buat tags terlebih dahulu di menu Tags.</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="cara_buat">Cara Membuat</label>
-                    <textarea id="cara_buat" name="cara_buat" rows="8" required><?php echo htmlspecialchars($form_input['cara_buat'] ?? ''); ?></textarea>
+                    <textarea id="cara_buat" name="cara_buat" rows="8" required><?php echo htmlspecialchars($form_input['cara_buat'] ?? $resep_data_db['cara_buat'] ?? ''); ?></textarea>
                 </div>
 
                 <hr>
@@ -384,37 +383,104 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-.tag-category {
-    margin-bottom: 15px;
-}
-
-.tag-category h4 {
-    margin-bottom: 10px;
-    color: #333;
+/* Tags styling */
+.tags-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
 }
 
 .tag-options {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
 }
 
 .tag-checkbox {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    padding: 5px 10px;
-    background-color: #f5f5f5;
-    border-radius: 15px;
+    padding: 8px 12px;
+    background-color: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 14px;
+    user-select: none;
 }
 
 .tag-checkbox:hover {
-    background-color: #e9e9e9;
+    background-color: #e8f5e8;
+    border-color: #28a745;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .tag-checkbox input[type="checkbox"] {
-    margin-right: 5px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 18px;
+    width: 18px;
+    background-color: #ffffff;
+    border: 2px solid #ced4da;
+    border-radius: 3px;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tag-checkbox input[type="checkbox"]:checked ~ .checkmark {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.tag-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.tag-checkbox:has(input[type="checkbox"]:checked) {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.no-tags-message {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tag-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .tag-checkbox {
+        padding: 10px 15px;
+    }
 }
 
 .select2-container {
@@ -441,6 +507,8 @@ if(isset($result_gizi_db)) mysqli_free_result($result_gizi_db);
 if(isset($result_users_admin)) mysqli_free_result($result_users_admin);
 if(isset($result_kondisi)) mysqli_free_result($result_kondisi);
 if(isset($result_bahan_all_q)) mysqli_free_result($result_bahan_all_q);
+if(isset($result_tags)) mysqli_free_result($result_tags);
+if(isset($result_selected_tags)) mysqli_free_result($result_selected_tags);
 if (!isset($base_url)) {
     $base_url = "/wellnessplate";
 }

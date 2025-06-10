@@ -110,18 +110,35 @@ if (empty($nama_kondisi)) {
 } elseif (strlen($nama_kondisi) > 100) {
     $errors[] = "Nama kondisi maksimal 100 karakter.";
 } elseif ($nama_kondisi !== $current_kondisi_data['nama_kondisi']) {
-    $stmt_check_nama = mysqli_prepare($koneksi, "SELECT id_kondisi FROM kondisi_kesehatan WHERE nama_kondisi = ? AND id_kondisi != ?");
-    if ($stmt_check_nama) {
-        mysqli_stmt_bind_param($stmt_check_nama, "ss", $nama_kondisi, $id_kondisi);
-        mysqli_stmt_execute($stmt_check_nama);
-        mysqli_stmt_store_result($stmt_check_nama);
-        if (mysqli_stmt_num_rows($stmt_check_nama) > 0) {
-            $errors[] = "Nama kondisi '" . htmlspecialchars($nama_kondisi) . "' sudah ada untuk kondisi lain.";
+    // Generate new slug
+    $slug = strtolower(
+        preg_replace(
+            '/[^a-z0-9]+/', 
+            '_', 
+            str_replace(
+                ['&', "'", '"', '.', ','], 
+                ['dan', '', '', '', ''], 
+                strtolower(trim($nama_kondisi))
+            )
+        )
+    );
+    
+    // Check if nama_kondisi or slug already exists for other records
+    $stmt_check = mysqli_prepare($koneksi, "SELECT id_kondisi FROM kondisi_kesehatan WHERE (nama_kondisi = ? OR slug = ?) AND id_kondisi != ?");
+    if ($stmt_check) {
+        mysqli_stmt_bind_param($stmt_check, "sss", $nama_kondisi, $slug, $id_kondisi);
+        mysqli_stmt_execute($stmt_check);
+        mysqli_stmt_store_result($stmt_check);
+        if (mysqli_stmt_num_rows($stmt_check) > 0) {
+            $errors[] = "Nama kondisi atau slug '" . htmlspecialchars($nama_kondisi) . "' sudah ada untuk kondisi lain.";
         }
-        mysqli_stmt_close($stmt_check_nama);
+        mysqli_stmt_close($stmt_check);
     } else {
         $errors[] = "Gagal memeriksa nama kondisi: " . mysqli_error($koneksi);
     }
+} else {
+    // If nama_kondisi hasn't changed, keep the existing slug
+    $slug = $current_kondisi_data['slug'];
 }
 
 if (empty($deskripsi)) {
@@ -136,11 +153,11 @@ if (!empty($errors)) {
     exit;
 }
 
-$query_update = "UPDATE kondisi_kesehatan SET nama_kondisi = ?, deskripsi = ? WHERE id_kondisi = ?";
+$query_update = "UPDATE kondisi_kesehatan SET nama_kondisi = ?, slug = ?, deskripsi = ? WHERE id_kondisi = ?";
 $stmt_update = mysqli_prepare($koneksi, $query_update);
 
 if ($stmt_update) {
-    mysqli_stmt_bind_param($stmt_update, "sss", $nama_kondisi, $deskripsi, $id_kondisi);
+    mysqli_stmt_bind_param($stmt_update, "ssss", $nama_kondisi, $slug, $deskripsi, $id_kondisi);
 
     if (mysqli_stmt_execute($stmt_update)) {
         if (mysqli_stmt_affected_rows($stmt_update) > 0) {

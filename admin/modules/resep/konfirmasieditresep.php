@@ -70,223 +70,132 @@ if (isset($is_auth_page) && $is_auth_page === true) { // Variabel ini bisa diset
     <div class="main-content-area-frontend">
     <?php // Konten utama akan dimulai setelah ini di file halaman spesifik ?>
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: /index.php?error=Silakan login terlebih dahulu.");
+    exit;
+}
+
 require_once __DIR__ . '/../../../config/koneksi.php';
 
-$base_url = "/admin/modules/resep/";
+// Validasi input
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $_SESSION['error_message'] = "Akses tidak sah.";
-    header('Location: ' . $base_url . 'resep.php');
+    $_SESSION['error_message'] = "Metode request tidak valid!";
+    header("Location: resep.php");
     exit;
 }
 
-$id_resep = trim($_POST['id_resep'] ?? '');
+$id_resep = $_POST['id_resep'] ?? '';
+if (empty($id_resep)) {
+    $_SESSION['error_message'] = "ID resep tidak valid!";
+    header("Location: resep.php");
+    exit;
+}
+
+// Simpan input form untuk digunakan jika ada error
+$_SESSION['form_input'] = $_POST;
+
+// Validasi dan sanitasi input
 $nama_resep = trim($_POST['nama_resep'] ?? '');
 $deskripsi = trim($_POST['deskripsi'] ?? '');
+$cara_buat = trim($_POST['cara_buat'] ?? '');
 $id_admin = trim($_POST['id_admin'] ?? '');
 $id_kondisi = trim($_POST['id_kondisi'] ?? '');
-$cara_buat = trim($_POST['cara_buat'] ?? '');
-$current_image = trim($_POST['current_image'] ?? '');
-$tags = isset($_POST['tags']) ? $_POST['tags'] : [];
 
-$resep_bahans_post = isset($_POST['resep_bahan']) && is_array($_POST['resep_bahan']) ? $_POST['resep_bahan'] : [];
-$gizi_post = isset($_POST['gizi']) && is_array($_POST['gizi']) ? $_POST['gizi'] : [];
-
+// Validasi data wajib
 $errors = [];
-
-if (empty($id_resep)) $errors[] = "ID Resep tidak valid.";
-if (empty($nama_resep)) $errors[] = "Nama resep wajib diisi.";
-if (strlen($nama_resep) > 100) $errors[] = "Nama resep maksimal 100 karakter.";
-if (empty($deskripsi)) $errors[] = "Deskripsi resep wajib diisi.";
-if (empty($id_admin) || strlen($id_admin) > 10) $errors[] = "Admin pembuat resep wajib dipilih.";
-if (empty($id_kondisi) || strlen($id_kondisi) > 10) $errors[] = "Kondisi kesehatan wajib dipilih.";
-if (empty($cara_buat)) $errors[] = "Cara membuat resep wajib diisi.";
-
-// Handle image upload if a new image is provided
-$image_name = $current_image;
-if (!empty($_FILES['image']['name'])) {
-    $file = $_FILES['image'];
-    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png'];
-    $max_size = 2 * 1024 * 1024; // 2MB
-
-    if (!in_array($file['type'], $allowed_types)) {
-        $errors[] = "Format file harus JPG, JPEG, atau PNG.";
-    }
-    if ($file['size'] > $max_size) {
-        $errors[] = "Ukuran file maksimal 2MB.";
-    }
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        $errors[] = "Terjadi kesalahan saat upload file.";
-    }
-
-    if (empty($errors)) {
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $image_name = uniqid() . '.' . $extension;
-        $upload_path = __DIR__ . '/../../../assets/images/menu/' . $image_name;
-        
-        if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
-            $errors[] = "Gagal menyimpan file gambar.";
-        } else {
-            // Delete old image if exists and different from new one
-            if (!empty($current_image) && $current_image !== $image_name) {
-                $old_image_path = __DIR__ . '/../../../assets/images/menu/' . $current_image;
-                if (file_exists($old_image_path)) {
-                    unlink($old_image_path);
-                }
-            }
-        }
-    }
-}
-
-if (empty($resep_bahans_post) || count($resep_bahans_post) == 0) {
-    $errors[] = "Minimal harus ada satu bahan dalam resep.";
-} else {
-    foreach ($resep_bahans_post as $index => $item_bahan) {
-        if (empty($item_bahan['id_bahan']) || strlen($item_bahan['id_bahan']) > 10) {
-            $errors[] = "Bahan ke-" . ($index + 1) . " wajib dipilih.";
-        }
-        if (!isset($item_bahan['jumlah']) || $item_bahan['jumlah'] === '' || !is_numeric($item_bahan['jumlah']) || (float)$item_bahan['jumlah'] <= 0) {
-            $errors[] = "Jumlah untuk bahan ke-" . ($index + 1) . " wajib diisi dengan angka valid lebih dari 0.";
-        }
-    }
-}
-
-$kalori = isset($gizi_post['kalori']) && $gizi_post['kalori'] !== '' ? (float)$gizi_post['kalori'] : null;
-$protein = isset($gizi_post['protein']) && $gizi_post['protein'] !== '' ? (float)$gizi_post['protein'] : null;
-$karbohidrat = isset($gizi_post['karbohidrat']) && $gizi_post['karbohidrat'] !== '' ? (float)$gizi_post['karbohidrat'] : null;
-$lemak = isset($gizi_post['lemak']) && $gizi_post['lemak'] !== '' ? (float)$gizi_post['lemak'] : null;
-
-$has_gizi_data = ($kalori !== null || $protein !== null || $karbohidrat !== null || $lemak !== null);
-
-if ($has_gizi_data) {
-    if ($kalori !== null && (!is_numeric($kalori) || $kalori < 0)) $errors[] = "Kalori (jika diisi) harus angka non-negatif.";
-    if ($protein !== null && (!is_numeric($protein) || $protein < 0)) $errors[] = "Protein (jika diisi) harus angka non-negatif.";
-    if ($karbohidrat !== null && (!is_numeric($karbohidrat) || $karbohidrat < 0)) $errors[] = "Karbohidrat (jika diisi) harus angka non-negatif.";
-    if ($lemak !== null && (!is_numeric($lemak) || $lemak < 0)) $errors[] = "Lemak (jika diisi) harus angka non-negatif.";
-}
+if (empty($nama_resep)) $errors[] = "Nama resep wajib diisi!";
+if (empty($deskripsi)) $errors[] = "Deskripsi wajib diisi!";
+if (empty($cara_buat)) $errors[] = "Cara membuat wajib diisi!";
+if (empty($id_admin)) $errors[] = "Admin wajib dipilih!";
+if (empty($id_kondisi)) $errors[] = "Kondisi kesehatan wajib dipilih!";
 
 if (!empty($errors)) {
-    if (isset($image_name) && $image_name !== $current_image && file_exists(__DIR__ . '/../../../assets/images/menu/' . $image_name)) {
-        unlink(__DIR__ . '/../../../assets/images/menu/' . $image_name);
-    }
-    $_SESSION['error_message'] = implode("<br>", $errors);
+    $_SESSION['error_message'] = implode("\n", $errors);
     $_SESSION['form_input_resep_edit'] = $_POST;
-    header('Location: ' . $base_url . 'editresep.php?id=' . urlencode($id_resep));
+    header("Location: editresep.php?id=" . urlencode($id_resep));
     exit;
 }
 
-mysqli_autocommit($koneksi, false);
-$error_flag_transaction = false;
+try {
+    mysqli_begin_transaction($koneksi);
 
-// Update recipe
-$query_update_resep = "UPDATE resep SET id_admin = ?, id_kondisi = ?, nama_resep = ?, deskripsi = ?, image = ?, cara_buat = ?, tags = ? WHERE id_resep = ?";
-$stmt_update_resep = mysqli_prepare($koneksi, $query_update_resep);
-if ($stmt_update_resep) {
-    $tags_json = json_encode($tags);
-    mysqli_stmt_bind_param($stmt_update_resep, "ssssssss", $id_admin, $id_kondisi, $nama_resep, $deskripsi, $image_name, $cara_buat, $tags_json, $id_resep);
-    if (!mysqli_stmt_execute($stmt_update_resep)) {
-        $error_flag_transaction = true;
-        $_SESSION['error_message'] = "Gagal mengupdate data resep utama: " . mysqli_stmt_error($stmt_update_resep);
+    // Update data resep
+    $stmt = mysqli_prepare($koneksi, "UPDATE resep SET 
+        nama_resep = ?,
+        deskripsi = ?,
+        cara_buat = ?,
+        id_admin = ?,
+        id_kondisi = ?
+        WHERE id_resep = ?");
+
+    mysqli_stmt_bind_param($stmt, "ssssss", 
+        $nama_resep,
+        $deskripsi,
+        $cara_buat,
+        $id_admin,
+        $id_kondisi,
+        $id_resep
+    );
+
+    if (!mysqli_stmt_execute($stmt)) {
+        throw new Exception("Gagal mengupdate data resep: " . mysqli_error($koneksi));
     }
-    mysqli_stmt_close($stmt_update_resep);
-} else {
-    $error_flag_transaction = true;
-    $_SESSION['error_message'] = "Gagal mempersiapkan statement update resep: " . mysqli_error($koneksi);
-}
 
-// Update ingredients
-if (!$error_flag_transaction) {
-    // Delete existing ingredients
-    $query_delete_bahan = "DELETE FROM resep_bahan WHERE id_resep = ?";
-    $stmt_delete_bahan = mysqli_prepare($koneksi, $query_delete_bahan);
-    if ($stmt_delete_bahan) {
-        mysqli_stmt_bind_param($stmt_delete_bahan, "s", $id_resep);
-        if (!mysqli_stmt_execute($stmt_delete_bahan)) {
-            $error_flag_transaction = true;
-            $_SESSION['error_message'] = "Gagal menghapus bahan resep lama: " . mysqli_stmt_error($stmt_delete_bahan);
+    // Update tags
+    mysqli_query($koneksi, "DELETE FROM resep_tags WHERE id_resep = " . intval($id_resep));
+    if (isset($_POST['tags']) && is_array($_POST['tags'])) {
+        $values = [];
+        foreach ($_POST['tags'] as $tag_id) {
+            $values[] = "(" . intval($id_resep) . ", " . intval($tag_id) . ")";
         }
-        mysqli_stmt_close($stmt_delete_bahan);
-    } else {
-        $error_flag_transaction = true;
-        $_SESSION['error_message'] = "Gagal mempersiapkan statement hapus bahan: " . mysqli_error($koneksi);
+        $query = "INSERT INTO resep_tags (id_resep, id_tag) VALUES " . implode(", ", $values);
+        if (!mysqli_query($koneksi, $query)) {
+            throw new Exception("Gagal mengupdate tags: " . mysqli_error($koneksi));
+        }
     }
 
-    // Insert new ingredients
-    if (!$error_flag_transaction) {
-        // Get the current max id_resep_bahan
-        $max_id_query = "SELECT MAX(CAST(SUBSTRING(id_resep_bahan, 3) AS UNSIGNED)) as max_id FROM resep_bahan";
-        $max_id_result = mysqli_query($koneksi, $max_id_query);
-        $max_id_row = mysqli_fetch_assoc($max_id_result);
-        $next_id = $max_id_row['max_id'] ? $max_id_row['max_id'] + 1 : 1;
+    // Update bahan-bahan
+    mysqli_query($koneksi, "DELETE FROM resep_bahan WHERE id_resep = " . intval($id_resep));
+    if (isset($_POST['resep_bahan']) && is_array($_POST['resep_bahan'])) {
+        $stmt = mysqli_prepare($koneksi, "INSERT INTO resep_bahan (id_resep_bahan, id_resep, id_bahan, jumlah) VALUES (?, ?, ?, ?)");
+        
+        foreach ($_POST['resep_bahan'] as $bahan) {
+            if (!empty($bahan['id_bahan']) && isset($bahan['jumlah'])) {
+                // Generate a unique ID for id_resep_bahan
+                $stmt_max = mysqli_prepare($koneksi, "SELECT MAX(CAST(SUBSTRING(id_resep_bahan, 3) AS UNSIGNED)) as max_id FROM resep_bahan WHERE id_resep_bahan LIKE 'RB%'");
+                mysqli_stmt_execute($stmt_max);
+                $result = mysqli_stmt_get_result($stmt_max);
+                $row = mysqli_fetch_assoc($result);
+                $next_id = $row['max_id'] ? $row['max_id'] + 1 : 1;
+                $id_resep_bahan = 'RB' . str_pad($next_id, 8, '0', STR_PAD_LEFT);
+                mysqli_stmt_close($stmt_max);
 
-        $query_insert_bahan = "INSERT INTO resep_bahan (id_resep_bahan, id_resep, id_bahan, jumlah) VALUES (?, ?, ?, ?)";
-        $stmt_insert_bahan = mysqli_prepare($koneksi, $query_insert_bahan);
-        if ($stmt_insert_bahan) {
-            foreach ($resep_bahans_post as $item_bahan) {
-                $id_bahan_item = $item_bahan['id_bahan'];
-                $jumlah_item = (string)$item_bahan['jumlah'];
-                $id_resep_bahan = 'RB' . str_pad($next_id, 4, '0', STR_PAD_LEFT);
-                mysqli_stmt_bind_param($stmt_insert_bahan, "ssss", $id_resep_bahan, $id_resep, $id_bahan_item, $jumlah_item);
-                if (!mysqli_stmt_execute($stmt_insert_bahan)) {
-                    $error_flag_transaction = true;
-                    $_SESSION['error_message'] = "Gagal menyimpan bahan resep: " . mysqli_stmt_error($stmt_insert_bahan);
-                    break;
+                $id_bahan = $bahan['id_bahan'];
+                $jumlah = floatval($bahan['jumlah']);
+                
+                mysqli_stmt_bind_param($stmt, "sssi", $id_resep_bahan, $id_resep, $id_bahan, $jumlah);
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception("Gagal mengupdate bahan-bahan: " . mysqli_error($koneksi));
                 }
-                $next_id++;
             }
-            mysqli_stmt_close($stmt_insert_bahan);
-        } else {
-            $error_flag_transaction = true;
-            $_SESSION['error_message'] = "Gagal mempersiapkan statement insert bahan: " . mysqli_error($koneksi);
         }
-    }
-}
-
-// Update nutrition info
-if (!$error_flag_transaction) {
-    // Delete existing nutrition info
-    $query_delete_gizi = "DELETE FROM gizi_resep WHERE id_resep = ?";
-    $stmt_delete_gizi = mysqli_prepare($koneksi, $query_delete_gizi);
-    if ($stmt_delete_gizi) {
-        mysqli_stmt_bind_param($stmt_delete_gizi, "s", $id_resep);
-        if (!mysqli_stmt_execute($stmt_delete_gizi)) {
-            $error_flag_transaction = true;
-            $_SESSION['error_message'] = "Gagal menghapus data gizi lama: " . mysqli_stmt_error($stmt_delete_gizi);
-        }
-        mysqli_stmt_close($stmt_delete_gizi);
+        mysqli_stmt_close($stmt);
     }
 
-    // Insert new nutrition info if exists
-    if (!$error_flag_transaction && $has_gizi_data) {
-        $query_insert_gizi = "INSERT INTO gizi_resep (id_resep, kalori, protein, karbohidrat, lemak) VALUES (?, ?, ?, ?, ?)";
-        $stmt_insert_gizi = mysqli_prepare($koneksi, $query_insert_gizi);
-        if ($stmt_insert_gizi) {
-            mysqli_stmt_bind_param($stmt_insert_gizi, "sdddd", $id_resep, $kalori, $protein, $karbohidrat, $lemak);
-            if (!mysqli_stmt_execute($stmt_insert_gizi)) {
-                $error_flag_transaction = true;
-                $_SESSION['error_message'] = "Gagal menyimpan data gizi baru: " . mysqli_stmt_error($stmt_insert_gizi);
-            }
-            mysqli_stmt_close($stmt_insert_gizi);
-        } else {
-            $error_flag_transaction = true;
-            $_SESSION['error_message'] = "Gagal mempersiapkan statement insert gizi: " . mysqli_error($koneksi);
-        }
-    }
-}
-
-if ($error_flag_transaction) {
-    mysqli_rollback($koneksi);
-    if ($image_name !== $current_image && file_exists(__DIR__ . '/../../../assets/images/menu/' . $image_name)) {
-        unlink(__DIR__ . '/../../../assets/images/menu/' . $image_name);
-    }
-    $_SESSION['form_input_resep_edit'] = $_POST;
-    header('Location: ' . $base_url . 'editresep.php?id=' . urlencode($id_resep));
-} else {
     mysqli_commit($koneksi);
-    $_SESSION['success_message'] = "Resep '" . htmlspecialchars($nama_resep) . "' berhasil diupdate.";
-    unset($_SESSION['form_input_resep_edit']);
-    header('Location: ' . $base_url . 'resep.php');
-}
+    unset($_SESSION['form_input']);
+    $_SESSION['success_message'] = "Resep berhasil diperbarui!";
+    header("Location: resep.php");
+    exit;
 
-mysqli_autocommit($koneksi, true);
-exit;
+} catch (Exception $e) {
+    mysqli_rollback($koneksi);
+    $_SESSION['error_message'] = $e->getMessage();
+    header("Location: editresep.php?id=" . urlencode($id_resep));
+    exit;
+}
 ?>

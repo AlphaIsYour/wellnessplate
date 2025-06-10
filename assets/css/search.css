@@ -24,69 +24,105 @@ body {
   gap: 25px;
 }
 
+.search-bar {
+  padding: 5px 0;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.search-form {
+  max-width: 700px;
+  margin: auto;
+}
+
+.search-input-wrapper {
+  display: flex;
+  margin-top: 10px;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px 0 0 8px;
+  font-size: 1rem;
+}
+
+.search-button {
+  padding: 12px 25px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.search-button:hover {
+  background-color: #218838;
+}
+
 .filter-sidebar {
-  width: 25%;
-  min-width: 280px;
-  background-color: #28a745; /* PERUBAHAN: Warna background teal */
+  width: 250px;
   padding: 20px;
+  background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  align-self: flex-start;
-  color: #f0f0f0; /* PERUBAHAN: Warna teks default untuk kontras */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .filter-group {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .filter-group h4 {
-  font-size: 1.1em;
-  margin-top: 0;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #000000; /* PERUBAHAN: Warna border kontras dengan teal */
-  color: #fff; /* PERUBAHAN: Warna judul filter */
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .checkbox-list label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
-  color: #fff; /* PERUBAHAN: Warna label checkbox */
-}
-.checkbox-list label:hover {
-  color: #fff;
-}
-.checkbox-list input[type="checkbox"] {
-  margin-right: 8px;
-  vertical-align: middle;
+  font-size: 0.9rem;
+  color: #555;
 }
 
-/* Tombol "Show More" dan input manual tidak lagi digunakan dari UI, style bisa dihapus/dikomentari */
-/* .show-more-btn { ... } */
-/* .manual-filter-input { ... } */
+.checkbox-list input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
 
 .btn-apply-filter {
-  /* PERUBAHAN: Style untuk tombol Terapkan Filter */
-  background-color: #ffffff; /* Warna lebih gelap dari teal atau warna kontras */
-  color: rgb(0, 0, 0);
-  border: none;
-  padding: 12px 15px;
   width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
   border-radius: 4px;
-  font-size: 1em;
-  font-weight: 500;
   cursor: pointer;
-  margin-top: 20px;
+  font-weight: 500;
   transition: background-color 0.2s;
 }
+
 .btn-apply-filter:hover {
-  background-color: #cff5ee;
+  background-color: #218838;
 }
 
 .search-results-area {
-  flex-grow: 1;
+  flex: 1;
+  padding: 0 20px;
 }
 
 .search-results-area h1 {
@@ -106,14 +142,11 @@ body {
 }
 
 .selected-filters-container {
-  margin-bottom: 25px;
-  padding: 12px 15px;
-  background-color: #e9ecef;
-  border-radius: 8px;
+  margin: 20px 0;
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  align-items: center;
 }
 .selected-filters-container > span {
   font-weight: 500;
@@ -122,180 +155,127 @@ body {
 }
 
 .filter-tag {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 12px;
-  border-radius: 50px;
-  font-size: 0.85em;
   display: inline-flex;
   align-items: center;
-  line-height: 1;
-  height: 25px;
-  box-sizing: border-box;
+  gap: 5px;
+  padding: 5px 10px;
+  background: #e9ecef;
+  border-radius: 20px;
+  font-size: 0.9rem;
 }
 
-.filter-tag .remove-filter-btn {
+.remove-filter-btn {
   background: none;
   border: none;
-  color: white;
-  margin-left: 8px;
+  color: #666;
   cursor: pointer;
-  font-size: 1.1em;
-  padding: 0;
-  line-height: 0.5;
-}
-.filter-tag .remove-filter-btn:hover {
-  opacity: 0.8;
+  padding: 0 5px;
 }
 
 #clearAllFiltersBtn {
-  background-color: #dc3545;
+  padding: 5px 10px;
+  background: #dc3545;
   color: white;
   border: none;
-  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.85em;
-  margin-left: auto;
-}
-#clearAllFiltersBtn:hover {
-  background-color: #c82333;
+  font-size: 0.9rem;
 }
 
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  margin-top: 20px;
 }
 
 .menu-card {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  background: #fff;
   border-radius: 8px;
-  overflow: hidden; /* Penting untuk border-radius gambar dan ellipsis */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  /* PERUBAHAN: Sesuaikan tinggi card karena deskripsi hilang.
-       Ini mungkin perlu penyesuaian lebih lanjut tergantung konten lain.
-       Atau bisa juga 'auto' jika ingin tinggi dinamis tapi tombol tetap di bawah. */
-  height: 350px; /* Misalnya, atau coba 320px */
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
+
 .menu-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .menu-card img {
   width: 100%;
-  height: 180px; /* Tinggi gambar bisa disesuaikan jika perlu */
+  height: 200px;
   object-fit: cover;
 }
 
 .menu-card-content {
-  padding: 12px; /* Sedikit kurangi padding jika perlu */
-  flex-grow: 1; /* Konten mengambil sisa ruang vertikal */
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-between; Ini akan kita atur dengan margin-top: auto pada tombol */
+  padding: 15px;
 }
 
-.menu-card-content .menu-info {
-  /* Div baru untuk membungkus judul dan tags */
-  /* Biarkan div ini mengambil ruang yang dibutuhkan oleh judul dan tags */
-  margin-bottom: 10px; /* Jarak antara info dan tombol (jika judul & tag pendek) */
+.menu-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
 }
 
-.menu-card-content h3 {
-  font-size: 1rem; /* PERUBAHAN: Kecilkan font size judul, misal 1rem atau 1.1rem */
-  margin-top: 0;
-  margin-bottom: 8px; /* Jarak antara judul dan tags */
-  line-height: 1.3; /* Sesuaikan line-height untuk 2 baris */
-
-  /* Teknik Ellipsis untuk Judul (misal, 2 baris) */
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Batasi maksimal 2 baris */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* Untuk memastikan ada ruang minimal untuk 2 baris, meskipun judulnya pendek
-       Ini membantu konsistensi tinggi bagian atas card. */
-  min-height: 2.6em; /* (1.3em line-height * 2 baris). Sesuaikan jika line-height berubah. */
-  max-height: 2.6em; /* Opsional, jika ingin strict 2 baris */
-}
-.menu-card-content h3 a {
-  text-decoration: none;
+.menu-info h3 a {
   color: #333;
+  text-decoration: none;
 }
-.menu-card-content h3 a:hover {
-  color: #007bff;
-}
-
-/* Style untuk .menu-description sudah tidak relevan karena dihilangkan dari HTML */
 
 .menu-tags {
-  /* margin-bottom sudah diatur oleh .menu-info */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 15px;
 }
-.menu-tags .tag {
-  display: inline-block;
-  background-color: #f0f0f0;
-  color: #555;
-  font-size: 0.75em; /* Sedikit kecilkan tag jika perlu */
-  padding: 2px 6px;
-  border-radius: 3px;
-  margin-right: 4px;
-  margin-bottom: 4px; /* Untuk tag yang wrap ke baris baru */
+
+.tag {
+  padding: 4px 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #666;
 }
 
 .btn-details {
-  display: block; /* Agar width 100% dan margin auto bekerja dengan baik */
+  display: inline-block;
+  padding: 8px 16px;
   background-color: #28a745;
-  color: white !important;
-  padding: 10px 0; /* Padding atas bawah, kiri kanan 0 karena width 100% */
-  text-align: center;
-  border-radius: 4px;
+  color: white;
   text-decoration: none;
-  font-weight: 500;
-  width: 100%; /* Buat tombol memenuhi lebar card-content */
-  box-sizing: border-box; /* Padding dan border termasuk dalam width */
-  margin-top: auto; /* PERUBAHAN KUNCI: Ini akan mendorong tombol ke bawah */
+  border-radius: 4px;
+  font-size: 0.9rem;
   transition: background-color 0.2s;
-  flex-shrink: 0; /* Mencegah tombol menyusut jika konten di atasnya "mendesak" */
 }
+
 .btn-details:hover {
   background-color: #218838;
 }
 
 .pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
   margin-top: 30px;
-  text-align: center;
-  padding-bottom: 20px;
 }
 .pagination a,
 .pagination span {
-  display: inline-block;
   padding: 8px 12px;
-  margin: 0 3px;
   border: 1px solid #ddd;
-  text-decoration: none;
-  color: #007bff;
   border-radius: 4px;
-  transition: background-color 0.2s, color 0.2s;
+  color: #333;
+  text-decoration: none;
 }
 .pagination a:hover {
-  background-color: #e9ecef;
-  border-color: #ccc;
+  background: #f8f9fa;
 }
 .pagination .current-page {
-  background-color: #007bff;
+  background: #28a745;
   color: white;
-  border-color: #007bff;
+  border-color: #28a745;
 }
 .pagination .disabled {
   color: #aaa;
-  pointer-events: none;
-  border-color: #eee;
+  cursor: not-allowed;
 }
 
 .no-results {
@@ -332,7 +312,28 @@ body {
   }
 }
 @media (max-width: 768px) {
+  .search-layout {
+    flex-direction: column;
+  }
+  .filter-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .search-results-area {
+    padding: 0;
+  }
+  .menu-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+@media (max-width: 480px) {
   .menu-grid {
     grid-template-columns: 1fr;
+  }
+  .search-input {
+    font-size: 0.9rem;
+  }
+  .search-button {
+    padding: 12px 20px;
   }
 }
