@@ -114,7 +114,7 @@ $page_title = isset($page_title) ? $page_title : 'Admin WellnessPlate';
     </div>
     <footer>
         <div style="background-color:rgb(98, 98, 98);">
-            <p style="margin-left: 10px; color: #fff;">© <?php echo date("Y"); ?> WellnessPlate Admin. All rights reserved.</p>
+            <p style="text-align: right; margin-right: 10px; color: #fff;">© <?php echo date("Y"); ?> WellnessPlate Admin. All rights reserved.</p>
         </div>
     </footer>
     <script src="../../script.js"></script>

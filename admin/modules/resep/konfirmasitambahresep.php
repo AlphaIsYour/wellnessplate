@@ -189,7 +189,7 @@ try {
                 $id_resep_bahan = 'RB' . str_pad($next_id_rb, 8, '0', STR_PAD_LEFT);
                 mysqli_stmt_close($stmt_max_rb);
 
-                mysqli_stmt_bind_param($stmt_bahan, "sssd", 
+                mysqli_stmt_bind_param($stmt_bahan, "ssss", 
                     $id_resep_bahan,
                     $id_resep,
                     $bahan['id_bahan'],
@@ -206,14 +206,24 @@ try {
 
     // Insert gizi
     if (isset($_POST['gizi']) && is_array($_POST['gizi'])) {
-        $stmt_gizi = mysqli_prepare($koneksi, "INSERT INTO gizi_resep (id_resep, kalori, protein, karbohidrat, lemak) VALUES (?, ?, ?, ?, ?)");
+        // Generate ID for gizi_resep
+        $stmt_max_gizi = mysqli_prepare($koneksi, "SELECT MAX(CAST(SUBSTRING(id_gizi_resep, 3) AS UNSIGNED)) as max_id FROM gizi_resep WHERE id_gizi_resep LIKE 'GR%'");
+        mysqli_stmt_execute($stmt_max_gizi);
+        $result_gizi = mysqli_stmt_get_result($stmt_max_gizi);
+        $row_gizi = mysqli_fetch_assoc($result_gizi);
+        $next_id_gizi = $row_gizi['max_id'] ? $row_gizi['max_id'] + 1 : 1;
+        $id_gizi_resep = 'GR' . str_pad($next_id_gizi, 8, '0', STR_PAD_LEFT);
+        mysqli_stmt_close($stmt_max_gizi);
+
+        $stmt_gizi = mysqli_prepare($koneksi, "INSERT INTO gizi_resep (id_gizi_resep, id_resep, kalori, protein, karbohidrat, lemak) VALUES (?, ?, ?, ?, ?, ?)");
         
         $kalori = !empty($_POST['gizi']['kalori']) ? floatval($_POST['gizi']['kalori']) : null;
         $protein = !empty($_POST['gizi']['protein']) ? floatval($_POST['gizi']['protein']) : null;
         $karbohidrat = !empty($_POST['gizi']['karbohidrat']) ? floatval($_POST['gizi']['karbohidrat']) : null;
         $lemak = !empty($_POST['gizi']['lemak']) ? floatval($_POST['gizi']['lemak']) : null;
 
-        mysqli_stmt_bind_param($stmt_gizi, "sdddd", 
+        mysqli_stmt_bind_param($stmt_gizi, "ssdddd", 
+            $id_gizi_resep,
             $id_resep,
             $kalori,
             $protein,

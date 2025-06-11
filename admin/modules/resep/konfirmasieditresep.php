@@ -146,20 +146,22 @@ try {
     }
 
     // Update tags
-    mysqli_query($koneksi, "DELETE FROM resep_tags WHERE id_resep = " . intval($id_resep));
+    mysqli_query($koneksi, "DELETE FROM resep_tags WHERE id_resep = '" . mysqli_real_escape_string($koneksi, $id_resep) . "'");
     if (isset($_POST['tags']) && is_array($_POST['tags'])) {
         $values = [];
         foreach ($_POST['tags'] as $tag_id) {
-            $values[] = "(" . intval($id_resep) . ", " . intval($tag_id) . ")";
+            $values[] = "('" . mysqli_real_escape_string($koneksi, $id_resep) . "', " . intval($tag_id) . ")";
         }
-        $query = "INSERT INTO resep_tags (id_resep, id_tag) VALUES " . implode(", ", $values);
-        if (!mysqli_query($koneksi, $query)) {
-            throw new Exception("Gagal mengupdate tags: " . mysqli_error($koneksi));
+        if (!empty($values)) {
+            $query = "INSERT INTO resep_tags (id_resep, id_tag) VALUES " . implode(", ", $values);
+            if (!mysqli_query($koneksi, $query)) {
+                throw new Exception("Gagal mengupdate tags: " . mysqli_error($koneksi));
+            }
         }
     }
 
     // Update bahan-bahan
-    mysqli_query($koneksi, "DELETE FROM resep_bahan WHERE id_resep = " . intval($id_resep));
+    mysqli_query($koneksi, "DELETE FROM resep_bahan WHERE id_resep = '" . mysqli_real_escape_string($koneksi, $id_resep) . "'");
     if (isset($_POST['resep_bahan']) && is_array($_POST['resep_bahan'])) {
         $stmt = mysqli_prepare($koneksi, "INSERT INTO resep_bahan (id_resep_bahan, id_resep, id_bahan, jumlah) VALUES (?, ?, ?, ?)");
         
@@ -177,13 +179,47 @@ try {
                 $id_bahan = $bahan['id_bahan'];
                 $jumlah = floatval($bahan['jumlah']);
                 
-                mysqli_stmt_bind_param($stmt, "sssi", $id_resep_bahan, $id_resep, $id_bahan, $jumlah);
+                mysqli_stmt_bind_param($stmt, "sssd", $id_resep_bahan, $id_resep, $id_bahan, $jumlah);
                 if (!mysqli_stmt_execute($stmt)) {
                     throw new Exception("Gagal mengupdate bahan-bahan: " . mysqli_error($koneksi));
                 }
             }
         }
         mysqli_stmt_close($stmt);
+    }
+
+    // Update gizi
+    mysqli_query($koneksi, "DELETE FROM gizi_resep WHERE id_resep = '" . mysqli_real_escape_string($koneksi, $id_resep) . "'");
+    if (isset($_POST['gizi']) && is_array($_POST['gizi'])) {
+        // Generate ID for gizi_resep
+        $stmt_max_gizi = mysqli_prepare($koneksi, "SELECT MAX(CAST(SUBSTRING(id_gizi_resep, 3) AS UNSIGNED)) as max_id FROM gizi_resep WHERE id_gizi_resep LIKE 'GR%'");
+        mysqli_stmt_execute($stmt_max_gizi);
+        $result_gizi = mysqli_stmt_get_result($stmt_max_gizi);
+        $row_gizi = mysqli_fetch_assoc($result_gizi);
+        $next_id_gizi = $row_gizi['max_id'] ? $row_gizi['max_id'] + 1 : 1;
+        $id_gizi_resep = 'GR' . str_pad($next_id_gizi, 8, '0', STR_PAD_LEFT);
+        mysqli_stmt_close($stmt_max_gizi);
+
+        $stmt_gizi = mysqli_prepare($koneksi, "INSERT INTO gizi_resep (id_gizi_resep, id_resep, kalori, protein, karbohidrat, lemak) VALUES (?, ?, ?, ?, ?, ?)");
+        
+        $kalori = !empty($_POST['gizi']['kalori']) ? floatval($_POST['gizi']['kalori']) : 0;
+        $protein = !empty($_POST['gizi']['protein']) ? floatval($_POST['gizi']['protein']) : 0;
+        $karbohidrat = !empty($_POST['gizi']['karbohidrat']) ? floatval($_POST['gizi']['karbohidrat']) : 0;
+        $lemak = !empty($_POST['gizi']['lemak']) ? floatval($_POST['gizi']['lemak']) : 0;
+
+        mysqli_stmt_bind_param($stmt_gizi, "ssdddd", 
+            $id_gizi_resep,
+            $id_resep,
+            $kalori,
+            $protein,
+            $karbohidrat,
+            $lemak
+        );
+        
+        if (!mysqli_stmt_execute($stmt_gizi)) {
+            throw new Exception("Gagal menambahkan informasi gizi: " . mysqli_error($koneksi));
+        }
+        mysqli_stmt_close($stmt_gizi);
     }
 
     mysqli_commit($koneksi);

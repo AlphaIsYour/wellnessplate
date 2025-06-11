@@ -7,130 +7,85 @@
   --text-color: #333;
   --border-color: #ddd;
   --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --header-height: 60px;
+  --sidebar-width: 250px;
 }
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+/* Basic Reset */
+* {
   margin: 0;
   padding: 0;
-  background-color: var(--off-white);
-  color: var(--text-color);
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Login Page Specific */
+body.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Untuk login page agar di tengah */
+  min-height: 100vh;
+  background-color: var(--off-white);
 }
 
-.login-container {
+/* Dashboard Layout */
+body.dashboard-body {
+  background-color: var(--off-white);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+/* Fixed Header */
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
   background-color: #fff;
-  padding: 30px 40px;
-  border-radius: 8px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   box-shadow: var(--box-shadow);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+  z-index: 1000;
 }
 
-.login-container h2 {
-  color: var(--primary-green);
-  margin-bottom: 25px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input[type="text"],
-.form-group input[type="password"],
-.form-group input[type="email"],
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  box-sizing: border-box; /* Penting agar padding tidak menambah width */
-  font-size: 16px;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-.btn {
-  background-color: var(--primary-green);
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  width: 100%;
-}
-.btna {
-  background-color: var(--primary-green);
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  width: 14%;
-}
-
-.btn:hover {
-  background-color: var(--dark-green);
-}
-
-.error-message {
-  background-color: #ffdddd;
-  color: #d8000c;
-  border: 1px solid #d8000c;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  text-align: center;
-}
-
-/* Style untuk dashboard akan ditambahkan nanti */
-.dashboard-body {
-  display: flex;
-  flex-direction: column; /* Untuk header, content, footer */
-  align-items: normal; /* Reset dari body login */
-  justify-content: normal; /* Reset dari body login */
-}
-
-.main-wrapper {
-  display: flex;
-  min-height: calc(
-    100vh - 60px
-  ); /* 60px adalah tinggi header, sesuaikan jika perlu */
-}
-
+/* Fixed Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: #333; /* Warna sidebar bisa disesuaikan */
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background-color: #333;
   color: white;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 999;
 }
 
+/* Main Content Layout */
+.main-wrapper {
+  margin-top: var(--header-height);
+  margin-left: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+}
+
+.content-area {
+  padding: 20px;
+  min-height: 100%;
+}
+
+/* Sidebar Navigation */
 .sidebar h3 {
   color: var(--primary-green);
   text-align: center;
@@ -159,10 +114,188 @@ body {
   color: white;
 }
 
-.content-area {
-  flex-grow: 1;
+/* Header Elements */
+.page-header .welcome-admin {
+  font-size: 1.1em;
+}
+
+.page-header .logout-btn {
+  background-color: var(--dark-green);
+  color: white;
+  padding: 8px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+.page-header .logout-btn:hover {
+  background-color: var(--primary-green);
+}
+
+/* Cards and Content Styling */
+.card {
+  background-color: #fff;
   padding: 20px;
-  background-color: var(--off-white);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2,
+.card-header h3 {
+  margin: 0;
+  color: var(--primary-green);
+}
+
+/* Buttons */
+.btn, .btna {
+  background-color: var(--primary-green);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.btna {
+  width: 14%;
+}
+
+.btn:hover,
+.btna:hover {
+  background-color: var(--dark-green);
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Custom Scrollbar */
+.main-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.main-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.main-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-wrapper {
+    margin-left: 0;
+  }
+
+  .content-area {
+    padding: 15px;
+  }
+}
+
+/* Alert Messages */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.error-message {
+  background-color: #ffdddd;
+  color: #d8000c;
+  border: 1px solid #d8000c;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Style untuk dashboard akan ditambahkan nanti */
+.dashboard-body {
+  display: flex;
+  flex-direction: column; /* Untuk header, content, footer */
+  align-items: normal; /* Reset dari body login */
+  justify-content: normal; /* Reset dari body login */
 }
 
 .page-header {
@@ -286,24 +419,66 @@ table.data-table tbody tr:hover {
   background-color: #d32f2f;
 }
 
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
+/* Footer adjustments */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 250px; /* Width of sidebar */
+  right: 0;
+  background-color: rgb(98, 98, 98);
+  padding: 10px;
+  color: #fff;
+  z-index: 1000;
+}
+
+/* Additional styles for better scrolling experience */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure content is scrollable */
+.content-area {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Custom scrollbar for better appearance */
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background: #888;
   border-radius: 4px;
 }
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
+
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
-.alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+
+/* Ensure cards and content don't get cut off */
+.card {
+  margin-bottom: 20px;
 }
-.alert-info {
-  color: #0c5460;
-  background-color: #d1ecf1;
-  border-color: #bee5eb;
+
+/* Add smooth shadow to fixed elements */
+.page-header, .sidebar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Ensure dropdown menus in sidebar appear above content */
+.sidebar .nav-item .dropdown-menu {
+  z-index: 1001;
 }
