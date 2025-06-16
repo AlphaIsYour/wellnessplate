@@ -58,10 +58,7 @@ $form_data_login = $_SESSION['form_data_login'] ?? [];
                 <input type="password" name="password" placeholder="Password" required>
                 <i class='bx bxs-lock-alt'></i>
             </div>
-            <div class="remember-forgot">
-                <label><input type="checkbox" name="remember_me">Remember me</label>
-                <a href="#">Forgot password?</a>
-            </div>
+            
             <button type="submit" class="btn">Login</button>
             <p>atau login dengan</p>
             <div class="social-icons">

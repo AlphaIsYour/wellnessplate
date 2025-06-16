@@ -1,5 +1,12 @@
 <?php
+session_start();
 require_once 'config/koneksi.php';
+
+// Redirect if not logged in
+if (!isset($_SESSION['id_user'])) {
+    header("Location: " . BASE_URL . "/pages/auth/index.php");
+    exit();
+}
 
 // Debug untuk melihat isi POST/GET
 error_reporting(E_ALL);

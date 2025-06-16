@@ -360,17 +360,17 @@ require_once('includes/header.php');
             </div>
             <div class="team-grid">
                 <div class="team-member">
-                    <img src="assets/images/team/5.jpg" alt="Dr. Sarah">
+                    <img src="assets/images/team/alpha.jpg" alt="Dr. Sarah">
                     <h3>Alphareno YS.</h3>
                     <p>Ahli Gizi Senior</p>
                 </div>
                 <div class="team-member">
-                    <img src="assets/images/team/6.jpg" alt="Chef Michael">
+                    <img src="assets/images/team/habib.png" alt="Chef Michael">
                     <h3>M. Habib Masyhur</h3>
                     <p>Kepala Chef</p>
                 </div>
                 <div class="team-member">
-                    <img src="assets/images/team/7.jpg" alt="Anna">
+                    <img src="assets/images/team/derby.png" alt="Anna">
                     <h3>M. Derby Junio</h3>
                     <p>Health Coach</p>
                 </div>

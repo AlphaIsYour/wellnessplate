@@ -9,7 +9,7 @@ $username_db = "root";
 $password_db = "";  
 $nama_database = "wellnessplate";
 
-$koneksi = mysqli_connect($host_db, $username_db, $password_db, $nama_database, 3306);
+$koneksi = mysqli_connect($host_db, $username_db, $password_db, $nama_database, 3307);
 define('BASE_URL', 'http://wellnessplate.test');
 
 if (!$koneksi) {

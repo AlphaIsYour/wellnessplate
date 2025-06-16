@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/config/koneksi.php';
 
-// Handle account deletion messages before any output
 $account_deleted_message = '';
 $delete_error_message = '';
 
@@ -23,17 +22,17 @@ $slider_banners = [
         'link' => BASE_URL . '/produk/salad'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/2.png', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/2.png',
         'alt' => 'Resep Baru Setiap Hari',
         'link' => BASE_URL . '/resep'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/3.png', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/3.png',
         'alt' => 'Tips Gaya Hidup Sehat',
         'link' => BASE_URL . '/artikel'
     ],
     [
-        'image' => BASE_URL . '/assets/images/slider/4.png', // Ganti dengan path gambar aslimu
+        'image' => BASE_URL . '/assets/images/slider/4.png',
         'alt' => 'Tips Gaya Hidup Sehat',
         'link' => BASE_URL . '/artikel'
     ]
@@ -49,7 +48,6 @@ $slider_options = [
 
 require_once __DIR__ . '/includes/header.php';
 
-// Display account deletion messages after header
 if ($account_deleted_message) {
     echo "<script>
         Swal.fire({
@@ -75,38 +73,37 @@ if ($delete_error_message) {
 
 <div class="main-content">
 
-    <!-- 1. Search Bar Section -->
-<?php 
-require_once __DIR__ . '/includes/components/search-bar.php';
-?>
-
-
-    <!-- 2. Slider Banner Section -->
-<?php 
-require_once __DIR__ . '/includes/components/slider.php';
-?>
-
-    <!-- 4. Komponen Lain (Contoh: Artikel Terbaru) -->
-<?php 
-require_once __DIR__ . '/includes/components/article.php';
-?>
-    
-
-    
-
-    <!-- 3. Komponen Lain (Contoh: Kategori Populer) -->
-
-
+    <!-- 1. ini Search Bar Section -->
     <?php 
-require_once __DIR__ . '/includes/components/category.php';
-?>
-    <?php 
-require_once __DIR__ . '/includes/components/about.php';
-?>
-    <?php 
-require_once __DIR__ . '/includes/components/faq.php';
-?>
+    require_once __DIR__ . '/includes/components/search-bar.php';
+    ?>
 
+    <!-- 2. ini Slider Banner Section -->
+    <?php 
+    require_once __DIR__ . '/includes/components/slider.php';
+    ?>
+
+    <!-- 3. ini Article Section -->
+    <?php 
+    require_once __DIR__ . '/includes/components/article.php';
+    ?>
+
+    <!-- 4. ini Category Section -->
+    <?php 
+    require_once __DIR__ . '/includes/components/category.php';
+    ?>
+
+    <!-- 5. ini About Section -->
+    <?php 
+    require_once __DIR__ . '/includes/components/about.php';
+    ?>
+
+    <!-- 6. ini Faq Section -->
+    <?php 
+    require_once __DIR__ . '/includes/components/faq.php';
+    ?>
+
+    <!-- 7. ini Footer -->
     <?php
     if (isset($_GET['message'])) {
         echo "<p style='text-align: center; color: green; border: 1px solid green; padding: 10px; margin: 15px auto; max-width: 600px;'>" . htmlspecialchars($_GET['message']) . "</p>";
