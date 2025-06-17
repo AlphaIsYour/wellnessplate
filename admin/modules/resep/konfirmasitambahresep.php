@@ -4,13 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Pastikan BASE_URL sudah terdefinisi (dari config/koneksi.php)
-// Jika file ini dipanggil sebelum koneksi.php, BASE_URL tidak akan ada.
-// Solusi terbaik: pastikan koneksi.php di-include pertama di file halaman utama.
 if (!defined('BASE_URL')) {
-    // Fallback sederhana jika BASE_URL belum ada, tapi ini bukan solusi ideal
-    // Sebaiknya pastikan koneksi.php di-include sebelum header ini
-    // Jika kamu pakai folder 'wellnessplate2'
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     $host_name = $_SERVER['HTTP_HOST'];
     define('BASE_URL', $protocol . $host_name .''); // Ganti 'wellnessplate2' jika perlu
@@ -144,7 +138,7 @@ try {
         throw new Exception("Gagal mengunggah gambar.");
     }
 
-    // Insert resep
+    // ini query untuk tambah data resep
     $stmt = mysqli_prepare($koneksi, "INSERT INTO resep (id_resep, nama_resep, deskripsi, cara_buat, id_admin, id_kondisi, image, tanggal_dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
     
     mysqli_stmt_bind_param($stmt, "sssssss", 
@@ -162,7 +156,7 @@ try {
     }
     mysqli_stmt_close($stmt);
 
-    // Insert tags
+    // Ini query untuk menambahkan bahan
     if (isset($_POST['tags']) && is_array($_POST['tags'])) {
         $stmt_tags = mysqli_prepare($koneksi, "INSERT INTO resep_tags (id_resep, id_tag) VALUES (?, ?)");
         foreach ($_POST['tags'] as $tag_id) {

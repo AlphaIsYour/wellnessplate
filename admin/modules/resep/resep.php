@@ -81,6 +81,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
             $_SESSION['error_message'] = "Gagal mempersiapkan hapus gizi: " . mysqli_error($koneksi);
         }
 
+        // disini query untuk menghapus bahan 
         if (!$error_flag) {
             $stmt_delete_bahan = mysqli_prepare($koneksi, "DELETE FROM resep_bahan WHERE id_resep = ?");
             if ($stmt_delete_bahan) {
@@ -133,6 +134,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     exit;
 }
 
+// query untuk mengambil data resep
 $query_resep = "SELECT 
                     r.id_resep, 
                     r.nama_resep,

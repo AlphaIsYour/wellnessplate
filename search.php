@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'config/koneksi.php';
 
 // Redirect if not logged in

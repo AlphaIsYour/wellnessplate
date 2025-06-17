@@ -123,7 +123,7 @@ if (!empty($errors)) {
 try {
     mysqli_begin_transaction($koneksi);
 
-    // Update data resep
+    // nah disini query untuk update resep
     $stmt = mysqli_prepare($koneksi, "UPDATE resep SET 
         nama_resep = ?,
         deskripsi = ?,
